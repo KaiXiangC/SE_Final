@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>會員專區</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        /* Header */
+        .header {
+            background-color: #FFD700;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .header nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .header nav a:hover {
+            color: #000;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-header img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+
+        .profile-header .name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .buttons button {
+            padding: 8px 16px;
+            font-size: 14px;
+            border: 1px solid #FFD700;
+            background-color: #FFF;
+            color: #FFD700;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .buttons button:hover {
+            background-color: #FFD700;
+            color: #fff;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .tags {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .tag {
+            background-color: #FFD700;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        .save-button {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .save-button button {
+            padding: 10px 20px;
+            font-size: 14px;
+            background-color: #FFD700;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .save-button button:hover {
+            background-color: #FFC107;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">公共政策網路參與平臺</div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <img src="profile-placeholder.png" alt="Profile Picture">
+            <div class="name">PeiAn</div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="buttons">
+            <button>修改密碼</button>
+            <button>基本資料</button>
+            <button>取消帳號</button>
+        </div>
+
+        <!-- Sections -->
+        <div class="section">
+            <h3>我關注的內容</h3>
+            <p>電子報訂閱</p>
+        </div>
+
+        <div class="section">
+            <h3>留言記錄</h3>
+            <div class="tags">
+                <span class="tag">提點子</span>
+            </div>
+        </div>
+
+        <!-- Save Button -->
+        <div class="save-button">
+            <button>儲存</button>
+        </div>
+    </div>
+
+</body>
+</html>
