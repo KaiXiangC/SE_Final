@@ -129,6 +129,40 @@
         .save-button button:hover {
             background-color: #FFC107;
         }
+        .dropdown {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .dropdown:after {
+            content: '▼';
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        .dropdown.active:after {
+            content: '▲';
+        }
+
+        .dropdown-content {
+            display: none;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-top: none;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .dropdown-content.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -143,28 +177,64 @@
         <!-- Profile Header -->
         <div class="profile-header">
             <img src="profile-placeholder.png" alt="Profile Picture">
-            <div class="name">PeiAn</div>
+            <div class="name">Name</div>
         </div>
 
         <!-- Buttons -->
         <div class="buttons">
             <button>修改密碼</button>
             <button>基本資料</button>
-            <button>取消帳號</button>
+            <button>我的文章</button>
         </div>
 
         <!-- Sections -->
-        <div class="section">
-            <h3>我關注的內容</h3>
-            <p>電子報訂閱</p>
-        </div>
 
-        <div class="section">
-            <h3>留言記錄</h3>
-            <div class="tags">
-                <span class="tag">提點子</span>
+
+        <div class="container">
+            <!-- 折疊區塊 -->
+            <div class="section">
+                <div class="dropdown" onclick="toggleDropdown('dropdown1')">
+                    我的提議
+                </div>
+                <div class="dropdown-content" id="dropdown1">
+                    這裡是提點子的詳細內容，可以根據需求展示相關資訊。
+                </div>
+            </div>
+        
+            <div class="section">
+                <div class="dropdown" onclick="toggleDropdown('dropdown2')">
+                    我的草稿
+                </div>
+                <div class="dropdown-content" id="dropdown2">
+                    這裡是眾開講的詳細內容，可以根據需求展示相關資訊。
+                </div>
+            </div>
+        
+            <div class="section">
+                <div class="dropdown" onclick="toggleDropdown('dropdown3')">
+                    我的收藏
+                </div>
+                <div class="dropdown-content" id="dropdown3">
+                    這裡是來監督的詳細內容，可以根據需求展示相關資訊。
+                </div>
             </div>
         </div>
+        
+        <script>
+            // 切換折疊內容
+            function toggleDropdown(id) {
+                const content = document.getElementById(id);
+                const dropdown = content.previousElementSibling;
+        
+                if (content.classList.contains('active')) {
+                    content.classList.remove('active');
+                    dropdown.classList.remove('active');
+                } else {
+                    content.classList.add('active');
+                    dropdown.classList.add('active');
+                }
+            }
+        </script>
 
         <!-- Save Button -->
         <div class="save-button">
