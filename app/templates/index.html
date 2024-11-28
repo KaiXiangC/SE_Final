@@ -5,20 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>公共政策網路參與平臺</title>
     <style>
+        /* 通用樣式 */
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            font-family: Arial, sans-serif;
             background-color: #f9f9f9;
         }
+
+        /* Header 樣式 */
         .header {
-            background-color: #ffef12;
-            border-bottom: 1px solid #ddd;
-            padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background-color: #ffef12;
+            padding: 10px 20px;
+            border-bottom: 1px solid #ddd;
         }
+
+        /* 左側標題 */
+        .title h1 {
+            font-size: 20px;
+            margin: 0;
+            color: #333;
+        }
+
+        /* 右側導航和頭像 */
+        .nav-container {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* 控制文字和頭像之間的距離 */
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #4a148c; /* 紫色 */
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #000; /* 懸停時變黑 */
+        }
+
+        /* 頭像圖片 */
+        .profile-link {
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #ccc;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+
+        .profile-img:hover {
+            border-color: #333;
+            transform: scale(1.1); /* 懸停放大 */
+        }
+
+
+
         .header h1 {
             font-size: 20px;
             font-weight: bold;
@@ -90,21 +140,70 @@
         .content {
             padding: 20px;
         }
+        .search-bar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 20px auto;
+        padding: 10px;
+        max-width: 800px;
+        border: 1px solid #ddd;
+        border-radius: 50px;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-bar input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 50px 0 0 50px;
+        }
+
+        .search-bar button {
+            border: none;
+            outline: none;
+            background-color: #ffef12;
+            color: #333;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 0 50px 50px 0;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-bar button:hover {
+            background-color: #ffd700;
+        }
+
     </style>
 </head>
 <body>
 
     <!-- Header -->
     <header class="header">
-        <div>
+        <div class="title">
             <h1>公共政策網路參與平臺</h1>
         </div>
-        <nav>
-            <a href="propose.html">想提議</a> |
-            <a href="seconded.html">來附議</a> |
-            <a href="login.html">登入</a>
-        </nav>
+        <div class="nav-container">
+            <nav>
+                <a href="propose.html">想提議</a> |
+                <a href="seconded.html">來附議</a> |
+                <a href="login.html">登入</a>
+            </nav>
+            <a href="member.html" class="profile-link">
+                <img src="profile-placeholder.png" alt="頭像" class="profile-img">
+            </a>
+        </div>
     </header>
+
+    <!-- 搜尋欄 -->
+    <div class="search-bar">
+        <input type="text" placeholder="請輸入關鍵字">
+        <button>搜尋</button>
+    </div>
 
     <!-- Carousel -->
     <div class="carousel">
@@ -131,6 +230,7 @@
         </div>
         <div class="carousel-dots" id="carouselDots"></div>
     </div>
+
 
     <div class="content">
         <h2>熱門議題</h2>

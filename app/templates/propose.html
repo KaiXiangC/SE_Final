@@ -117,17 +117,21 @@
         }
 
         .button {
-            background: var(--primary);
-            border: none;
-            padding: 0.75rem 2rem;
-            border-radius: 2rem;
-            cursor: pointer;
-            font-weight: bold;
+        background-color: #4CAF50; /* 綠色背景 */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
         }
 
         .button:hover {
-            opacity: 0.9;
+            background-color: #45a049; /* 懸停時背景色稍微變深 */
         }
+
     </style>
 </head>
 <body>
@@ -164,8 +168,11 @@
         </div>
 
         <div style="text-align: center;">
-            <button class="button">我要提議</button>
+            <a href="gotopropose.html" style="text-decoration: none;">
+                <button class="button">我要提議</button>
+            </a>
         </div>
+        
     </main>
 
     <script>
