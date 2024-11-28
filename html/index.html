@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>公共政策網路參與平臺</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background-color: #ffef12;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .carousel {
+            position: relative;
+            margin: 20px auto;
+            width: 90%;
+            max-width: 800px;
+            height: 300px;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+        .carousel-slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        .carousel-slide {
+            flex: 1 0 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: rgb(116, 111, 111);
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+        }
+        .carousel-slide h2 {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+        .carousel-buttons {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+        .carousel-button {
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 50%;
+        }
+        .carousel-dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 5px;
+        }
+        .carousel-dot {
+            width: 10px;
+            height: 10px;
+            background: white;
+            opacity: 0.5;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .carousel-dot.active {
+            opacity: 1;
+        }
+        .content {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div>
+            <h1>公共政策網路參與平臺</h1>
+        </div>
+        <nav>
+            <a href="propose.html">想提議</a> |
+            <a href="seconded.html">來附議</a> |
+            <a href="login.html">登入</a>
+        </nav>
+    </header>
+
+    <!-- Carousel -->
+    <div class="carousel">
+        <div class="carousel-slides" id="carouselSlides">
+            <div class="carousel-slide" style="background-image: url('/placeholder.svg');">
+                <h2>改善居家托育人員制度陳情書</h2>
+                <p>提點子成案議題</p>
+                <p>感謝桃子媽提案及附議者促成提議成案</p>
+            </div>
+            <div class="carousel-slide" style="background-image: url('/placeholder.svg');">
+                <h2>新的公共政策提案</h2>
+                <p>最新熱門議題</p>
+                <p>參與討論，共創美好未來</p>
+            </div>
+            <div class="carousel-slide" style="background-image: url('/placeholder.svg');">
+                <h2>環境保護新政策</h2>
+                <p>綠色永續發展</p>
+                <p>為下一代打造更好的生活環境</p>
+            </div>
+        </div>
+        <div class="carousel-buttons">
+            <button class="carousel-button" id="prevButton">←</button>
+            <button class="carousel-button" id="nextButton">→</button>
+        </div>
+        <div class="carousel-dots" id="carouselDots"></div>
+    </div>
+
+    <div class="content">
+        <h2>熱門議題</h2>
+        <p>這裡可以加入更多的動態內容...</p>
+    </div>
+
+    <script>
+        // JavaScript for Carousel
+        const slides = document.querySelectorAll(".carousel-slide");
+        const dotsContainer = document.getElementById("carouselDots");
+        const slidesContainer = document.getElementById("carouselSlides");
+        const prevButton = document.getElementById("prevButton");
+        const nextButton = document.getElementById("nextButton");
+
+        let currentIndex = 0;
+
+        // Generate dots
+        slides.forEach((_, index) => {
+            const dot = document.createElement("div");
+            dot.classList.add("carousel-dot");
+            if (index === 0) dot.classList.add("active");
+            dot.addEventListener("click", () => setSlide(index));
+            dotsContainer.appendChild(dot);
+        });
+
+        const updateDots = () => {
+            document.querySelectorAll(".carousel-dot").forEach((dot, index) => {
+                dot.classList.toggle("active", index === currentIndex);
+            });
+        };
+
+        const setSlide = (index) => {
+            currentIndex = index;
+            slidesContainer.style.transform = `translateX(-${index * 100}%)`;
+            updateDots();
+        };
+
+        const nextSlide = () => setSlide((currentIndex + 1) % slides.length);
+        const prevSlide = () => setSlide((currentIndex - 1 + slides.length) % slides.length);
+
+        nextButton.addEventListener("click", nextSlide);
+        prevButton.addEventListener("click", prevSlide);
+
+        // Auto-slide
+        setInterval(nextSlide, 5000);
+    </script>
+    <title>Tabs and Content Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #ddd;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #555;
+            border-bottom: 3px solid transparent;
+        }
+        .tab.active {
+            color: #000;
+            border-color: #007bff;
+        }
+        .tab-content {
+            display: none;
+            margin-top: 20px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .proposal {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .proposal h3 {
+            margin: 0 0 8px;
+        }
+        .proposal .details {
+            font-size: 14px;
+            color: #555;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .category-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            background-color: #f9f9f9;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+        .category-button:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Tabs Section -->
+    <div class="tabs" id="tabs">
+        <div class="tab active" data-tab="latest">最新</div>
+        <div class="tab" data-tab="popular">熱門</div>
+        <div class="tab" data-tab="completed">已成案</div>
+    </div>
+
+    <!-- Tabs Content -->
+    <div class="tab-content active" id="latest">
+        <div class="proposal">
+            <h3>不以台灣Taiwan為正式隊名 政府不得以公帑補助</h3>
+            <div class="details">
+                <span>附議數：33</span>
+                <span>留言數：4</span>
+                <span>按讚數：0</span>
+                <span>日期：2024-11-27</span>
+            </div>
+        </div>
+        <div class="proposal">
+            <h3>高鐵延伸屏東左營高鐵站至臺鐵高雄車站優先施工</h3>
+            <div class="details">
+                <span>附議數：7</span>
+                <span>留言數：1</span>
+                <span>按讚數：0</span>
+                <span>日期：2024-11-27</span>
+            </div>
+        </div>
+    </div>
+    <div class="tab-content" id="popular">
+        <p>這是熱門提案的內容...</p>
+    </div>
+    <div class="tab-content" id="completed">
+        <p>這是已成案提案的內容...</p>
+    </div>
+
+    <!-- Categories Section -->
+    <h2 class="mt-8">我想查詢 請選擇關注的領域</h2>
+    <div class="categories">
+        <div class="category-button">
+            <div>📋</div>
+            <span>綜合行政</span>
+        </div>
+        <div class="category-button">
+            <div>📈</div>
+            <span>財政經濟</span>
+        </div>
+        <div class="category-button">
+            <div>🌱</div>
+            <span>農業環保</span>
+        </div>
+        <div class="category-button">
+            <div>🚗</div>
+            <span>交通建設</span>
+        </div>
+        <div class="category-button">
+            <div>🎓</div>
+            <span>教育科技文化</span>
+        </div>
+        <div class="category-button">
+            <div>❤️</div>
+            <span>衛生勞動</span>
+        </div>
+        <div class="category-button">
+            <div>🏳️</div>
+            <span>外交國防法務</span>
+        </div>
+        <div class="category-button">
+            <div>🏠</div>
+            <span>內政</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab Switching Logic
+    const tabs = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            // Remove active class from all tabs
+            tabs.forEach(tab => tab.classList.remove('active'));
+            // Add active class to the clicked tab
+            tab.classList.add('active');
+
+            // Hide all tab contents
+            tabContents.forEach(content => content.classList.remove('active'));
+            // Show the content corresponding to the clicked tab
+            const targetTab = tab.getAttribute('data-tab');
+            document.getElementById(targetTab).classList.add('active');
+        });
+    });
+</script>
+</body>
+</html>
