@@ -1,7 +1,12 @@
-from flask import Blueprint, jsonify
+from flask import Flask
+from flask import render_template
 
-main = Blueprint('main', __name__)
+app = Flask(__name__)
 
-@main.route('/')
-def index():
-    return jsonify({'message': 'Welcome to the Flask App!'})
+@app.route('/<user>')
+def index(user):
+    return render_template('index.html', user_template=user)
+
+if __name__ == '__main__':
+    app.debug = True
+    app.run()
