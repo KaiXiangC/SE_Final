@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>維護通知與公告</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        .notice-form {
+            background-color: #fff3d0;
+            padding: 30px;
+            border-radius: 15px;
+            position: relative;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .form-group input[type="text"],
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            background-color: white;
+        }
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        .submit-btn {
+            background-color: #4a4a4a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            position: absolute;
+            bottom: 20px;
+            right: 30px;
+        }
+        .submit-btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>維護通知與公告</h1>
+        
+        <form class="notice-form" method="POST" action="{{ url_for('maintenance_notice') }}">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                <label for="title">公告標題:</label>
+                {{ form.title(id="title", required=true, placeholder="請輸入公告標題") }}
+            </div>
+            
+            <div class="form-group">
+                <label for="content">公告內容:</label>
+                {{ form.content(id="content", required=true, placeholder="請輸入公告內容") }}
+            </div>
+            
+            {{ form.submit(class="submit-btn") }}
+        </form>
+    </div>
+</body>
+</html>
