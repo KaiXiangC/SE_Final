@@ -3,113 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>議題公投平台登入</title>
+    <title>議題公投平台 - 登入</title>
     <style>
         body {
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
-            background-color: #ffffff;
+            background-color: #f4f4f4;
         }
-
-        /* 頂部黃色條 */
-        .header {
-            background-color: #FFD700;
-            height: 100px;
+        header {
+            background-color: #ffd700;
+            color: #000;
+            padding: 10px 20px;
             display: flex;
             align-items: center;
-            justify-content: center;
         }
-
-        .header h1 {
-            font-size: 32px;
-            color: #000;
-            margin: 0;
-        }
-
-        /* 登入框 */
-        .login-container {
-            background-color: #FFF3CD;
-            width: 400px;
-            margin: 50px auto;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .login-container label {
-            display: block;
-            font-size: 18px;
-            margin-bottom: 10px;
-            text-align: left;
-        }
-
-        .login-container input {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        .login-container a {
-            color: #007BFF;
-            font-size: 14px;
+        header a {
             text-decoration: none;
+            color: #000;
+            font-size: 18px;
+            margin-right: 10px;
         }
-
-        .login-container a:hover {
+        header a:hover {
             text-decoration: underline;
         }
-
-        .login-container button {
+        .container {
+            text-align: center;
+            margin: 50px auto;
+            max-width: 400px;
+        }
+        .login-box {
+            background-color: #fffacd;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .login-box h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .login-box input[type="text"],
+        .login-box input[type="password"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .login-box button {
+            width: 100%;
+            padding: 10px;
             background-color: #333;
             color: #fff;
-            padding: 10px 20px;
             border: none;
-            border-radius: 5px;
-            font-size: 16px;
+            border-radius: 4px;
             cursor: pointer;
         }
-
-        .login-container button:hover {
+        .login-box button:hover {
             background-color: #555;
         }
-
-        /* 底部綠色條 */
-        .footer {
-            background-color: #2F4F4F;
-            height: 50px;
-            margin-top: 50px;
+        .login-box a {
+            display: block;
+            margin-top: 10px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .login-box a:hover {
+            text-decoration: underline;
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-
-    <!-- 頂部黃色條 -->
-    <div class="header">
-        <h1>議題公投平台</h1>
+    <header>
+        <a href="/">← 返回首頁</a>
+        <h1 style="margin: 0;">議題公投平台</h1>
+    </header>
+    <div class="container">
+        <div class="login-box">
+            <h1>登入</h1>
+            <form method="POST" action="/login">
+                <label for="email">帳號:</label>
+                <input type="text" id="email" name="email" placeholder="請輸入您的電子郵件" required>
+                
+                <label for="password">密碼:</label>
+                <input type="password" id="password" name="password" placeholder="請輸入您的密碼" required>
+                
+                <button type="submit">登入</button>
+            </form>
+            <a href="/register">還沒有帳號嗎？立即註冊</a>
+            {% if error %}
+            <p class="error-message">{{ error }}</p>
+            {% endif %}
+        </div>
     </div>
-
-    <!-- 登入框 -->
-    <div class="login-container">
-        <form action="#" method="post">
-            <label for="username">帳號：</label>
-            <input type="text" id="username" name="username" placeholder="請輸入帳號" required>
-            
-            <label for="password">密碼：</label>
-            <input type="password" id="password" name="password" placeholder="請輸入密碼" required>
-            
-            <a href="register.html">還沒有帳號嗎？立即註冊</a>
-            
-            <button type="submit">登入</button>
-        </form>
-    </div>
-
-    <!-- 底部綠色條 -->
-    <div class="footer"></div>
-
 </body>
 </html>
