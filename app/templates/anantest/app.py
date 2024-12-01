@@ -69,11 +69,39 @@ def index():
 
 @app.route("/manager_homepage")
 def manager_homepage():
-    return "這是管理者首頁！"
+    # 檢查是否登入，並確認是管理員
+    userID = session.get('userID')
+    if not userID or userID != "manager001":
+        return redirect(url_for("login"))
+
+    # 模擬從資料庫查找名稱
+    username = "管理員" if userID == "manager001" else "使用者"
+    return render_template("manager_homepage.html", username=username)
 
 @app.route("/register")
 def register():
     return "這是註冊頁面"
+
+@app.route("/member_manage")
+def member_manage():
+    return "會員認證管理頁面"
+
+@app.route("/propose_manage")
+def propose_manage():
+    return "議題與討論監控頁面"
+
+@app.route("/propose_category_manage")
+def propose_category_manage():
+    return "議題類別管理頁面"
+
+@app.route("/maintance_notice")
+def maintance_notice():
+    return "維護通知與公告頁面"
+
+@app.route("/logout")
+def logout():
+    session.pop("userID", None)
+    return redirect(url_for("login"))
 
 if __name__ == "__main__":
     app.run(debug=True)
