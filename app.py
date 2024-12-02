@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
+from werkzeug.security import check_password_hash
 from app.models.user import db, User, Issue
 from app.forms.registration_form import RegistrationForm, IssueForm
 app = Flask(__name__, template_folder='app/templates')
@@ -10,6 +11,7 @@ db.init_app(app)
 def home():
     return render_template('index.html')
 
+#註冊
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
@@ -22,6 +24,7 @@ def register():
         return redirect(url_for('home'))
     return render_template('register.html', form=form)
 
+#新增問題
 @app.route('/new_issue', methods=['GET', 'POST'])
 def new_issue():
     form = IssueForm()
@@ -32,6 +35,49 @@ def new_issue():
         flash('Issue submitted successfully!', 'success')
         return redirect(url_for('home'))
     return render_template('new_issue.html', form=form)
+
+#會員
+@app.route('/member/<int:user_id>', methods=['GET', 'POST'])
+def member(user_id):
+    user = User.query.get_or_404(user_id)
+    
+    if request.method == 'POST':
+        user.name = request.form['name']
+        user.email = request.form['email']
+        user.password = request.form['password']
+        user.idPhoto = request.form['idPhoto']
+        user.authenticationStatus = 'authenticationStatus' in request.form
+        user.profileData = request.form['profileData']
+        
+        try:
+            db.session.commit()
+            flash('資料已更新', 'success')
+        except:
+            db.session.rollback()
+            flash('更新失敗', 'danger')
+        
+        return redirect(url_for('member', user_id=user.id))
+    
+    return render_template('member.html', user=user)
+
+#登入
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        
+        user = User.query.filter_by(email=email).first()
+        
+        if user and check_password_hash(user.password, password):
+            session['user_id'] = user.userID
+            flash('登入成功', 'success')
+            return redirect(url_for('member', user_id=user.userID))
+        else:
+            flash('帳號或密碼錯誤', 'danger')
+            return render_template('login.html', error='帳號或密碼錯誤')
+    
+    return render_template('login.html')
 
 if __name__ == '__main__':
     with app.app_context():       
