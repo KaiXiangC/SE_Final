@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 from werkzeug.security import check_password_hash
 from app.models.user import db, User
+from app.models.issue import Issue
 from app.forms.registration_form import RegistrationForm, IssueForm
 app = Flask(__name__, template_folder='app/templates')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
@@ -23,10 +24,10 @@ def register():
         flash('Registration successful!', 'success')
         return redirect(url_for('home'))
     return render_template('register.html', form=form)
-'''
+
 #新增問題
-@app.route('/new_issue', methods=['GET', 'POST'])
-def new_issue():
+@app.route('/propose', methods=['GET', 'POST'])
+def propose():
     form = IssueForm()
     if form.validate_on_submit():
         issue = Issue(name=form.name.data, description=form.description.data, category=form.category.data)
@@ -34,8 +35,8 @@ def new_issue():
         db.session.commit()
         flash('Issue submitted successfully!', 'success')
         return redirect(url_for('home'))
-    return render_template('new_issue.html', form=form)
-'''
+    return render_template('propose.html', form=form)
+
 #會員
 @app.route('/member/<int:user_id>', methods=['GET', 'POST'])
 def member(user_id):
@@ -78,6 +79,26 @@ def login():
             return render_template('login.html', error='帳號或密碼錯誤')
     
     return render_template('login.html')
+'''
+@app.route('/api/proposals/latest', methods=['GET'])
+def get_latest_proposals():
+    proposals = Proposal.query.order_by(Proposal.date.desc()).limit(10).all()
+    return jsonify([proposal.to_dict() for proposal in proposals])
+
+@app.route('/api/proposals/popular', methods=['GET'])
+def get_popular_proposals():
+    proposals = Proposal.query.order_by(Proposal.support_count.desc()).limit(10).all()
+    return jsonify([proposal.to_dict() for proposal in proposals])
+
+@app.route('/api/proposals/completed', methods=['GET'])
+def get_completed_proposals():
+    proposals = Proposal.query.filter_by(status='completed').order_by(Proposal.date.desc()).limit(10).all()
+    return jsonify([proposal.to_dict() for proposal in proposals])
+'''
+@app.route('/seconded', methods=['GET'])
+def seconded():
+    return render_template('seconded.html')
+
 
 if __name__ == '__main__':
     with app.app_context():       
