@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
-from werkzeug.security import check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 from app.models.user import db, User
 from app.models.issue import Issue
 from app.forms.registration_form import RegistrationForm, IssueForm
@@ -15,15 +15,34 @@ def home():
 #註冊
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        user = User(name=form.name.data, email=form.email.data, password=form.password.data)
-        form.photo.data.save(f'static/uploads/{user.name}_id.jpg')  # Save uploaded photo
-        db.session.add(user)
-        db.session.commit()
-        flash('Registration successful!', 'success')
-        return redirect(url_for('home'))
-    return render_template('register.html', form=form)
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        password = generate_password_hash(request.form['password'])
+        idPhoto = request.form['id_front_path']
+        authenticationStatus = False #'authenticationStatus' in request.form
+        profileData = request.form['id_back_path']
+        
+        new_user = User(
+            name=name,
+            email=email,
+            password=password,
+            idPhoto=idPhoto,
+            authenticationStatus=authenticationStatus,
+            profileData=profileData,
+            is_admin=False
+        )
+        
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+            flash('註冊成功', 'success')
+            return redirect(url_for('login'))
+        except:
+            db.session.rollback()
+            flash('註冊失敗', 'danger')
+    
+    return render_template('register.html')
 
 #新增問題
 @app.route('/propose', methods=['GET', 'POST'])
