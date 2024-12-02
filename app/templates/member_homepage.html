@@ -79,42 +79,23 @@
         </thead>
         <tbody>
             <!-- 這裡會透過 JavaScript 動態填充 -->
+            {% if users %}
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.userID }}</td>
+                        <td>{{ user.name }}</td>
+                        <td><button class="btn" onclick="window.location.href='/member_auth/{{ user.userID }}'">審核</button></td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="3" class="no-data">沒有資料要審核</td>
+                </tr>
+            {% endif %}
         </tbody>
     </table>
 
     <div id="no-data" class="no-data" style="display: none;">沒有資料要審核</div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // 使用 AJAX 請求後端資料
-            $.ajax({
-                url: '/member_manage_data',
-                method: 'GET',
-                success: function(data) {
-                    // 檢查是否有資料
-                    if (data.length === 0) {
-                        // 沒有資料的情況
-                        $('#no-data').show();
-                    } else {
-                        // 顯示資料
-                        let tableBody = $('#users-table tbody');
-                        data.forEach(function(user) {
-                            let row = `<tr>
-                                        <td>${user.userID}</td>
-                                        <td>${user.name}</td>
-                                        <td><button class="btn" onclick="window.location.href='/approve/${user.userID}'">審核</button></td>
-                                      </tr>`;
-                            tableBody.append(row);
-                        });
-                    }
-                },
-                error: function() {
-                    alert("資料加載失敗！");
-                }
-            });
-        });
-    </script>
 
 </body>
 </html>
