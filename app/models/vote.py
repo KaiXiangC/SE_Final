@@ -6,4 +6,4 @@ class Vote(db.Model):
     userID = db.Column(db.Integer, db.ForeignKey('user.userID'), nullable=False)
     issueID = db.Column(db.Integer, db.ForeignKey('issue.issueID'), nullable=False)
     voteTime = db.Column(db.DateTime, nullable=False)
-    voteOption = db.Column(db.String, nullable=False)
+    voteOption = db.Column(db.String(255), nullable=False)

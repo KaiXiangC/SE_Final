@@ -5,4 +5,4 @@ class Notification(db.Model):
     notificationID = db.Column(db.Integer, primary_key=True)
     userID = db.Column(db.Integer, db.ForeignKey('user.userID'), nullable=False)
     notificationTime = db.Column(db.DateTime, nullable=False)
-    content = db.Column(db.String, nullable=False)
+    content = db.Column(db.String(1024), nullable=False)
