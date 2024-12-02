@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-from app.models.user import db, User
-from app.forms.registration_form import RegistrationForm
+from app.models.user import db, User, Issue
+from app.forms.registration_form import RegistrationForm, IssueForm
 app = Flask(__name__, template_folder='app/templates')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -8,7 +8,7 @@ db.init_app(app)
 
 @app.route('/')
 def home():
-    return render_template('register.html')
+    return render_template('index.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -21,7 +21,7 @@ def register():
         flash('Registration successful!', 'success')
         return redirect(url_for('home'))
     return render_template('register.html', form=form)
-'''
+
 @app.route('/new_issue', methods=['GET', 'POST'])
 def new_issue():
     form = IssueForm()
@@ -32,7 +32,7 @@ def new_issue():
         flash('Issue submitted successfully!', 'success')
         return redirect(url_for('home'))
     return render_template('new_issue.html', form=form)
-'''
+
 if __name__ == '__main__':
     with app.app_context():       
         db.create_all()  # Create tables
