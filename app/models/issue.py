@@ -5,11 +5,11 @@ class Issue(db.Model):
     issueID = db.Column(db.Integer, primary_key=True)
     categoryID = db.Column(db.Integer, db.ForeignKey('category.categoryID'), nullable=False)
     userID = db.Column(db.Integer, db.ForeignKey('user.userID'), nullable=False)
-    title = db.Column(db.String, nullable=False)
+    title = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text, nullable=False)
     publishTime = db.Column(db.DateTime, nullable=False)
     deadline = db.Column(db.DateTime, nullable=True)
-    attachment = db.Column(db.String, nullable=True)
+    attachment = db.Column(db.String(255), nullable=True)
 
     favorites = db.relationship('Favorite', backref='issue', lazy=True)
     votes = db.relationship('Vote', backref='issue', lazy=True)
