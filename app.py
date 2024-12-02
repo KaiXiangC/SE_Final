@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from werkzeug.security import check_password_hash
-from app.models.user import db, User, Issue
+from app.models.user import db, User
 from app.forms.registration_form import RegistrationForm, IssueForm
 app = Flask(__name__, template_folder='app/templates')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
@@ -9,7 +9,7 @@ db.init_app(app)
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('login.html')
 
 #註冊
 @app.route('/register', methods=['GET', 'POST'])
@@ -23,7 +23,7 @@ def register():
         flash('Registration successful!', 'success')
         return redirect(url_for('home'))
     return render_template('register.html', form=form)
-
+'''
 #新增問題
 @app.route('/new_issue', methods=['GET', 'POST'])
 def new_issue():
@@ -35,7 +35,7 @@ def new_issue():
         flash('Issue submitted successfully!', 'success')
         return redirect(url_for('home'))
     return render_template('new_issue.html', form=form)
-
+'''
 #會員
 @app.route('/member/<int:user_id>', methods=['GET', 'POST'])
 def member(user_id):
