@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理員首頁</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        header {
+            background-color: #2e7d32;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+        header a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+            padding: 5px 10px;
+            border: 1px solid white;
+            border-radius: 4px;
+            background-color: transparent;
+            transition: background-color 0.3s ease;
+        }
+        header a:hover {
+            background-color: white;
+            color: #2e7d32;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            margin: 50px auto;
+            max-width: 600px;
+        }
+        .button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffd700;
+            color: black;
+            height: 100px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            text-decoration: none;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #f9c500;
+            transform: translateY(-5px);
+        }
+        .button:active {
+            background-color: #2e7d32; /* 綠色效果 */
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>{{ username }} 管理員</h1>
+        <a href="/logout">登出</a>
+    </header>
+    <div class="container">
+        <a href="/member_manage" class="button" onclick="buttonClicked(this)">會員認證管理</a>
+        <a href="/propose_manage" class="button" onclick="buttonClicked(this)">議題與討論監控</a>
+        <a href="/propose_category_manage" class="button" onclick="buttonClicked(this)">議題類別管理</a>
+        <a href="/maintance_notice" class="button" onclick="buttonClicked(this)">維護通知與公告</a>
+    </div>
+    <script>
+        // 點擊按鈕後變綠色
+        function buttonClicked(button) {
+            // 先清除其他按鈕的綠色樣式
+            document.querySelectorAll('.button').forEach(btn => {
+                btn.style.backgroundColor = '#ffd700';
+                btn.style.color = 'black';
+            });
+            // 設置當前按鈕為綠色
+            button.style.backgroundColor = '#2e7d32';
+            button.style.color = 'white';
+        }
+    </script>
+</body>
+</html>
