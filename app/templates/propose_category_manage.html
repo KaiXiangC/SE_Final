@@ -90,7 +90,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            display: none;
+            /*display: none;*/
         }
 
         td {
@@ -124,6 +124,7 @@
         button:hover {
             opacity: 0.8;
         }
+        #searchB{padding: 10px;}
     </style>
 </head>
 <body>
@@ -131,6 +132,7 @@
     
     <div class="search-container">
         <input type="text" class="search-box" placeholder="輸入議題名稱" id="searchInput">
+        <button id="searchB">&#128269;</button>
         <div class="search-results" id="searchResults">
             {% for category in categories %}
             <div>{{ category.name }}</div>
@@ -155,6 +157,7 @@
         </tr>
         {% endfor %}
     </table>
+
     
     <div class="add-category-container">
         <input type="text" class="category-input" placeholder="輸入新類別名稱">
@@ -210,14 +213,3 @@
     </script>
 </body>
 </html>
-
-<!--
-
-<label for="file">身分證照片：</label>
-            <div class="file-upload" onclick="document.getElementById('file').click();">
-                <span>📁 點擊上傳檔案</span>
-            </div>
-            <input type="file" id="file" name="file" accept="image/*" required>
-
-
--->

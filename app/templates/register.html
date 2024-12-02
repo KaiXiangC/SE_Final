@@ -7,7 +7,6 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #fef5c4;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -15,40 +14,65 @@
             margin: 0;
         }
         .container {
-            background-color: #fff2a8;
+            background-color: #feedaa;
             padding: 20px;
             border-radius: 10px;
-            width: 400px;
+            width: 42%;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            overflow: hidden; /* 防止內容超出容器 */
+            box-sizing: border-box; /* 確保內邊距不會改變容器大小 */
         }
         h1 {
             text-align: center;
             font-size: 24px;
             margin-bottom: 20px;
         }
-        label {
-            display: block;
-            margin: 10px 0 5px;
-        }
-        input[type="text"], input[type="email"], input[type="password"], input[type="hidden"] {
-            width: 100%;
-            padding: 10px;
+        .form-group {
+            display: flex;
+            justify-content: space-between;
             margin-bottom: 15px;
+            margin-left: 15%;
+        }
+        .form-group label {
+            width: 15%;  /* 設置標籤的寬度 */
+            text-align: right;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .form-group input[type="text"], .form-group input[type="email"], .form-group input[type="password"], .form-group input[type="hidden"] {
+            width: 50%; /* 設置輸入框的寬度 */
+            padding: 10px;
+            margin-right: 30%;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
         .upload-section {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
+            gap: 10px; /* 增加兩個區塊之間的間隔 */
         }
         .upload-section div {
-            flex: 0 0 48%;
+            flex: 0 0 20%; /* 設置兩個區塊各占 20% */
             text-align: center;
+            border: 2px solid #ccc; /* 設置邊框 */
+            padding: 15px; /* 增加內部間距 */
+            border-radius: 8px; /* 可選，圓角邊框 */
+        }
+        .upload-section label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold; /* 強調標籤 */
+        }
+        /* 按鈕設置為左對齊 */
+        .submit-container {
+            display: flex;
+            justify-content: flex-end; /* 左對齊 */
+            margin-top: 20px;
         }
         button {
-            width: 100%;
+            width: 20%;
             padding: 10px;
-            background-color: #333;
+            background-color: #3b3a3a;
             color: white;
             border: none;
             border-radius: 5px;
@@ -60,36 +84,45 @@
     </style>
 </head>
 <body>
+    
     <div class="container">
         <h1>註冊帳號</h1>
         <form id="registerForm" method="POST" action="/register">
-            <label for="name">真實姓名:</label>
-            <input type="text" id="name" name="name" required>
-
-            <label for="email">電子郵件:</label>
-            <input type="email" id="email" name="email" required>
-
-            <label for="password">密碼:</label>
-            <input type="password" id="password" name="password" required>
-
-            <label for="confirm_password">再次輸入密碼:</label>
-            <input type="password" id="confirm_password" name="confirm_password" required>
-
-            <label>身分證照片:</label>
-            <div class="upload-section">
-                <div>
-                    <input type="file" id="id_front" accept="image/*" onchange="handleFileUpload('id_front', 'id_front_path')" required>
-                    <input type="hidden" id="id_front_path" name="id_front_path">
-                    <label for="id_front">身分證正面</label>
-                </div>
-                <div>
-                    <input type="file" id="id_back" accept="image/*" onchange="handleFileUpload('id_back', 'id_back_path')" required>
-                    <input type="hidden" id="id_back_path" name="id_back_path">
-                    <label for="id_back">身分證反面</label>
-                </div>
+            <div class="form-group">
+                <label for="name">真實姓名:</label>
+                <input type="text" id="name" name="name" required>
             </div>
 
-            <button type="submit">註冊</button>
+            <div class="form-group">
+                <label for="email">電子郵件:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">密碼:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">確認密碼:</label>
+                <input type="password" id="confirm_password" name="confirm_password" required>
+            </div>
+
+            <div class="upload-section">
+                <div>
+                    <label for="id_front">上傳身分證正面</label>
+                    <input type="file" id="id_front" accept="image/*" onchange="handleFileUpload('id_front', 'id_front_path')" required>
+                    <input type="hidden" id="id_front_path" name="id_front_path">
+                </div>
+                <div>
+                    <label for="id_back">上傳身分證反面</label>
+                    <input type="file" id="id_back" accept="image/*" onchange="handleFileUpload('id_back', 'id_back_path')" required>
+                    <input type="hidden" id="id_back_path" name="id_back_path">
+                </div>
+            </div>
+            <div class="submit-container">
+                <button type="submit">註冊</button>
+            </div>
         </form>
     </div>
 
@@ -101,10 +134,11 @@
 
             if (file) {
                 // 使用 URL.createObjectURL 為檔案生成一個臨時 URL
-                const fileUrl = URL.createObjectURL(file);
+                console.log(fileInput,hiddenInput)
+                //const fileUrl = URL.createObjectURL(file);
 
                 // 將檔案路徑存入隱藏欄位，供後續表單提交
-                hiddenInput.value = fileUrl;
+                //hiddenInput.value = fileUrl;
 
                 alert(`檔案已選擇：${file.name}\n路徑: ${fileUrl}`);
             }
