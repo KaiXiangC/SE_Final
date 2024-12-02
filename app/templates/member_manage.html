@@ -7,62 +7,91 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
             padding: 20px;
         }
 
         h1 {
             text-align: center;
+            color: #333;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
         }
 
         th, td {
-            padding: 10px;
+            padding: 12px;
             text-align: center;
             border: 1px solid #ddd;
         }
 
         th {
-            background-color: #f2f2f2;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        td {
+            font-size: 14px;
         }
 
         .btn {
-            padding: 5px 10px;
+            padding: 5px 15px;
             background-color: #4CAF50;
             color: white;
             border: none;
             cursor: pointer;
             border-radius: 5px;
+            font-size: 14px;
         }
 
         .btn:hover {
             background-color: #45a049;
         }
 
-        .empty-row {
-            text-align: center;
-            background-color: #f9f9f9;
-        }
-
         .no-data {
             color: red;
+            font-size: 16px;
             text-align: center;
             margin-top: 20px;
+            font-weight: bold;
         }
 
         .back-btn {
             text-decoration: none;
             color: #007BFF;
             font-size: 16px;
+            margin-bottom: 20px;
+            display: inline-block;
         }
 
         .back-btn:hover {
             text-decoration: underline;
+        }
+
+        /* 提升表格的可讀性 */
+        td, th {
+            padding: 16px;
+            text-align: center;
+        }
+
+        /* 添加邊距和響應式設計 */
+        @media (max-width: 768px) {
+            th, td {
+                font-size: 12px;
+                padding: 10px;
+            }
+
+            .btn {
+                font-size: 12px;
+                padding: 4px 10px;
+            }
         }
     </style>
 </head>
@@ -74,7 +103,7 @@
     <h1>會員認證管理</h1>
 
     <!-- 動態顯示會員資料的表格 -->
-    <table>
+    <table id="users-table">
         <thead>
             <tr>
                 <th>會員編號</th>
@@ -83,26 +112,25 @@
             </tr>
         </thead>
         <tbody>
-            <!-- 使用Jinja2進行資料渲染 -->
+            <!-- Jinja2 動態填充資料 -->
             {% if users %}
                 {% for user in users %}
                     <tr>
                         <td>{{ user.userID }}</td>
                         <td>{{ user.name }}</td>
-                        <td><button class="btn" onclick="window.location.href='/approve/{{ user.userID }}'">審核</button></td>
+                        <td><button class="btn" onclick="window.location.href='/member_auth/{{ user.userID }}'">審核</button></td>
                     </tr>
                 {% endfor %}
             {% else %}
-                <tr class="empty-row">
-                    <td colspan="3">沒有資料要審核</td>
+                <tr>
+                    <td colspan="3" class="no-data">沒有資料要審核</td>
                 </tr>
             {% endif %}
         </tbody>
     </table>
 
-    {% if not users %}
-        <div class="no-data">沒有資料要審核</div>
-    {% endif %}
-    
+    <!-- 如果沒有資料顯示的訊息 -->
+    <div id="no-data" class="no-data" style="display: none;">沒有資料要審核</div>
+
 </body>
 </html>
