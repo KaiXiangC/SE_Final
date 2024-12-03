@@ -5,6 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>議題與討論監控</title>
     <style>
+        /* 通知樣式 */
+        .flash-message {
+            width: 80%;
+            margin: 20px auto;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+        .flash-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .flash-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
         table {
             width: 80%;
             margin: auto;
@@ -21,14 +41,23 @@
         }
         td button {
             padding: 5px 10px;
-            background-color: #444;
-            color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
         td button:hover {
             background-color: #666;
+        }
+        .disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .enabled-green {
+            background-color: #28a745; /* 綠色背景 */
+            color: white;
+        }
+        .enabled-green:hover {
+            background-color: #218838; /* 深綠色背景 */
         }
         .no-data {
             text-align: center;
@@ -40,6 +69,17 @@
 </head>
 <body>
     <h1 style="text-align: center;">議題與討論監控</h1>
+
+    <!-- 顯示通知 -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div>
+            {% for category, message in messages %}
+            <div class="flash-message flash-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% endwith %}
     
     {% if issues %}
     <table>
@@ -47,7 +87,7 @@
             <tr>
                 <th>編號</th>
                 <th>議題標題</th>
-                <th colspan="2">操作</th>
+                <th colspan="3">操作</th>
             </tr>
         </thead>
         <tbody>
@@ -57,13 +97,22 @@
                 <td>{{ issue.title }}</td>
                 <td>
                     <a href="{{ url_for('review_comment', issue_id=issue.issueID) }}">
-                        <button>審核留言</button>
+                        <button class="enabled">審核留言</button>
                     </a>
                 </td>
                 <td>
                     <a href="{{ url_for('review_issue', issue_id=issue.issueID) }}">
-                        <button>審核議題</button>
+                        <button class="enabled">審核議題</button>
                     </a>
+                </td>
+                <td>
+                    <form action="{{ url_for('approve_issue', issue_id=issue.issueID) }}" method="POST" style="margin: 0;">
+                        <button type="submit" 
+                                class="{% if issue.review %}disabled{% else %}enabled-green{% endif %}" 
+                                {% if issue.review %}disabled{% endif %}>
+                            {% if issue.review %}已審核{% else %}審核{% endif %}
+                        </button>
+                    </form>
                 </td>
             </tr>
             {% endfor %}
