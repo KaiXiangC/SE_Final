@@ -24,16 +24,16 @@ def home():
 def index():
     return render_template('index.html')
 
-#註冊
+#註冊 #user a@mail.com aaa; admin admin@mail.com a 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         name = request.form['name']
         email = request.form['email']
         password = generate_password_hash(request.form['password'])
-        idPhoto = request.files['id_front_path']
+        idPhoto = request.form['id_front_path'] #files
         authenticationStatus = False #'authenticationStatus' in request.form
-        profileData = request.files['id_back_path']
+        profileData = request.form['id_back_path'] #files
         
         new_user = User(
             name=name,
@@ -113,12 +113,16 @@ def login():
         if user and check_password_hash(user.password, password):
             login_user(user)
             flash('登入成功', 'success')
-            return redirect(url_for('index', user_id=user.userID))
+            if user.is_admin:
+                return redirect(url_for('admin_dashboard'))
+            else:
+                return redirect(url_for('member', user_id=user.userID))
         else:
             flash('帳號或密碼錯誤', 'danger')
             return render_template('login.html', error='帳號或密碼錯誤')
     
     return render_template('login.html')
+
 '''
 @app.route('/api/proposals/latest', methods=['GET'])
 def get_latest_proposals():
@@ -192,6 +196,33 @@ def update_profile(user_id):
         flash('資料更新失敗', 'danger')
     
     return redirect(url_for('member', user_id=user.userID))
+
+#---------------------------------------------------
+#admin_dashboard
+@app.route('/admin_dashboard')
+@login_required
+def admin_dashboard():
+    return render_template('member_homepage.html')
+
+@app.route('/member_manage')
+@login_required
+def member_manage():
+    return render_template('member_manage.html')
+
+@app.route('/propose_manage')
+@login_required
+def propose_manage():
+    return render_template('propose_manage.html')
+
+@app.route('/propose_category_manage')
+@login_required
+def propose_category_manage():
+    return render_template('propose_category_manage.html')
+
+@app.route('/maintenance_notice')
+@login_required
+def maintenance_notice():
+    return render_template('maintenance_notice.html')
 
 if __name__ == '__main__':
     with app.app_context():       
