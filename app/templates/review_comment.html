@@ -98,7 +98,8 @@
         <div class="modal-header">
             議題標題：{{ issue.title if issue else '未知議題' }}
             <span class="comment-id">#{{ comment.commentID if comment else '無' }}</span>
-            <a href="propose_manage.html" class="close">×</a>
+            <a href="{{ url_for('propose_manage') }}" class="close">×</a>
+
         </div>
         {% if comment %}
         <div>
