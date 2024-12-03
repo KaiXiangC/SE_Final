@@ -10,6 +10,7 @@ class User(db.Model):
     authenticationStatus = db.Column(db.Boolean, nullable=False, default=False)
     profileData = db.Column(db.String(255), nullable=True)
     is_admin = db.Column(db.Boolean, default=False)
+    is_return = db.Column(db.Boolean, default=False)
 
     notifications = db.relationship('Notification', backref='user', lazy=True)
     favorites = db.relationship('Favorite', backref='user', lazy=True)

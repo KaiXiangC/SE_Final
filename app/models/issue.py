@@ -10,6 +10,7 @@ class Issue(db.Model):
     publishTime = db.Column(db.DateTime, nullable=False)
     deadline = db.Column(db.DateTime, nullable=True)
     attachment = db.Column(db.String(255), nullable=True)
+    is_review = db.Column(db.Boolean, default=False)
 
     favorites = db.relationship('Favorite', backref='issue', lazy=True)
     votes = db.relationship('Vote', backref='issue', lazy=True)

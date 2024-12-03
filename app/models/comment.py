@@ -7,3 +7,4 @@ class Comment(db.Model):
     issueID = db.Column(db.Integer, db.ForeignKey('issue.issueID'), nullable=False)
     commentTime = db.Column(db.DateTime, nullable=False)
     content = db.Column(db.Text, nullable=False)
+    is_review = db.Column(db.Boolean, default=False)
