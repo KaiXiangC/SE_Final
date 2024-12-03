@@ -10,6 +10,7 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            /*justify-items: center;*/
         }
         
         h1 {
@@ -134,18 +135,21 @@
         <input type="text" class="search-box" placeholder="輸入議題名稱" id="searchInput">
         <button id="searchB">&#128269;</button>
         <div class="search-results" id="searchResults">
+            <!-- 這裡的資料會由 JavaScript 動態填充 -->
+             <!--
             {% for category in categories %}
-            <div>{{ category.name }}</div>
+                <div class="search-result-item" data-category-name="{{ category.name }}">{{ category.name }}</div>
             {% endfor %}
+            -->
         </div>
     </div>
-    
     <button id="viewAllBtn" class="view-all-btn" onclick="toggleCategoryTable()">
         查看全部類別
     </button>
-    
+    <div id="loadingMessage">載入中...</div>
+    <!--
     <table id="categoryTable">
-        {% for category in categories %}
+        //{% for category in categories %}
         <tr>
             <td>{{ category.name }}</td>
             <td class="button-cell">
@@ -155,61 +159,216 @@
                 <button class="modify-btn" onclick="modifyCategory('{{ category.id }}')">修改類別</button>
             </td>
         </tr>
-        {% endfor %}
+        //{% endfor %}
+    </table>
+    -->
+
+    <table id="categoryTable">
+        <thead>
+            <tr>
+                <th>類別名稱</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody id="categoryTableBody">
+            <!-- 類別資料會由 JavaScript 動態填充 -->
+        </tbody>
     </table>
 
+    <!--模擬結果-->
+    <!--
+    <table id="categoryTable">
+        <thead>
+            <tr>
+                <th>類別名稱</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody id="categoryTableBody">
+            <tr>
+                <td>類別 1</td>
+                <td class="button-cell">
+                    <button class="delete-btn" onclick="deleteCategory(1)">刪除類別</button>
+                    <button class="modify-btn" onclick="modifyCategory(1)">修改類別</button>
+                </td>
+            </tr>
+            <tr>
+                <td>類別 2</td>
+                <td class="button-cell">
+                    <button class="delete-btn" onclick="deleteCategory(2)">刪除類別</button>
+                    <button class="modify-btn" onclick="modifyCategory(2)">修改類別</button>
+                </td>
+            </tr>
+            <tr>
+                <td>類別 3</td>
+                <td class="button-cell">
+                    <button class="delete-btn" onclick="deleteCategory(3)">刪除類別</button>
+                    <button class="modify-btn" onclick="modifyCategory(3)">修改類別</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    -->    
     
-    <div class="add-category-container">
-        <input type="text" class="category-input" placeholder="輸入新類別名稱">
-        <button class="add-btn">新增類別</button>
-    </div>
+    <form id="addCategoryForm" action="/add-category" method="POST">
+        <div class="add-category-container">
+            <input type="text" class="category-input" name="category_name" placeholder="輸入新類別的名稱" required>
+            <button type="submit" class="add-btn">新增類別</button>
+        </div>
+    </form>
 
     <script>
         const searchInput = document.getElementById('searchInput');
         const searchResults = document.getElementById('searchResults');
         const viewAllBtn = document.getElementById('viewAllBtn');
         const categoryTable = document.getElementById('categoryTable');
-        
+        const addCategoryForm = document.getElementById('addCategoryForm');
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // 頁面載入時自動向後端請求資料
+            //fetchCategories();
+        });
+
+        // 發送 AJAX 請求載入所有類別資料
+        function fetchCategories() {
+            fetch('/get-categories')  // 向後端請求類別資料
+            .then(response => response.json())//後端回傳json檔
+            .then(categories => {
+                // 隱藏載入中的提示
+                document.getElementById('loadingMessage').style.display = 'none';
+
+                if (categories.length > 0) {
+                    // 如果有類別資料，顯示「查看全部類別」按鈕和類別表格
+                    document.getElementById('viewAllBtn').style.display = 'block';
+                    displayCategoryTable(categories);  // 顯示類別表格
+                } else {
+                    // 如果沒有類別資料，隱藏類別表格，顯示新增表單
+                    document.getElementById('addCategoryForm').style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('錯誤:', error);
+                document.getElementById('loadingMessage').textContent = '載入失敗，請稍後再試。';
+            });
+        }
+
+        // 顯示搜尋結果列表
+        function displaySearchResults(categories) {
+            const searchResults = document.getElementById('searchResults');
+            searchResults.innerHTML = '';  // 清空現有的搜尋結果
+            categories.forEach(category => {
+                const div = document.createElement('div');
+                div.classList.add('search-result-item');
+                div.dataset.categoryId = category.id;
+                div.textContent = category.name;
+                searchResults.appendChild(div);
+            });
+        }
+
+        // 顯示類別列表
+        function displayCategoryTable(categories) {
+            const categoryTableBody = document.getElementById('categoryTableBody');
+            categoryTableBody.innerHTML = '';  // 清空現有的類別列表
+            categories.forEach(category => {
+                const row = document.createElement('tr');
+                const nameCell = document.createElement('td');
+                nameCell.textContent = category.name;
+                row.appendChild(nameCell);
+                const actionsCell = document.createElement('td');
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = '刪除類別';
+                deleteButton.classList.add('delete-btn');
+                deleteButton.onclick = () => deleteCategory(category.id);  // 綁定刪除事件
+                const modifyButton = document.createElement('button');
+                modifyButton.textContent = '修改類別';
+                modifyButton.classList.add('modify-btn');
+                modifyButton.onclick = () => modifyCategory(category.id);  // 綁定修改事件
+                
+                actionsCell.appendChild(deleteButton);
+                actionsCell.appendChild(modifyButton);
+                row.appendChild(actionsCell);
+
+                categoryTableBody.appendChild(row);
+            });
+        }
+        //黃色按鈕與表格的切換
+        function toggleCategoryTable() {
+            const categoryTable = document.getElementById('categoryTable');
+            const addCategoryForm = document.getElementById('addCategoryForm');
+            if (categoryTable.style.display === 'none' || categoryTable.style.display === '') {
+                categoryTable.style.display = 'table';
+                viewAllBtn.style.display = 'none';
+                addCategoryForm.style.display = 'none';
+            }
+        }
+        // 刪除類別
+        function deleteCategory(categoryId) {
+            if (confirm('確定要刪除這個類別嗎？')) {
+                fetch(`/delete-category/${categoryId}`, {
+                    method: 'DELETE',
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);  // 顯示刪除結果訊息
+                    fetchCategories();  // 刷新類別資料
+                })
+                .catch(error => console.error('錯誤:', error));
+            }
+        }
+        // 修改類別
+        function modifyCategory(categoryId) {
+            const newName = prompt('請輸入新的類別名稱');
+            if (newName) {
+                fetch(`/modify-category/${categoryId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name: newName }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);  // 顯示修改結果訊息
+                    fetchCategories();  // 刷新類別資料
+                })
+                .catch(error => console.error('錯誤:', error));
+            }
+            //window.location.href = `/categories/${id}/edit`;
+        }
+
+        /*
+        // 動態顯示或隱藏搜尋結果
         searchInput.addEventListener('input', function() {
-            if (this.value) {
+            const searchTerm = this.value.toLowerCase();  // 獲取搜尋框的內容
+            const resultItems = searchResults.getElementsByClassName('search-result-item');
+
+            // 根據搜尋框的內容過濾並顯示相關結果
+            let hasResults = false;
+            for (let item of resultItems) {
+                const categoryName = item.getAttribute('data-category-name').toLowerCase();
+                if (categoryName.includes(searchTerm)) {
+                    item.style.display = 'block';  // 顯示符合的項目
+                    hasResults = true;
+                } else {
+                    item.style.display = 'none';  // 隱藏不符合的項目
+                }
+            }
+
+            // 如果搜尋框有內容且有符合項目，顯示結果區域，否則隱藏
+            if (searchTerm && hasResults) {
                 searchResults.style.display = 'block';
             } else {
                 searchResults.style.display = 'none';
             }
         });
-        
+        //在搜尋框輸入東西，會跳出相關字視窗
         document.addEventListener('click', function(e) {
             if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
                 searchResults.style.display = 'none';
             }
         });
+        */
 
-        function toggleCategoryTable() {
-            if (categoryTable.style.display === 'none' || categoryTable.style.display === '') {
-                categoryTable.style.display = 'table';
-                viewAllBtn.style.display = 'none';
-            } else {
-                categoryTable.style.display = 'none';
-                viewAllBtn.style.display = 'block';
-            }
-        }
-
-        function deleteCategory(id) {
-            if (confirm('確定要刪除此類別嗎？')) {
-                fetch(`/api/categories/${id}`, {
-                    method: 'DELETE'
-                }).then(response => {
-                    if (response.ok) {
-                        location.reload();
-                    }
-                });
-            }
-        }
-
-        function modifyCategory(id) {
-            // 實作修改類別的功能
-            window.location.href = `/categories/${id}/edit`;
-        }
     </script>
 </body>
 </html>
