@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>編輯議題</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: rgba(0, 0, 0, 0.5); /* 背景半透明 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .modal {
+            background-color: #fff4cc;
+            border-radius: 10px;
+            padding: 30px; /* 增加內邊距 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 25px; /* 增大元素之間的間距 */
+            width: 60%; /* 增加寬度 */
+            max-width: 800px; /* 限制最大寬度 */
+            min-height: 400px; /* 增加最小高度 */
+            overflow: hidden;
+            position: relative; /* 用於定位 X 按鈕 */
+        }
+
+        .modal-header {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5em;
+            color: #000;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .close:hover {
+            color: #444;
+        }
+
+        label {
+            margin-top: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        textarea, select {
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            padding: 10px;
+            width: 100%; /* 填滿容器 */
+            resize: none;
+            overflow: hidden; /* 隱藏滾動條 */
+            box-sizing: border-box; /* 包含內邊距與邊框 */
+        }
+
+        textarea {
+            min-height: 50px; /* 設定最小高度 */
+            max-height: 300px; /* 限制最大高度 */
+            overflow-y: auto; /* 如果內容過多，則出現滾動條 */
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em; /* 增大按鈕字體 */
+            cursor: pointer;
+        }
+
+        .save {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .delete {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
+    <script>
+        function autoResizeTextarea(event) {
+            const textarea = event.target;
+            textarea.style.height = 'auto'; // 重置高度
+            textarea.style.height = textarea.scrollHeight + 'px'; // 根據內容自適應高度
+        }
+
+        window.addEventListener('load', () => {
+            // 初始化時對所有 textarea 設置自適應
+            document.querySelectorAll('textarea').forEach(textarea => {
+                textarea.addEventListener('input', autoResizeTextarea);
+                autoResizeTextarea({ target: textarea }); // 初始化高度
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="modal">
+        <a href="/propose_manage.html" class="close" title="返回管理頁面">×</a>
+        <div class="modal-header">
+            編輯議題 (#{{ issue.issueID }})
+        </div>
+        <form action="{{ url_for('review_issue', issue_id=issue.issueID) }}" method="POST">
+            <label for="title">議題標題</label>
+            <textarea id="title" name="title" required>{{ issue.title }}</textarea>
+
+            <label for="description">內容描述</label>
+            <textarea id="description" name="description" required>{{ issue.description }}</textarea>
+
+            <label for="category">變更類別</label>
+            <select id="category" name="category" required>
+                {% for category in categories %}
+                <option value="{{ category.name }}" {% if category.categoryID == issue.categoryID %}selected{% endif %}>
+                    {{ category.name }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <div class="buttons">
+                <button type="submit" class="save">確認修改</button>
+                <form action="{{ url_for('delete_issue', issue_id=issue.issueID) }}" method="POST" style="display: inline;">
+                    <button type="submit" class="delete">刪除議題</button>
+                </form>                
+            </div>
+        </form>
+    </div>
+</body>
+</html>
