@@ -6,6 +6,21 @@
     <title>議題與討論監控</title>
     <style>
         /* 通知樣式 */
+        header {
+            background-color: #2e7d32;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+        }
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            margin-top: 40px;
+            margin-bottom: 30px;
+        }
         .flash-message {
             width: 80%;
             margin: 20px auto;
@@ -26,27 +41,56 @@
         }
 
         table {
-            width: 80%;
-            margin: auto;
-            border-collapse: collapse;
+            width: 100%;
+            max-width: 900px;
+            margin: 20px auto;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
         }
         th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
         }
         th {
-            background-color: #f4c842;
-            color: black;
+            background-color: #ffd600;
+            color: rgb(0, 0, 0);
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 0.05em;
         }
-        td button {
-            padding: 5px 10px;
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:nth-child(even) {
+            background-color: #f7fafc;
+        }
+        td.button {
+            padding: 8px 16px;
+            background-color: #367039;
+            color: white;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
         }
-        td button:hover {
-            background-color: #666;
+        td.button:hover {
+            background-color: #ffd600;
+        }
+        .no-data {
+            color: #e53e3e;
+            font-size: 16px;
+            text-align: center;
+            padding: 20px;
+            background-color: #fff5f5;
+            border-radius: 8px;
+            margin-top: 20px;
         }
         .disabled {
             background-color: #ccc;
@@ -68,7 +112,8 @@
     </style>
 </head>
 <body>
-    <h1 style="text-align: center;">議題與討論監控</h1>
+    <header></header>
+    <h1 >議題與討論監控</h1>
 
     <!-- 顯示通知 -->
     {% with messages = get_flashed_messages(with_categories=true) %}

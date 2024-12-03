@@ -49,7 +49,6 @@
 
         .member-info {
             display: flex;
-            justify-content: space-between;
             align-items: center;
             margin-bottom: 40px;
         }
@@ -88,12 +87,12 @@
         }
 
         .btn-approve {
-            background-color: #4CAF50;
+            background-color: #367039;
             color: white;
         }
 
         .btn-approve:hover {
-            background-color: #45a049;
+            background-color: #367039;
         }
 
         .btn-reject {
@@ -119,7 +118,7 @@
         }
 
         .modal-content {
-            background-color: white;
+            background-color: #feedaa;
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -161,7 +160,6 @@
             <!-- 顯示會員ID與姓名，左右並排 -->
             <div class="member-info">
                 <h3>會員ID: {{ userID }}</h3>
-                <h1>會員認證審核</h1>
                 <h3>會員姓名: {{ userName }}</h3>
             </div>
 
@@ -171,13 +169,13 @@
             <div class="member-info">
                 <!-- 左邊照片 -->
                 <div class="left">
-                    <h3>身分證圖檔（左邊）</h3>
-                    <img src="{{ url_for('static', filename='profile_images/' + userProfileData) }}" alt="左邊身分證圖檔">
+                    <h3>正面</h3>
+                    <img src="{{ url_for('static', filename='profile_images/' + userProfileData) }}" alt="正面">
                 </div>
                 <!-- 右邊照片 -->
                 <div class="right">
-                    <h3>身分證圖檔（右邊）</h3>
-                    <img src="{{ url_for('static', filename='profile_images/' + userProfileData2) }}" alt="右邊身分證圖檔">
+                    <h3>背面</h3>
+                    <img src="{{ url_for('static', filename='profile_images/' + userProfileData2) }}" alt="背面">
                 </div>
             </div>
 

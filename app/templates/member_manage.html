@@ -8,98 +8,124 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f9f9f9;
-            padding: 20px;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
         }
-
+        header {
+            background-color: #367039;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        header a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+            padding: 8px 15px;
+            border: 1px solid white;
+            border-radius: 4px;
+            background-color: transparent;
+            transition: all 0.3s ease;
+        }
+        header a:hover {
+            background-color: white;
+            color: #2c5282;
+        }
         h1 {
             text-align: center;
-            color: #333;
+            color: #2d3748;
+            margin-top: 40px;
+            margin-bottom: 30px;
         }
-
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+        }
         table {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+            max-width: 900px;
+            margin: 20px auto;
+            border-collapse: separate;
+            border-spacing: 0;
             background-color: white;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
+            overflow: hidden;
         }
-
         th, td {
-            padding: 12px;
-            text-align: center;
-            border: 1px solid #ddd;
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
         }
-
         th {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        td {
+            background-color: #ffd600;
+            color: rgb(0, 0, 0);
+            font-weight: bold;
+            text-transform: uppercase;
             font-size: 14px;
+            letter-spacing: 0.05em;
         }
-
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:nth-child(even) {
+            background-color: #f7fafc;
+        }
         .btn {
-            padding: 5px 15px;
-            background-color: #4CAF50;
+            padding: 8px 16px;
+            background-color: #367039;
             color: white;
             border: none;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 4px;
             font-size: 14px;
+            transition: background-color 0.3s ease;
         }
-
         .btn:hover {
-            background-color: #45a049;
+            background-color: #ffd600;
         }
-
         .no-data {
-            color: red;
+            color: #e53e3e;
             font-size: 16px;
             text-align: center;
+            padding: 20px;
+            background-color: #fff5f5;
+            border-radius: 8px;
             margin-top: 20px;
-            font-weight: bold;
         }
-
-        .back-btn {
-            text-decoration: none;
-            color: #007BFF;
-            font-size: 16px;
-            margin-bottom: 20px;
-            display: inline-block;
+        @media (max-width: 1000px) {
+            .container {
+                padding: 0 15px 30px;
+            }
+            table {
+                max-width: 100%;
+            }
         }
-
-        .back-btn:hover {
-            text-decoration: underline;
-        }
-
-        /* 提升表格的可讀性 */
-        td, th {
-            padding: 16px;
-            text-align: center;
-        }
-
-        /* 添加邊距和響應式設計 */
         @media (max-width: 768px) {
             th, td {
-                font-size: 12px;
-                padding: 10px;
+                font-size: 14px;
+                padding: 12px;
             }
-
             .btn {
                 font-size: 12px;
-                padding: 4px 10px;
+                padding: 6px 12px;
+            }
+            .container {
+                padding: 0 15px 30px;
             }
         }
     </style>
 </head>
 <body>
-
+    <header>
     <!-- 返回首頁 -->
-    <a href="{{ url_for('admin_dashboard') }}" class="back-btn"><i class="fas fa-arrow-left"></i> 返回</a>
-
+    <a href="{{ url_for('admin_dashboard') }}" ><i class="fas fa-arrow-left"></i> 返回</a>
+    </header>
     <h1>會員認證管理</h1>
 
     <!-- 動態顯示會員資料的表格 -->
