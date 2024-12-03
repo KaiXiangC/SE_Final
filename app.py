@@ -5,6 +5,7 @@ from app.models.issue import Issue
 from app.models.notification import Notification
 from app.forms.registration_form import RegistrationForm, IssueForm
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from datetime import datetime
 
 app = Flask(__name__, template_folder='app/templates')
 app.secret_key = 'your_secret_key'  # 設置一個密鑰來保護 session
@@ -227,7 +228,11 @@ def propose_category_manage():
 def maintenance_notice():
     if request.method == 'POST':
         content = request.form['content']
-        new_notice = Notification(content=content)
+        new_notice = Notification(
+            userID=current_user.userID,
+            notificationTime=datetime.now(),
+            content=content
+        )
         
         try:
             db.session.add(new_notice)
