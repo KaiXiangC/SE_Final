@@ -87,7 +87,7 @@
     
     <div class="container">
         <h1>註冊帳號</h1>
-        <form id="registerForm" method="POST" action="/register">
+        <form id="registerForm" method="POST" action="/register" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="name">真實姓名:</label>
                 <input type="text" id="name" name="name" required>
@@ -127,7 +127,7 @@
     </div>
 
     <script>
-        function handleFileUpload(inputId, hiddenInputId) {
+        /*function handleFileUpload(inputId, hiddenInputId) {
             const fileInput = document.getElementById(inputId);
             const hiddenInput = document.getElementById(hiddenInputId);
             const file = fileInput.files[0];
@@ -135,14 +135,63 @@
             if (file) {
                 // 使用 URL.createObjectURL 為檔案生成一個臨時 URL
                 console.log(fileInput,hiddenInput)
-                //const fileUrl = URL.createObjectURL(file);
+                const fileUrl = URL.createObjectURL(file);
 
                 // 將檔案路徑存入隱藏欄位，供後續表單提交
-                //hiddenInput.value = fileUrl;
+                hiddenInput.value = fileUrl;
 
                 alert(`檔案已選擇：${file.name}\n路徑: ${fileUrl}`);
+                //alert(`檔案已選擇：${file.name}\n路徑: ${fileUrl}`);
             }
+        }*/
+        function handleFileUpload(inputId, hiddenFieldId) {
+        const fileInput = document.getElementById(inputId);
+        const file = fileInput.files[0];
+        
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onloadend = function() {
+                // 將base64圖片數據設置為隱藏欄位的值
+                const hiddenField = document.getElementById(hiddenFieldId);
+                hiddenField.value = reader.result; // 這是base64編碼的圖片
+            };
+
+            // 將圖片轉換為base64
+            reader.readAsDataURL(file);
+            alert(`檔案已選擇：${file}`);
         }
+    }
+
+        // 監聽表單提交事件
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            // 防止表單直接提交，這樣我們可以先印出資料
+            event.preventDefault();
+
+            // 取得表單中的資料
+            const formData = new FormData(event.target);
+            const formValues = {};
+
+            formData.forEach((value, key) => {
+                formValues[key] = value;
+            });
+
+            // 使用 console.log 看表單資料
+            console.log("表單資料: ", formValues);
+
+            // 驗證密碼確認是否一致
+            const password = formValues['password'];
+            const confirmPassword = formValues['confirm_password'];
+
+            if (password !== confirmPassword) {
+                alert("密碼與確認密碼不一致！");
+                return;
+            }
+
+            // 如果驗證通過，再手動提交表單
+            // 這裡我們可以直接提交表單
+            event.target.submit();
+        });
     </script>
 </body>
 </html>
