@@ -78,6 +78,14 @@
                 <button type="submit">發布公告</button>
             </div>
         </form>
+        <div class="notices"></div>
+            {% for notice in notices %}
+                <div class="notice">
+                    <div class="content">{{ notice.content }}</div>
+                    <div class="timestamp">{{ notice.timestamp }}</div>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 </body>
 </html>

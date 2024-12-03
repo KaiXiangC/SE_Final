@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from werkzeug.security import check_password_hash, generate_password_hash
 from app.models.user import db, User
 from app.models.issue import Issue
+from app.models.notification import Notification
 from app.forms.registration_form import RegistrationForm, IssueForm
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
@@ -207,7 +208,9 @@ def admin_dashboard():
 @app.route('/member_manage')
 @login_required
 def member_manage():
-    return render_template('member_manage.html')
+    # 獲取所有會員資料
+    users = User.query.filter_by(is_admin=False).all()
+    return render_template('member_manage.html', users=users)
 
 @app.route('/propose_manage')
 @login_required
@@ -219,10 +222,24 @@ def propose_manage():
 def propose_category_manage():
     return render_template('propose_category_manage.html')
 
-@app.route('/maintenance_notice')
+@app.route('/maintenance_notice', methods=['GET', 'POST'])
 @login_required
 def maintenance_notice():
-    return render_template('maintenance_notice.html')
+    if request.method == 'POST':
+        content = request.form['content']
+        new_notice = Notification(content=content)
+        
+        try:
+            db.session.add(new_notice)
+            db.session.commit()
+            flash('公告已發布', 'success')
+        except:
+            db.session.rollback()
+            flash('公告發布失敗', 'danger')
+    
+    notices = Notification.query.order_by(Notification.notificationTime.desc()).all()
+    return render_template('maintenance_notice.html', notices=notices)
+
 
 if __name__ == '__main__':
     with app.app_context():       
