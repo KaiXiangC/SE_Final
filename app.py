@@ -3,14 +3,26 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from app.models.user import db, User
 from app.models.issue import Issue
 from app.forms.registration_form import RegistrationForm, IssueForm
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+
 app = Flask(__name__, template_folder='app/templates')
+app.secret_key = 'your_secret_key'  # 設置一個密鑰來保護 session
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:OReEeDaejJYLSawJZIaOQTJPbYsOyXhO@junction.proxy.rlwy.net:29883'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
-app.config['SECRET_KEY'] = 'your_secret_key'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db.init_app(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
 
 @app.route('/')
 def home():
     return render_template('login.html')
+
+@app.route('/index')
+def index():
+    return render_template('index.html')
 
 #註冊
 @app.route('/register', methods=['GET', 'POST'])
@@ -19,9 +31,9 @@ def register():
         name = request.form['name']
         email = request.form['email']
         password = generate_password_hash(request.form['password'])
-        idPhoto = request.form['id_front_path']
+        idPhoto = request.files['id_front_path']
         authenticationStatus = False #'authenticationStatus' in request.form
-        profileData = request.form['id_back_path']
+        profileData = request.files['id_back_path']
         
         new_user = User(
             name=name,
@@ -58,7 +70,12 @@ def propose():
 
 #會員
 @app.route('/member/<int:user_id>', methods=['GET', 'POST'])
+@login_required
 def member(user_id):
+    if current_user.userID != user_id:
+        flash('您無權訪問此頁面', 'danger')
+        return redirect(url_for('login'))
+    
     user = User.query.get_or_404(user_id)
     
     if request.method == 'POST':
@@ -76,9 +93,13 @@ def member(user_id):
             db.session.rollback()
             flash('更新失敗', 'danger')
         
-        return redirect(url_for('member', user_id=user.id))
+        return redirect(url_for('member', user_id=user.userID))
     
     return render_template('member.html', user=user)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 #登入
 @app.route('/login', methods=['GET', 'POST'])
@@ -90,9 +111,9 @@ def login():
         user = User.query.filter_by(email=email).first()
         
         if user and check_password_hash(user.password, password):
-            session['user_id'] = user.userID
+            login_user(user)
             flash('登入成功', 'success')
-            return redirect(url_for('member', user_id=user.userID))
+            return redirect(url_for('index', user_id=user.userID))
         else:
             flash('帳號或密碼錯誤', 'danger')
             return render_template('login.html', error='帳號或密碼錯誤')
@@ -114,10 +135,63 @@ def get_completed_proposals():
     proposals = Proposal.query.filter_by(status='completed').order_by(Proposal.date.desc()).limit(10).all()
     return jsonify([proposal.to_dict() for proposal in proposals])
 '''
+
+#登出
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('您已登出', 'success')
+    return redirect(url_for('login'))
+
 @app.route('/seconded', methods=['GET'])
 def seconded():
     return render_template('seconded.html')
 
+#修改密碼
+@app.route('/member/<int:user_id>/change_password', methods=['POST'])
+@login_required
+def change_password(user_id):
+    if current_user.userID != user_id:
+        flash('您無權修改此使用者的密碼', 'danger')
+        return redirect(url_for('login'))
+    
+    user = User.query.get_or_404(user_id)
+    new_password = request.form['new_password']
+    user.password = generate_password_hash(new_password)
+    
+    try:
+        db.session.commit()
+        flash('密碼已更新', 'success')
+    except:
+        db.session.rollback()
+        flash('密碼更新失敗', 'danger')
+    
+    return redirect(url_for('member', user_id=user.userID))
+
+#使用者資料更新
+@app.route('/member/<int:user_id>/update_profile', methods=['POST'])
+@login_required
+def update_profile(user_id):
+    if current_user.userID != user_id:
+        flash('您無權修改此使用者的資料', 'danger')
+        return redirect(url_for('login'))
+    
+    user = User.query.get_or_404(user_id)
+    user.name = request.form['name']
+    user.email = request.form['email']
+    user.idPhoto = request.form['idPhoto']
+    user.authenticationStatus = 'authenticationStatus' in request.form
+    user.profileData = request.form['profileData']
+    
+    try:
+        db.session.commit()
+        flash('資料已更新', 'success')
+    except:
+        db.session.rollback()
+        flash('資料更新失敗', 'danger')
+    
+    return redirect(url_for('member', user_id=user.userID))
 
 if __name__ == '__main__':
     with app.app_context():       

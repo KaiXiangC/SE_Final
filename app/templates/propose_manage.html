@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>議題與討論監控</title>
+    <style>
+        table {
+            width: 80%;
+            margin: auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4c842;
+            color: black;
+        }
+        td button {
+            padding: 5px 10px;
+            background-color: #444;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        td button:hover {
+            background-color: #666;
+        }
+        .no-data {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">議題與討論監控</h1>
+    
+    {% if issues %}
+    <table>
+        <thead>
+            <tr>
+                <th>編號</th>
+                <th>議題標題</th>
+                <th colspan="2">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for issue in issues %}
+            <tr>
+                <td>{{ issue.issueID }}</td>
+                <td>{{ issue.title }}</td>
+                <td>
+                    <a href="{{ url_for('review_comment', issue_id=issue.issueID) }}">
+                        <button>審核留言</button>
+                    </a>
+                </td>
+                <td>
+                    <a href="{{ url_for('review_issue', issue_id=issue.issueID) }}">
+                        <button>審核議題</button>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="no-data">目前沒有議題</p>
+    {% endif %}
+</body>
+</html>
