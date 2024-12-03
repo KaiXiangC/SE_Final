@@ -5,19 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>議題公投平台 - 登入</title>
     <style>
-        body {
+        html, body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
-        }
-        header {
-            background-color: #ffd700;
-            color: #000;
-            padding: 10px 20px;
+            height: 100%; /* 確保頁面高度填滿視窗 */
             display: flex;
-            align-items: center;
+            flex-direction: column;
         }
+
+        header {
+            height: 60px;
+            background-color: #ffd600;
+        }
+        
+        label {
+            display: block; 
+            text-align: left; 
+            margin-bottom: 5px; 
+            margin-top: 5px;
+            font-weight: bold;
+        }
+        h1 {
+            text-align: center;
+            font-size: 30px;
+        }
+        
         header a {
             text-decoration: none;
             color: #000;
@@ -27,15 +40,12 @@
         header a:hover {
             text-decoration: underline;
         }
-        .container {
-            text-align: center;
-            margin: 50px auto;
-            max-width: 400px;
-        }
+        
         .login-box {
             background-color: #fffacd;
             padding: 20px;
             border-radius: 8px;
+            width: 400px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
         .login-box h1 {
@@ -76,15 +86,27 @@
             font-size: 14px;
             margin-top: 10px;
         }
+        .container {
+            flex: 1; /* 讓內容區撐滿剩餘空間 */
+            text-align: center;
+            margin: 50px auto;
+            max-width: 400px;
+        }
+
+        footer {
+            height: 50px;
+            background-color: #367039; /* 深綠色 */
+            margin: 0; /* 確保沒有額外間距 */
+        }
     </style>
 </head>
 <body>
     <header>
-        <h1 style="margin: 0;">議題公投平台</h1>
+        
     </header>
     <div class="container">
+        <h1>議題公投平台</h1>
         <div class="login-box">
-            <h1>登入</h1>
             <form method="POST" action="/login">
                 <label for="email">帳號:</label>
                 <input type="text" id="email" name="email" placeholder="請輸入您的電子郵件" required>
@@ -100,5 +122,9 @@
             {% endif %} -->
         </div>
     </div>
+    <footer>
+
+    </footer>
 </body>
+
 </html>
