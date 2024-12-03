@@ -16,3 +16,18 @@ class User(db.Model):
     issues = db.relationship('Issue', backref='user', lazy=True)
     votes = db.relationship('Vote', backref='user', lazy=True)
     comments = db.relationship('Comment', backref='user', lazy=True)
+
+    def get_id(self):
+        return self.userID
+    
+    @property
+    def is_authenticated(self):
+        return True
+
+    @property
+    def is_active(self):
+        return True
+
+    @property
+    def is_anonymous(self):
+        return False
