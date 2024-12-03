@@ -74,14 +74,14 @@
 </head>
 <body>
     <header>
-        <h1>{{ username }} 管理員</h1>
+        <h1>{{ current_user.userID }} 管理員</h1>
         <a href="/logout">登出</a>
     </header>
     <div class="container">
-        <a href="member_manage.html" class="button" onclick="buttonClicked(this)">會員認證管理</a>
-        <a href="propose_manage.html" class="button" onclick="buttonClicked(this)">議題與討論監控</a>
-        <a href="propose_category_manage.html" class="button" onclick="buttonClicked(this)">議題類別管理</a>
-        <a href="maintenance_notice.html" class="button" onclick="buttonClicked(this)">維護通知與公告</a>
+        <a href="{{ url_for('member_manage') }}" class="button" onclick="buttonClicked(this)">會員認證管理</a>
+        <a href="{{ url_for('propose_manage') }}" class="button" onclick="buttonClicked(this)">議題與討論監控</a>
+        <a href="{{ url_for('propose_category_manage') }}" class="button" onclick="buttonClicked(this)">議題類別管理</a>
+        <a href="{{ url_for('maintenance_notice') }}" class="button" onclick="buttonClicked(this)">維護通知與公告</a>
     </div>
     <script>
         // 點擊按鈕後變綠色
