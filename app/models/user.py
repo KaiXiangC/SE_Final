@@ -4,12 +4,12 @@ from .. import db
 class User(db.Model):
     __tablename__ = 'user'
     userID = db.Column(db.Integer, primary_key=True)
-    idPhoto = db.Column(db.LargeBinary, nullable=True)
+    idPhoto = db.Column(db.String(255), nullable=True)
     password = db.Column(db.String(255), nullable=False)
     name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     authenticationStatus = db.Column(db.Boolean, nullable=False, default=False)
-    profileData = db.Column(db.LargeBinary, nullable=True)
+    profileData = db.Column(db.String(255), nullable=True)
     is_admin = db.Column(db.Boolean, default=False)
     is_return = db.Column(db.Boolean, default=False)
 
