@@ -10,15 +10,9 @@ from datetime import datetime
 from config import Config
 import logging
 from sqlalchemy import text
+from app import create_app
 
-app = Flask(__name__, template_folder='app/templates')
-app.secret_key = 'your_secret_key'  # 設置一個密鑰來保護 session
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
-app.config['SQLALCHEMY_DATABASE_URI'] = Config.SQLALCHEMY_DATABASE_URI
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = Config.SQLALCHEMY_TRACK_MODIFICATIONS
-#app.config.from_object(Config)
-
-db.init_app(app)
+app = create_app()
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
