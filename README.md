@@ -7,6 +7,8 @@
 pip install -r requirements.txt # 有改過其中一套件版本
 pip install Flask-WTF
 pip install flask-login
+pip install pytest
+
 ```
 
 安裝後即可在`SE_Final`目錄下執行
