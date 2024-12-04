@@ -29,3 +29,68 @@ flask db init
 flask db upgrade 
 ```
 4. 創建後的 DB 會在 /instance
+
+
+## Convenience Prompt
+專案檔案結構:
+|   app.py
+|   config.py
+|   README.md
+|   requirements.txt
+|
++---.vscode
+|       settings.json
+|
++---app
+|   |   __init__.py
+|   |
+|   +---forms
+|   |   |   registration_form.py
+|   |   |
+|   |
+|   +---models
+|   |   |   category.py
+|   |   |   comment.py
+|   |   |   favorite.py
+|   |   |   issue.py
+|   |   |   notification.py
+|   |   |   user.py
+|   |   |   vote.py
+|   |   |   __init__.py
+|   |   |
+|   |
+|   +---routes
+|   |   |   main.py
+|   |   |   routes.py
+|   |   |
+|   |
+|   +---templates
+|   |   |   gotopropose.html
+|   |   |   index.html
+|   |   |   login.html
+|   |   |   maintenance_notice.html
+|   |   |   member.html
+|   |   |   member_auth.html
+|   |   |   member_homepage.html
+|   |   |   member_manage.html
+|   |   |   propose.html
+|   |   |   propose_category_manage.html
+|   |   |   propose_manage.html
+|   |   |   register.html
+|   |   |   review_comment.html
+|   |   |   review_issue.html
+|   |   |   seconded.html
+|   |   |
+|   |   \---anantest
+|   |           app.py
+|   |           auth.py
+|   |           propose_manage.py
+|   |           review_comment.py
+|   |           review_issue.py
+|   |
+|
++---instance
+|       app.db
+|
++---migrations
+|   +---versions
