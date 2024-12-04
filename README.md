@@ -7,7 +7,8 @@
 pip install -r requirements.txt # 有改過其中一套件版本
 pip install Flask-WTF
 pip install flask-login
-pip install pytest
+pip install --upgrade flask werkzeug
+pip install pytest # 測試組的裝
 
 ```
 
