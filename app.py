@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from werkzeug.security import check_password_hash, generate_password_hash
+from flask_uploads import IMAGES, UploadSet, configure_uploads
 from app import db
 from app.models.user import User
 from app.models.issue import Issue
@@ -20,43 +21,60 @@ login_manager.login_view = 'login'
 # 設置日誌記錄
 logging.basicConfig(level=logging.DEBUG)
 
+# 設置圖片上傳
+photos = UploadSet("photos", IMAGES)
+app.config["UPLOADED_PHOTOS_DEST"] = "app/static/img"
+configure_uploads(app, photos)
+
 @app.route('/')
 def home():
+    """首頁"""
     return render_template('login.html')
 
 @app.route('/index')
 def index():
+    """首頁"""
     return render_template('index.html')
 
-# 註冊
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    """註冊"""
     if request.method == 'POST':
         name = request.form['name']
         email = request.form['email']
-        #password = generate_password_hash(request.form['password'])
-        password = request.form['password']
-        #idPhoto = request.form['id_front_path']  # files
+        password = generate_password_hash(request.form['password'])
+        idPhoto = ""
+        profileData = ""
+        idPhoto_filename = ""
+        profileData_filename = ""
         authenticationStatus = False  # 'authenticationStatus' in request.form
-        #profileData = request.form['id_back_path']  # files
         is_admin = False
         if email == 'admin@mail.com':
             is_admin = True
-            authenticationStatus = True
+            authenticationStatus = True      
+
+        else:
+            # 儲存圖片檔案
+            idPhoto = request.files['id_front']
+            profileData = request.files['id_back']
+            idPhoto_filename = photos.save(idPhoto)
+            profileData_filename = photos.save(profileData)
         
         new_user = User(
             name=name,
             email=email,
             password=password,
-            #idPhoto=idPhoto,
+            idPhoto=idPhoto_filename,
             authenticationStatus=authenticationStatus,
-            #profileData=profileData,
+            profileData=profileData_filename,
             is_admin=is_admin
         )
-        
+        logging.error(f"錯誤")
         try:
             db.session.add(new_user)
             db.session.commit()
+            idPhoto_filename = photos.save(idPhoto)
+            profileData_filename = photos.save(profileData)
             flash('註冊成功', 'success')
             return redirect(url_for('login'))
         except Exception as e:
@@ -66,10 +84,10 @@ def register():
     
     return render_template('register.html')
 
-# 新增問題
 @app.route('/propose', methods=['GET', 'POST'])
 @login_required
 def propose():
+    """新增問題"""
     if request.method == 'POST':
         title = request.form['title']
         description = request.form['description']
@@ -90,10 +108,10 @@ def propose():
     
     return render_template('propose.html')
 
-#會員
 @app.route('/member/<int:user_id>', methods=['GET', 'POST'])
 @login_required
 def member(user_id):
+    """會員資料"""
     if current_user.userID != user_id:
         flash('您無權訪問此頁面', 'danger')
         return redirect(url_for('login'))
@@ -121,18 +139,19 @@ def member(user_id):
 
 @login_manager.user_loader
 def load_user(user_id):
+    """載入使用者"""
     return User.query.get(int(user_id))
 
-#登入
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """登入"""
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
         
         user = User.query.filter_by(email=email).first()
         
-        if user and user.password==password: #check_password_hash(user.password, password)
+        if user and check_password_hash(user.password, password):
             login_user(user)
             flash('登入成功', 'success')
             if user.is_admin:
@@ -145,39 +164,23 @@ def login():
     
     return render_template('login.html')
 
-'''
-@app.route('/api/proposals/latest', methods=['GET'])
-def get_latest_proposals():
-    proposals = Proposal.query.order_by(Proposal.date.desc()).limit(10).all()
-    return jsonify([proposal.to_dict() for proposal in proposals])
-
-@app.route('/api/proposals/popular', methods=['GET'])
-def get_popular_proposals():
-    proposals = Proposal.query.order_by(Proposal.support_count.desc()).limit(10).all()
-    return jsonify([proposal.to_dict() for proposal in proposals])
-
-@app.route('/api/proposals/completed', methods=['GET'])
-def get_completed_proposals():
-    proposals = Proposal.query.filter_by(status='completed').order_by(Proposal.date.desc()).limit(10).all()
-    return jsonify([proposal.to_dict() for proposal in proposals])
-'''
-
-#登出
 @app.route('/logout')
 @login_required
 def logout():
+    """登出"""
     logout_user()
     flash('您已登出', 'success')
     return redirect(url_for('login'))
 
 @app.route('/seconded', methods=['GET'])
 def seconded():
+    """附議頁面"""
     return render_template('seconded.html')
 
-#修改密碼
 @app.route('/member/<int:user_id>/change_password', methods=['POST'])
 @login_required
 def change_password(user_id):
+    """修改密碼"""
     if current_user.userID != user_id:
         flash('您無權修改此使用者的密碼', 'danger')
         return redirect(url_for('login'))
@@ -195,10 +198,10 @@ def change_password(user_id):
     
     return redirect(url_for('member', user_id=user.userID))
 
-#使用者資料更新
 @app.route('/member/<int:user_id>/update_profile', methods=['POST'])
 @login_required
 def update_profile(user_id):
+    """更新使用者資料"""
     if current_user.userID != user_id:
         flash('您無權修改此使用者的資料', 'danger')
         return redirect(url_for('login'))
@@ -219,33 +222,35 @@ def update_profile(user_id):
     
     return redirect(url_for('member', user_id=user.userID))
 
-#---------------------------------------------------
-#admin_dashboard
 @app.route('/admin_dashboard')
 @login_required
 def admin_dashboard():
+    """管理員儀表板"""
     return render_template('member_homepage.html')
 
 @app.route('/member_manage')
 @login_required
 def member_manage():
-    # 獲取所有會員資料
+    """會員管理"""
     users = User.query.filter_by(is_admin=False).all()
     return render_template('member_manage.html', users=users)
 
 @app.route('/propose_manage')
 @login_required
 def propose_manage():
+    """議題管理"""
     return render_template('propose_manage.html')
 
 @app.route('/propose_category_manage')
 @login_required
 def propose_category_manage():
+    """議題類別管理"""
     return render_template('propose_category_manage.html')
 
 @app.route('/maintenance_notice', methods=['GET', 'POST'])
 @login_required
 def maintenance_notice():
+    """維護通知"""
     if request.method == 'POST':
         content = request.form['content']
         new_notice = Notification(
@@ -265,6 +270,60 @@ def maintenance_notice():
     notices = Notification.query.order_by(Notification.notificationTime.desc()).all()
     return render_template('maintenance_notice.html', notices=notices)
 
+@app.route('/member_auth/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def member_auth(user_id):
+    """會員審核"""
+    user = User.query.get_or_404(user_id)
+    
+    if request.method == 'POST':
+        user.authenticationStatus = 'authenticationStatus' in request.form
+        
+        try:
+            db.session.commit()
+            flash('會員認證狀態已更新', 'success')
+        except Exception as e:
+            db.session.rollback()
+            logging.error(f"會員認證狀態更新失敗: {e}")
+            flash('會員認證狀態更新失敗', 'danger')
+        
+        return redirect(url_for('member_manage'))
+    
+    return render_template('member_auth.html', user=user)
+
+@app.route('/approve/<int:user_id>', methods=['GET'])
+@login_required
+def approve(user_id):
+    """審核會員"""
+    user = User.query.get_or_404(user_id)
+    user.authenticationStatus = True
+    
+    try:
+        db.session.commit()
+        flash('會員已審核通過', 'success')
+    except Exception as e:
+        db.session.rollback()
+        logging.error(f"會員審核失敗: {e}")
+        flash('會員審核失敗', 'danger')
+    
+    return redirect(url_for('member_manage'))
+
+@app.route('/reject/<int:user_id>', methods=['GET'])
+@login_required
+def reject(user_id):
+    """退件會員"""
+    user = User.query.get_or_404(user_id)
+    user.authenticationStatus = False
+    
+    try:
+        db.session.commit()
+        flash('會員已退件', 'success')
+    except Exception as e:
+        db.session.rollback()
+        logging.error(f"會員退件失敗: {e}")
+        flash('會員退件失敗', 'danger')
+    
+    return redirect(url_for('member_manage'))
 
 if __name__ == '__main__':
     with app.app_context():
