@@ -1,8 +1,14 @@
 # SE_Final
  2024Fall_SE_FinalProject 
 
- step 1
-Step2
+
+## 環境建置
+pip install -r requirements.txt # 有改過其中一套件版本
+pip install Flask-WTF
+pip install flask-login
+
+安裝後即可在`SE_Final`目錄下執行
+python app.py
 
 ## 資料庫創建流程
 1. 如果沒有創立過 DB 先初始化 
