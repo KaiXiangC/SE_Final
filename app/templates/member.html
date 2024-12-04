@@ -176,8 +176,8 @@
     <div class="container">
         <!-- Profile Header -->
         <div class="profile-header">
-            <img src="profile-placeholder.png" alt="Profile Picture">
-            <div class="name">Name</div>
+            <img src="{{ url_for('static', filename='img/' + user.profileData) }}" alt="Profile Picture">
+            <div class="name">會員姓名: {{ user.name }}</div>
         </div>
 
         <!-- Buttons -->

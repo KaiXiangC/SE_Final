@@ -23,7 +23,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 # 設置圖片上傳
 photos = UploadSet("photos", IMAGES)
-app.config["UPLOADED_PHOTOS_DEST"] = "static/img"
+app.config["UPLOADED_PHOTOS_DEST"] = "app/static/img"
 configure_uploads(app, photos)
 
 @app.route('/')

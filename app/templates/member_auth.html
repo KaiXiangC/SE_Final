@@ -159,8 +159,8 @@
 
             <!-- 顯示會員ID與姓名，左右並排 -->
             <div class="member-info">
-                <h3>會員ID: {{ userID }}</h3>
-                <h3>會員姓名: {{ userName }}</h3>
+                <h3>會員ID: {{ user.userID }}</h3>
+                <h3>會員姓名: {{ user.name }}</h3>
             </div>
 
             
@@ -170,12 +170,12 @@
                 <!-- 左邊照片 -->
                 <div class="left">
                     <h3>正面</h3>
-                    <img src="{{ url_for('static', filename='profile_images/' + userProfileData) }}" alt="正面">
+                    <img src="{{ url_for('static', filename='img/' + user.idPhoto) }}" alt="正面">
                 </div>
                 <!-- 右邊照片 -->
                 <div class="right">
                     <h3>背面</h3>
-                    <img src="{{ url_for('static', filename='profile_images/' + userProfileData2) }}" alt="背面">
+                    <img src="{{ url_for('static', filename='img/' + user.profileData) }}" alt="背面">
                 </div>
             </div>
 
