@@ -19,8 +19,8 @@
             border-radius: 10px;
             width: 42%;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            overflow: hidden; /* 防止內容超出容器 */
-            box-sizing: border-box; /* 確保內邊距不會改變容器大小 */
+            overflow: hidden;
+            box-sizing: border-box;
         }
         h1 {
             text-align: center;
@@ -34,13 +34,13 @@
             margin-left: 15%;
         }
         .form-group label {
-            width: 15%;  /* 設置標籤的寬度 */
+            width: 15%;
             text-align: right;
             margin-right: 10px;
             font-weight: bold;
         }
         .form-group input[type="text"], .form-group input[type="email"], .form-group input[type="password"], .form-group input[type="hidden"] {
-            width: 50%; /* 設置輸入框的寬度 */
+            width: 50%;
             padding: 10px;
             margin-right: 30%;
             border: 1px solid #ccc;
@@ -49,24 +49,23 @@
         .upload-section {
             display: flex;
             justify-content: center;
-            gap: 10px; /* 增加兩個區塊之間的間隔 */
+            gap: 10px;
         }
         .upload-section div {
-            flex: 0 0 20%; /* 設置兩個區塊各占 20% */
+            flex: 0 0 20%;
             text-align: center;
-            border: 2px solid #ccc; /* 設置邊框 */
-            padding: 15px; /* 增加內部間距 */
-            border-radius: 8px; /* 可選，圓角邊框 */
+            border: 2px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
         }
         .upload-section label {
             display: block;
             margin-bottom: 10px;
-            font-weight: bold; /* 強調標籤 */
+            font-weight: bold;
         }
-        /* 按鈕設置為左對齊 */
         .submit-container {
             display: flex;
-            justify-content: flex-end; /* 左對齊 */
+            justify-content: flex-end;
             margin-top: 20px;
         }
         button {
@@ -84,43 +83,35 @@
     </style>
 </head>
 <body>
-    
     <div class="container">
         <h1>註冊帳號</h1>
-        <form id="registerForm" method="POST" action="/register" enctype="multipart/form-data">
+        <form id="registerForm" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="name">真實姓名:</label>
                 <input type="text" id="name" name="name" required>
             </div>
-
             <div class="form-group">
                 <label for="email">電子郵件:</label>
                 <input type="email" id="email" name="email" required>
             </div>
-
             <div class="form-group">
                 <label for="password">密碼:</label>
                 <input type="password" id="password" name="password" required>
             </div>
-
             <div class="form-group">
                 <label for="confirm_password">確認密碼:</label>
                 <input type="password" id="confirm_password" name="confirm_password" required>
             </div>
-            <!--
             <div class="upload-section">
                 <div>
                     <label for="id_front">上傳身分證正面</label>
-                    <input type="file" id="id_front" accept="image/*" onchange="handleFileUpload('id_front', 'id_front_path')" required>
-                    <input type="hidden" id="id_front_path" name="id_front_path">
+                    <input type="file" id="id_front" name="id_front" accept="image/*" required>
                 </div>
                 <div>
                     <label for="id_back">上傳身分證反面</label>
-                    <input type="file" id="id_back" accept="image/*" onchange="handleFileUpload('id_back', 'id_back_path')" required>
-                    <input type="hidden" id="id_back_path" name="id_back_path">
+                    <input type="file" id="id_back" name="id_back" accept="image/*" required>
                 </div>
             </div>
-            -->
             <div class="submit-container">
                 <button type="submit">註冊</button>
             </div>
@@ -128,71 +119,28 @@
     </div>
 
     <script>
-        function handleFileUpload(inputId, hiddenInputId) {
-            const fileInput = document.getElementById(inputId);
-            const hiddenInput = document.getElementById(hiddenInputId);
-            const file = fileInput.files[0];
-
-            if (file) {
-                // 使用 URL.createObjectURL 為檔案生成一個臨時 URL
-                console.log(fileInput,hiddenInput)
-                const fileUrl = URL.createObjectURL(file);
-
-                // 將檔案路徑存入隱藏欄位，供後續表單提交
-                hiddenInput.value = fileUrl;
-
-                alert(`檔案已選擇：${file.name}\n路徑: ${fileUrl}`);
-                //alert(`檔案已選擇：${file.name}\n路徑: ${fileUrl}`);
-            }
-        }
-        /*
-        function handleFileUpload(inputId, hiddenFieldId) {
-        const fileInput = document.getElementById(inputId);
-        const file = fileInput.files[0];
-        
-        if (file) {
-            const reader = new FileReader();
-
-            reader.onloadend = function() {
-                // 將base64圖片數據設置為隱藏欄位的值
-                const hiddenField = document.getElementById(hiddenFieldId);
-                hiddenField.value = reader.result; // 這是base64編碼的圖片
-            };
-
-            // 將圖片轉換為base64
-            reader.readAsDataURL(file);
-            alert(`檔案已選擇：${file}`);
-        }
-    }*/
-
         // 監聽表單提交事件
         document.getElementById('registerForm').addEventListener('submit', function(event) {
-            // 防止表單直接提交，這樣我們可以先印出資料
             event.preventDefault();
 
-            // 取得表單中的資料
-            const formData = new FormData(event.target);
-            const formValues = {};
+            const form = event.target;
+            const formData = new FormData(form);
 
-            formData.forEach((value, key) => {
-                formValues[key] = value;
-            });
-
-            // 使用 console.log 看表單資料
-            console.log("表單資料: ", formValues);
-
-            // 驗證密碼確認是否一致
-            const password = formValues['password'];
-            const confirmPassword = formValues['confirm_password'];
-
+            // 驗證密碼與確認密碼是否一致
+            const password = formData.get('password');
+            const confirmPassword = formData.get('confirm_password');
             if (password !== confirmPassword) {
                 alert("密碼與確認密碼不一致！");
                 return;
             }
 
-            // 如果驗證通過，再手動提交表單
-            // 這裡我們可以直接提交表單
-            event.target.submit();
+            const formValues = {};
+            formData.forEach((value, key) => {
+                formValues[key] = value;
+            });
+            console.log("表單資料: ", formValues);
+
+            //event.target.submit();
         });
     </script>
 </body>
