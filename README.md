@@ -3,9 +3,11 @@
 
 
 ## 環境建置
+```
 pip install -r requirements.txt # 有改過其中一套件版本
 pip install Flask-WTF
 pip install flask-login
+```
 
 安裝後即可在`SE_Final`目錄下執行
 python app.py
