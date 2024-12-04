@@ -21,6 +21,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             overflow: hidden; /* 防止內容超出容器 */
             box-sizing: border-box; /* 確保內邊距不會改變容器大小 */
+            
         }
         h1 {
             text-align: center;
@@ -51,6 +52,30 @@
             justify-content: flex-end; /* 右對齊 */
             margin-top: 20px;
         }
+        #table{
+            display: flex;
+            flex-direction: column; /* 垂直排列 */
+            align-items: center; /* 水平居中對齊 */
+
+        }
+        table {
+            width: 60%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            /*display: none;*/
+        }
+
+        td {
+            padding: 15px;
+            border: 1px solid gray;
+            text-align: left;
+        }
+
+        /* 選擇每一行的第一個 <td> */
+        tr td:first-child {
+            width: 70%;
+            text-align: center;
+        }
         button {
             width: 20%;
             padding: 10px;
@@ -63,12 +88,31 @@
         button:hover {
             background-color: #555;
         }
+        #switchb{
+            display: flex;
+            justify-content:center;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        #history{
+            display: inline-block;
+        }
+        #publish{
+            display: none;
+        }
+        #maintenance_notice_Form {
+            display: block;
+        }
     </style>
 </head>
 <body>
     
     <div class="container">
         <h1>維護通知與公告</h1>
+        <div id="switchb">
+            <button id="history" onclick="SwitchButton()">歷史通知</button>
+            <button id="publish" onclick="SwitchButton()">發布公告</button>
+        </div>
         <form id="maintenance_notice_Form" method="POST" action="/maintenance_notice">
             <div class="form-group">
                 <label for="content">公告內容:</label>
@@ -88,6 +132,120 @@
             {% endfor %}
         </div>
         -->
+        <div id="table">
+            <table id="categoryTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>通知內容</th>
+                        <th>通知時間</th>
+                    </tr>
+                </thead>
+                <tbody id="categoryTableBody">
+                    <!-- 資料會動態填充 -->
+                </tbody>
+            </table>
+        </div>
+        <!--
+        <div id="table">
+        <table id="categoryTable" style="display: none;">
+            <thead>
+                <tr>
+                    <th>通知內容</th>
+                    <th>通知時間</th>
+                </tr>
+            </thead>
+            <tbody id="categoryTableBody">
+                <tr>
+                    <td>{{ notice.content }}</td>
+                    <td>{{ notice.timestamp }}</td>
+                </tr>
+                <tr>
+                    <td>{{ notice.content }}</td>
+                    <td>{{ notice.timestamp }}</td>
+                </tr>
+                <tr>
+                    <td>{{ notice.content }}</td>
+                    <td>{{ notice.timestamp }}</td>
+                </tr>
+            </tbody>
+        </table>
+        </div>-->
     </div>
+    <script>
+        // 當點擊歷史通知按鈕時發送請求
+        function SwitchButton() {
+            const history = document.getElementById('history');
+            const publish = document.getElementById('publish');
+            const maintenance_notice_Form = document.getElementById('maintenance_notice_Form');
+            const categoryTable = document.getElementById('categoryTable');
+            const categoryTableBody = document.getElementById('categoryTableBody');
+            
+            if (history.style.display === 'inline-block' || history.style.display === '') {
+                history.style.display = 'none';
+                publish.style.display = 'inline-block';
+                maintenance_notice_Form.style.display = 'none';
+                categoryTable.style.display = 'inline-block';
+        
+                // 使用 AJAX 來獲取歷史通知資料
+                fetch('/get_notices')
+                    .then(response => response.json())
+                    .then(data => {
+                        // 清空表格
+                        categoryTableBody.innerHTML = '';
+        
+                        // 從後端回傳的資料填充表格
+                        data.notices.forEach(notice => {
+                            const row = document.createElement('tr');
+                            const contentCell = document.createElement('td');
+                            const timestampCell = document.createElement('td');
+                            
+                            contentCell.textContent = notice.content;
+                            timestampCell.textContent = notice.timestamp;
+        
+                            row.appendChild(contentCell);
+                            row.appendChild(timestampCell);
+                            categoryTableBody.appendChild(row);
+                        });
+                    })
+                    .catch(error => console.error('獲取通知資料錯誤:', error));
+        
+            } else {
+                history.style.display = 'inline-block';
+                publish.style.display = 'none';
+                maintenance_notice_Form.style.display = 'block';
+                categoryTable.style.display = 'none';
+            }
+        }
+
+        // 發送請求並獲取通知
+        function fetchNotices() {
+            fetch('/get_notices')  // 假設後端 Flask API 是 /get_notices
+                .then(response => response.json())
+                .then(data => {
+                    if (data.notices.length === 0) {
+                        const row = document.createElement('tr');
+                        const cell = document.createElement('td');
+                        cell.colSpan = 2;
+                        cell.textContent = '暫無通知';
+                        row.appendChild(cell);
+                        categoryTableBody.appendChild(row);
+                    }
+                    const tableBody = document.getElementById('categoryTableBody');
+                    tableBody.innerHTML = '';  // 清空表格內容
+                    data.notices.forEach(notice => {
+                        const row = document.createElement('tr');
+                        const contentCell = document.createElement('td');
+                        contentCell.textContent = notice.content;
+                        const timestampCell = document.createElement('td');
+                        timestampCell.textContent = notice.timestamp;
+
+                        row.appendChild(contentCell);
+                        row.appendChild(timestampCell);
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching notices:', error));
+        }
+    </script>
 </body>
 </html>
