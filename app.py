@@ -1,22 +1,30 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash
 from werkzeug.security import check_password_hash, generate_password_hash
-from app.models.user import db, User
+from app import db
+from app.models.user import User
 from app.models.issue import Issue
 from app.models.notification import Notification
-from app.forms.registration_form import RegistrationForm, IssueForm
+from app.forms.registration_form import IssueForm
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from datetime import datetime
+from config import Config
+import logging
+from sqlalchemy import text
 
 app = Flask(__name__, template_folder='app/templates')
 app.secret_key = 'your_secret_key'  # 設置一個密鑰來保護 session
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:OReEeDaejJYLSawJZIaOQTJPbYsOyXhO@junction.proxy.rlwy.net:29883'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = Config.SQLALCHEMY_DATABASE_URI
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = Config.SQLALCHEMY_TRACK_MODIFICATIONS
+#app.config.from_object(Config)
 
 db.init_app(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+# 設置日誌記錄
+logging.basicConfig(level=logging.DEBUG)
 
 @app.route('/')
 def home():
@@ -26,25 +34,30 @@ def home():
 def index():
     return render_template('index.html')
 
-#註冊 #user a@mail.com aaa; admin admin@mail.com a 
+# 註冊
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         name = request.form['name']
         email = request.form['email']
-        password = generate_password_hash(request.form['password'])
-        idPhoto = request.form['id_front_path'] #files
-        authenticationStatus = False #'authenticationStatus' in request.form
-        profileData = request.form['id_back_path'] #files
+        #password = generate_password_hash(request.form['password'])
+        password = request.form['password']
+        #idPhoto = request.form['id_front_path']  # files
+        authenticationStatus = False  # 'authenticationStatus' in request.form
+        #profileData = request.form['id_back_path']  # files
+        is_admin = False
+        if email == 'admin@mail.com':
+            is_admin = True
+            authenticationStatus = True
         
         new_user = User(
             name=name,
             email=email,
             password=password,
-            idPhoto=idPhoto,
+            #idPhoto=idPhoto,
             authenticationStatus=authenticationStatus,
-            profileData=profileData,
-            is_admin=False
+            #profileData=profileData,
+            is_admin=is_admin
         )
         
         try:
@@ -52,23 +65,36 @@ def register():
             db.session.commit()
             flash('註冊成功', 'success')
             return redirect(url_for('login'))
-        except:
+        except Exception as e:
             db.session.rollback()
+            logging.error(f"註冊失敗: {e}")
             flash('註冊失敗', 'danger')
     
     return render_template('register.html')
 
-#新增問題
+# 新增問題
 @app.route('/propose', methods=['GET', 'POST'])
+@login_required
 def propose():
-    form = IssueForm()
-    if form.validate_on_submit():
-        issue = Issue(name=form.name.data, description=form.description.data, category=form.category.data)
-        db.session.add(issue)
-        db.session.commit()
-        flash('Issue submitted successfully!', 'success')
-        return redirect(url_for('home'))
-    return render_template('propose.html', form=form)
+    if request.method == 'POST':
+        title = request.form['title']
+        description = request.form['description']
+        new_issue = Issue(
+            title=title,
+            description=description,
+            user_id=current_user.userID
+        )
+        
+        try:
+            db.session.add(new_issue)
+            db.session.commit()
+            flash('問題已新增', 'success')
+            return redirect(url_for('home'))
+        except:
+            db.session.rollback()
+            flash('新增問題失敗', 'danger')
+    
+    return render_template('propose.html')
 
 #會員
 @app.route('/member/<int:user_id>', methods=['GET', 'POST'])
@@ -94,7 +120,7 @@ def member(user_id):
         except:
             db.session.rollback()
             flash('更新失敗', 'danger')
-        
+
         return redirect(url_for('member', user_id=user.userID))
     
     return render_template('member.html', user=user)
@@ -112,7 +138,7 @@ def login():
         
         user = User.query.filter_by(email=email).first()
         
-        if user and check_password_hash(user.password, password):
+        if user and user.password==password: #check_password_hash(user.password, password)
             login_user(user)
             flash('登入成功', 'success')
             if user.is_admin:
@@ -247,6 +273,13 @@ def maintenance_notice():
 
 
 if __name__ == '__main__':
-    with app.app_context():       
+    with app.app_context():
+        # 檢查資料庫連接
+        try:
+            db.session.execute(text('SELECT 1'))
+            logging.info("資料庫連接成功")
+        except Exception as e:
+            logging.error(f"資料庫連接失敗: {e}")
+
         db.create_all()  # Create tables
     app.run(debug=True)

@@ -5,7 +5,7 @@ class User(db.Model):
     __tablename__ = 'user'
     userID = db.Column(db.Integer, primary_key=True)
     idPhoto = db.Column(db.LargeBinary, nullable=True)
-    password = db.Column(db.String(50), nullable=False)
+    password = db.Column(db.String(255), nullable=False)
     name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     authenticationStatus = db.Column(db.Boolean, nullable=False, default=False)
