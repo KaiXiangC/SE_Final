@@ -73,8 +73,6 @@ def register():
         try:
             db.session.add(new_user)
             db.session.commit()
-            idPhoto_filename = photos.save(idPhoto)
-            profileData_filename = photos.save(profileData)
             flash('註冊成功', 'success')
             return redirect(url_for('login'))
         except Exception as e:
