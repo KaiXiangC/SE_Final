@@ -58,8 +58,14 @@
             align-items: center; /* 水平居中對齊 */
 
         }
+         /* 設定表格外部容器的固定大小並啟用滾動 */
+         #categoryTableWrapper {
+            width: 70%;
+            height: 500px;
+            overflow: auto; /* 使表格可以滾動 */
+        }
         table {
-            width: 60%;
+            width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
             /*display: none;*/
@@ -123,27 +129,29 @@
             </div>
         </form>
         <div id="table">
-            <table id="categoryTable" style="display: none;">
-                <thead>
-                    <tr>
-                        <th>通知內容</th>
-                        <th>通知時間</th>
-                    </tr>
-                </thead>
-                <tbody id="categoryTableBody">
-                    <!-- 資料會動態填充 -->
-                    {% for notice in notices %}
-                    <tr>
-                        <td>{{ notice.content }}</td>
-                        <td>{{ notice.timestamp }}</td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="2">暫無通知</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div id="categoryTableWrapper" style="display: none;">
+                <table id="categoryTable">
+                    <thead>
+                        <tr>
+                            <th>通知內容</th>
+                            <th>通知時間</th>
+                        </tr>
+                    </thead>
+                    <tbody id="categoryTableBody">
+                        <!-- 資料會動態填充 -->
+                        {% for notice in notices %}
+                        <tr>
+                            <td>{{ notice.content }}</td>
+                            <td>{{ notice.timestamp }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="2">暫無通知</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
     <script>
@@ -152,20 +160,21 @@
             const history = document.getElementById('history');
             const publish = document.getElementById('publish');
             const maintenance_notice_Form = document.getElementById('maintenance_notice_Form');
-            const categoryTable = document.getElementById('categoryTable');
+            const categoryTableWrapper = document.getElementById('categoryTableWrapper');
             const categoryTableBody = document.getElementById('categoryTableBody');
             
-            if (history.style.display === 'inline-block' || history.style.display === '') {
+            if (history.style.display !== 'none') {
                 history.style.display = 'none';
                 publish.style.display = 'inline-block';
                 maintenance_notice_Form.style.display = 'none';
-                categoryTable.style.display = 'inline-block';
+                categoryTableWrapper.style.display = 'inline-block';
             } else {
                 history.style.display = 'inline-block';
                 publish.style.display = 'none';
                 maintenance_notice_Form.style.display = 'block';
-                categoryTable.style.display = 'none';
+                categoryTableWrapper.style.display = 'none';
             }
+
         }
     </script>
 </body>
