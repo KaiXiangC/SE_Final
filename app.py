@@ -1,6 +1,9 @@
+import os
+
 from flask import Flask, render_template, request, redirect, url_for, flash
 from werkzeug.security import check_password_hash, generate_password_hash
-from flask_uploads import IMAGES, UploadSet, configure_uploads
+# from flask_uploads import IMAGES, UploadSet, configure_uploads
+from werkzeug.utils import secure_filename
 from app import db
 from app.models.user import User
 from app.models.issue import Issue
@@ -22,9 +25,9 @@ login_manager.login_view = 'login'
 logging.basicConfig(level=logging.DEBUG)
 
 # 設置圖片上傳
-photos = UploadSet("photos", IMAGES)
+
 app.config["UPLOADED_PHOTOS_DEST"] = "app/static/img"
-configure_uploads(app, photos)
+
 
 @app.route('/')
 def home():
@@ -55,18 +58,23 @@ def register():
 
         else:
             # 儲存圖片檔案
+
+
             idPhoto = request.files['id_front']
             profileData = request.files['id_back']
-            idPhoto_filename = photos.save(idPhoto)
-            profileData_filename = photos.save(profileData)
+            idPhoto_fname = secure_filename(idPhoto.filename)
+            profileData_fname = secure_filename(profileData.filename)
+            idPhoto.save(os.path.join(app.config["UPLOADED_PHOTOS_DEST"], idPhoto_fname))
+            profileData.save(os.path.join(app.config["UPLOADED_PHOTOS_DEST"], profileData_fname))
+
         
         new_user = User(
             name=name,
             email=email,
             password=password,
-            idPhoto=idPhoto_filename,
+            idPhoto=idPhoto_fname,
             authenticationStatus=authenticationStatus,
-            profileData=profileData_filename,
+            profileData=profileData_fname,
             is_admin=is_admin
         )
         logging.error(f"錯誤")
