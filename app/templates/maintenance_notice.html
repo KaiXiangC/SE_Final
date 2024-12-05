@@ -190,38 +190,6 @@
                 fetch('/get_notices')
                     .then(response => response.json())
                     .then(data => {
-                        // 清空表格
-                        categoryTableBody.innerHTML = '';
-        
-                        // 從後端回傳的資料填充表格
-                        data.notices.forEach(notice => {
-                            const row = document.createElement('tr');
-                            const contentCell = document.createElement('td');
-                            const timestampCell = document.createElement('td');
-                            
-                            contentCell.textContent = notice.content;
-                            timestampCell.textContent = notice.timestamp;
-        
-                            row.appendChild(contentCell);
-                            row.appendChild(timestampCell);
-                            categoryTableBody.appendChild(row);
-                        });
-                    })
-                    .catch(error => console.error('獲取通知資料錯誤:', error));
-        
-            } else {
-                history.style.display = 'inline-block';
-                publish.style.display = 'none';
-                maintenance_notice_Form.style.display = 'block';
-                categoryTable.style.display = 'none';
-            }
-        }
-
-        // 發送請求並獲取通知
-        function fetchNotices() {
-            fetch('/get_notices')  // 假設後端 Flask API 是 /get_notices
-                .then(response => response.json())
-                .then(data => {
                     if (data.notices.length === 0) {
                         const row = document.createElement('tr');
                         const cell = document.createElement('td');
@@ -244,7 +212,14 @@
                         tableBody.appendChild(row);
                     });
                 })
-                .catch(error => console.error('Error fetching notices:', error));
+                    .catch(error => console.error('獲取通知資料錯誤:', error));
+        
+            } else {
+                history.style.display = 'inline-block';
+                publish.style.display = 'none';
+                maintenance_notice_Form.style.display = 'block';
+                categoryTable.style.display = 'none';
+            }
         }
     </script>
 </body>

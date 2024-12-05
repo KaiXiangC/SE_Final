@@ -128,7 +128,7 @@
     <script>
         // 監聽表單提交事件
         document.getElementById('registerForm').addEventListener('submit', function(event) {
-            // 防止表單直接提交，這樣我們可以先印出資料
+            // 防止表單直接提交
             event.preventDefault();
 
             // 取得表單中的資料
@@ -138,7 +138,6 @@
             formData.forEach((value, key) => {
                 formValues[key] = value;
             });
-
             // 使用 console.log 看表單資料
             console.log("表單資料: ", formValues);
 
@@ -152,7 +151,6 @@
             }
 
             // 如果驗證通過，再手動提交表單
-            // 這裡我們可以直接提交表單
             event.target.submit();
         });
     </script>
