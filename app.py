@@ -25,6 +25,7 @@ login_manager.login_view = 'login'
 logging.basicConfig(level=logging.DEBUG)
 
 # 設置圖片上傳
+
 app.config["UPLOADED_PHOTOS_DEST"] = "app/static/img"
 
 
@@ -65,6 +66,7 @@ def register():
             profileData_fname = secure_filename(profileData.filename)
             idPhoto.save(os.path.join(app.config["UPLOADED_PHOTOS_DEST"], idPhoto_fname))
             profileData.save(os.path.join(app.config["UPLOADED_PHOTOS_DEST"], profileData_fname))
+
         
         new_user = User(
             name=name,
@@ -79,7 +81,6 @@ def register():
         try:
             db.session.add(new_user)
             db.session.commit()
-
             flash('註冊成功', 'success')
             return redirect(url_for('login'))
         except Exception as e:
@@ -162,7 +163,7 @@ def login():
             if user.is_admin:
                 return redirect(url_for('admin_dashboard'))
             else:
-                return redirect(url_for('member', user_id=user.userID))
+                return redirect(url_for('index', user_id=user.userID))
         else:
             flash('帳號或密碼錯誤', 'danger')
             return render_template('login.html', error='帳號或密碼錯誤')
