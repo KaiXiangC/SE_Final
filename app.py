@@ -22,9 +22,9 @@ login_manager.login_view = 'login'
 logging.basicConfig(level=logging.DEBUG)
 
 # 設置圖片上傳
-photos = UploadSet("photos", IMAGES)
-app.config["UPLOADED_PHOTOS_DEST"] = "app/static/img"
-configure_uploads(app, photos)
+#photos = UploadSet("photos", IMAGES)
+#app.config["UPLOADED_PHOTOS_DEST"] = "app/static/img"
+#configure_uploads(app, photos)
 
 @app.route('/')
 def home():
@@ -57,8 +57,8 @@ def register():
             # 儲存圖片檔案
             idPhoto = request.files['id_front']
             profileData = request.files['id_back']
-            idPhoto_filename = photos.save(idPhoto)
-            profileData_filename = photos.save(profileData)
+            #idPhoto_filename = photos.save(idPhoto)
+            #profileData_filename = photos.save(profileData)
         
         new_user = User(
             name=name,
@@ -73,8 +73,8 @@ def register():
         try:
             db.session.add(new_user)
             db.session.commit()
-            idPhoto_filename = photos.save(idPhoto)
-            profileData_filename = photos.save(profileData)
+            #idPhoto_filename = photos.save(idPhoto)
+            #profileData_filename = photos.save(profileData)
             flash('註冊成功', 'success')
             return redirect(url_for('login'))
         except Exception as e:
