@@ -137,69 +137,34 @@
             font-weight: bold;
         }
         .carousel {
-            position: relative;
-            margin: 20px auto;
             width: 100%;
-            max-width: 800px;
-            height: 300px;
+            max-width: 1000px; /* 限制最大寬度 */
+            margin: 0 auto; /* 居中顯示 */
             overflow: hidden;
-            border-radius: 10px;
         }
 
-        .carousel-slides {
+        .carousel-images {
             display: flex;
-            transition: transform 0.5s ease-in-out;
+            transition: transform 1s ease; /* 使圖片有滑動效果 */
         }
 
-        .carousel-slide {
-            flex: 1 0 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-size: cover;
-            background-position: center;
-            height: 100%;
+        .carousel-images img {
+            width: 100%; /* 確保每張圖片都填滿容器 */
+            height: 400px; /* 設定圖片高度 */
+            object-fit: cover; /* 使圖片填滿容器而不變形 */
         }
 
-        .carousel-buttons {
-            position: absolute;
-            top: 50%;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            transform: translateY(-50%);
+        /* 自動播放效果 */
+        @keyframes slide {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-100%); }
+            50% { transform: translateX(-200%); }
+            75% { transform: translateX(-300%); }
+            100% { transform: translateX(0); }
         }
 
-        .carousel-button {
-            background: rgba(0, 0, 0, 0.5);
-            border: none;
-            color: white;
-            padding: 10px;
-            cursor: pointer;
-            font-size: 18px;
-            border-radius: 50%;
-        }
-
-        .carousel-dots {
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 5px;
-        }
-
-        .carousel-dot {
-            width: 10px;
-            height: 10px;
-            background: white;
-            opacity: 0.5;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        .carousel-dot.active {
-            opacity: 1;
+        .carousel-images {
+            animation: slide 6s infinite; /* 6秒自動輪播 */
         }
 
         .content {
@@ -263,20 +228,29 @@
             </a>
         </div>
     </header>
-
+    
+    <div class="carousel">
+        <div class="carousel-images">
+            <img src="images/1953.jpg" alt="Ad 1">
+            <img src="images/earth.jpg" alt="Ad 2">
+            <img src="images/sexualharamment.jpg" alt="Ad 3">
+            <img src="images/ad4.jpg" alt="Ad 4">
+            <img src="images/ad5.jpg" alt="Ad 5">
+        </div>
+    </div>
     <!-- 搜尋欄 -->
     <div class="search-bar">
         <input type="text" id="keyword" placeholder="請輸入關鍵字">
         <button onclick="search()">搜尋</button>
     </div>
 
-    <!-- 搜尋結果 -->
-    <div class="content" id="results"></div>
+    <div class="content" id="results">
+        <!-- 動態列表會顯示在這裡 -->
+    </div>
 
     <script>
         function search() {
             const keyword = document.getElementById('keyword').value;
-            if (!keyword) return;
 
             fetch('/search', {
                 method: 'POST',
@@ -286,7 +260,7 @@
             .then(response => response.json())
             .then(data => {
                 const resultsContainer = document.getElementById('results');
-                resultsContainer.innerHTML = '';
+                resultsContainer.innerHTML = '';  // 清空舊的結果
 
                 data.forEach(item => {
                     const resultHTML = `
@@ -308,162 +282,13 @@
             })
             .catch(error => console.error('Error:', error));
         }
+
+        // 初始化頁面載入所有資料
+        document.addEventListener('DOMContentLoaded', () => {
+            search();  // 頁面載入時自動載入所有資料
+        });
     </script>
 
 
-    <!-- Carousel -->
-    <div class="carousel">
-        <div class="carousel-slides" id="carouselSlides">
-            <div class="carousel-slide" style="background-image: url('images/1953.jpg');"></div>
-            <div class="carousel-slide" style="background-image: url('images/earth.jpg');"></div>
-            <div class="carousel-slide" style="background-image: url('images/sexualharamment.jpg');"></div>
-        </div>
-        <div class="carousel-buttons">
-            <button class="carousel-button" id="prevButton">←</button>
-            <button class="carousel-button" id="nextButton">→</button>
-        </div>
-        <div class="carousel-dots" id="carouselDots"></div>
-    </div>
-
-    <script>
-        const slides = document.querySelectorAll(".carousel-slide");
-        const dotsContainer = document.getElementById("carouselDots");
-        const slidesContainer = document.getElementById("carouselSlides");
-        const prevButton = document.getElementById("prevButton");
-        const nextButton = document.getElementById("nextButton");
-
-        let currentIndex = 0;
-
-        // 生成圓點
-        slides.forEach((_, index) => {
-            const dot = document.createElement("div");
-            dot.classList.add("carousel-dot");
-            if (index === 0) dot.classList.add("active");
-            dot.addEventListener("click", () => setSlide(index));
-            dotsContainer.appendChild(dot);
-        });
-
-        const updateDots = () => {
-            document.querySelectorAll(".carousel-dot").forEach((dot, index) => {
-                dot.classList.toggle("active", index === currentIndex);
-            });
-        };
-
-        const setSlide = (index) => {
-            currentIndex = index;
-            slidesContainer.style.transform = `translateX(-${index * 100}%)`;
-            updateDots();
-        };
-
-        const nextSlide = () => setSlide((currentIndex + 1) % slides.length);
-        const prevSlide = () => setSlide((currentIndex - 1 + slides.length) % slides.length);
-
-        nextButton.addEventListener("click", nextSlide);
-        prevButton.addEventListener("click", prevSlide);
-
-        // 自動切換
-        setInterval(nextSlide, 5000); // 每5秒切換一次
-    </script>
-    <title>Tabs and Content Example</title>
-    <style>
-        
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <!-- Tabs Section -->
-    <div class="tabs" id="tabs">
-        <div class="tab active" data-tab="latest">最新</div>
-        <div class="tab" data-tab="popular">熱門</div>
-        <div class="tab" data-tab="completed">已成案</div>
-    </div>
-
-    <!-- Tabs Content -->
-    <div class="tab-content active" id="latest">
-        <div class="proposal">
-            <h3>不以台灣Taiwan為正式隊名 政府不得以公帑補助</h3>
-            <div class="details">
-                <span>附議數：33</span>
-                <span>留言數：4</span>
-                <span>按讚數：0</span>
-                <span>日期：2024-11-27</span>
-            </div>
-        </div>
-        <div class="proposal">
-            <h3>高鐵延伸屏東左營高鐵站至臺鐵高雄車站優先施工</h3>
-            <div class="details">
-                <span>附議數：7</span>
-                <span>留言數：1</span>
-                <span>按讚數：0</span>
-                <span>日期：2024-11-27</span>
-            </div>
-        </div>
-    </div>
-    <div class="tab-content" id="popular">
-        <p>這是熱門提案的內容...</p>
-    </div>
-    <div class="tab-content" id="completed">
-        <p>這是已成案提案的內容...</p>
-    </div>
-
-    <!-- Categories Section -->
-    <h2 class="mt-8">我想查詢 請選擇關注的領域</h2>
-    <div class="categories">
-        <div class="category-button">
-            <div>📋</div>
-            <span>綜合行政</span>
-        </div>
-        <div class="category-button">
-            <div>📈</div>
-            <span>財政經濟</span>
-        </div>
-        <div class="category-button">
-            <div>🌱</div>
-            <span>農業環保</span>
-        </div>
-        <div class="category-button">
-            <div>🚗</div>
-            <span>交通建設</span>
-        </div>
-        <div class="category-button">
-            <div>🎓</div>
-            <span>教育科技文化</span>
-        </div>
-        <div class="category-button">
-            <div>❤️</div>
-            <span>衛生勞動</span>
-        </div>
-        <div class="category-button">
-            <div>🏳️</div>
-            <span>外交國防法務</span>
-        </div>
-        <div class="category-button">
-            <div>🏠</div>
-            <span>內政</span>
-        </div>
-    </div>
-</div>
-
-<script>
-    // Tab Switching Logic
-    const tabs = document.querySelectorAll('.tab');
-    const tabContents = document.querySelectorAll('.tab-content');
-
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            // Remove active class from all tabs
-            tabs.forEach(tab => tab.classList.remove('active'));
-            // Add active class to the clicked tab
-            tab.classList.add('active');
-
-            // Hide all tab contents
-            tabContents.forEach(content => content.classList.remove('active'));
-            // Show the content corresponding to the clicked tab
-            const targetTab = tab.getAttribute('data-tab');
-            document.getElementById(targetTab).classList.add('active');
-        });
-    });
-</script>
 </body>
 </html>
