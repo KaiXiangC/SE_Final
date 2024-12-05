@@ -159,16 +159,16 @@
         <button id="searchB">&#128269;</button>
         <div class="search-results" id="searchResults">
             <!-- 這裡的資料會由 JavaScript 動態填充 -->
-             <!--
             {% for category in categories %}
                 <div class="search-result-item" data-category-name="{{ category.name }}">{{ category.name }}</div>
             {% endfor %}
-            -->
         </div>
     </div>
+    <!--
     <button id="viewAllBtn" class="view-all-btn" onclick="toggleCategoryTable()">
         查看全部類別
     </button>
+    -->
     <div id="loadingMessage">載入中...</div>
     <!--
     <table id="categoryTable">
@@ -187,9 +187,7 @@
     -->
 
 
-    <!--模擬結果-->
-    <!--
-    <table id="categoryTable">
+    <table id="categoryTable" style="display: none;">
         <thead>
             <tr>
                 <th>類別名稱</th>
@@ -197,43 +195,19 @@
             </tr>
         </thead>
         <tbody id="categoryTableBody">
-            
+            {% for category in categories %}
+                <tr>
+                    <td>{{ category.name }}</td>
+                    <td class="button-cell">
+                        <button class="delete-btn" onclick="deleteCategory('{{ category.id }}')">刪除類別</button>
+                    </td>
+                    <td class="button-cell">
+                        <button class="modify-btn" onclick="modifyCategory('{{ category.id }}')">修改類別</button>
+                    </td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
---> <!-- 類別資料會由 JavaScript 動態填充 -->
-    
-    <table id="categoryTable">
-        <thead>
-            <tr>
-                <th>類別名稱</th>
-                <th>編輯</th>
-            </tr>
-        </thead>
-        <tbody id="categoryTableBody">
-            <tr>
-                <td>類別 1</td>
-                <td class="button-cell">
-                    <button class="delete-btn" onclick="deleteCategory(1)">刪除類別</button>
-                    <button class="modify-btn" onclick="modifyCategory(1)">修改類別</button>
-                </td>
-            </tr>
-            <tr>
-                <td>類別 2</td>
-                <td class="button-cell">
-                    <button class="delete-btn" onclick="deleteCategory(2)">刪除類別</button>
-                    <button class="modify-btn" onclick="modifyCategory(2)">修改類別</button>
-                </td>
-            </tr>
-            <tr>
-                <td>類別 3</td>
-                <td class="button-cell">
-                    <button class="delete-btn" onclick="deleteCategory(3)">刪除類別</button>
-                    <button class="modify-btn" onclick="modifyCategory(3)">修改類別</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-       
     
     <form id="addCategoryForm" action="/add-category" method="POST">
         <div class="add-category-container">
@@ -281,13 +255,25 @@
         function displaySearchResults(categories) {
             const searchResults = document.getElementById('searchResults');
             searchResults.innerHTML = '';  // 清空現有的搜尋結果
-            categories.forEach(category => {
-                const div = document.createElement('div');
-                div.classList.add('search-result-item');
-                div.dataset.categoryId = category.id;
-                div.textContent = category.name;
-                searchResults.appendChild(div);
-            });
+            if (categories.length > 0) {
+                searchResults.style.display = 'block';  // 顯示搜尋結果區域
+                categories.forEach(category => {
+                    const div = document.createElement('div');
+                    div.classList.add('search-result-item');
+                    div.dataset.categoryId = category.id;
+                    div.textContent = category.name;
+        
+                    // 當用戶點擊搜尋結果時，顯示選擇的類別資料
+                    div.addEventListener('click', function() {
+                        displayCategoryInTable(category);
+                        searchResults.style.display = 'none';  // 隱藏搜尋結果區域
+                    });
+        
+                    searchResults.appendChild(div);
+                });
+            } else {
+                searchResults.style.display = 'none';  // 若沒有符合條件的搜尋結果，隱藏搜尋結果
+            }
         }
 
         // 顯示類別列表
@@ -361,11 +347,13 @@
             //window.location.href = `/categories/${id}/edit`;
         }
 
-        /*
+        
         // 動態顯示或隱藏搜尋結果
         searchInput.addEventListener('input', function() {
             const searchTerm = this.value.toLowerCase();  // 獲取搜尋框的內容
             const resultItems = searchResults.getElementsByClassName('search-result-item');
+            //console.log(searchTerm);
+            //searchResults.style.display = 'block';
 
             // 根據搜尋框的內容過濾並顯示相關結果
             let hasResults = false;
@@ -392,7 +380,7 @@
                 searchResults.style.display = 'none';
             }
         });
-        */
+        
 
     </script>
 </body>
