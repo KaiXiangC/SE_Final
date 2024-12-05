@@ -22,7 +22,70 @@
             padding: 10px 20px;
             border-bottom: 1px solid #ddd;
         }
-
+    
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #ddd;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #555;
+            border-bottom: 3px solid transparent;
+        }
+        .tab.active {
+            color: #000;
+            border-color: #007bff;
+        }
+        .tab-content {
+            display: none;
+            margin-top: 20px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .proposal {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .proposal h3 {
+            margin: 0 0 8px;
+        }
+        .proposal .details {
+            font-size: 14px;
+            color: #555;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .category-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            background-color: #f9f9f9;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+        .category-button:hover {
+            background-color: #f0f0f0;
+        }
         /* 左側標題 */
         .title h1 {
             font-size: 20px;
@@ -76,31 +139,28 @@
         .carousel {
             position: relative;
             margin: 20px auto;
-            width: 90%;
+            width: 100%;
             max-width: 800px;
             height: 300px;
             overflow: hidden;
             border-radius: 10px;
         }
+
         .carousel-slides {
             display: flex;
             transition: transform 0.5s ease-in-out;
         }
+
         .carousel-slide {
             flex: 1 0 100%;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: rgb(116, 111, 111);
             background-size: cover;
             background-position: center;
-            text-align: center;
+            height: 100%;
         }
-        .carousel-slide h2 {
-            font-size: 24px;
-            margin: 10px 0;
-        }
+
         .carousel-buttons {
             position: absolute;
             top: 50%;
@@ -109,6 +169,7 @@
             justify-content: space-between;
             transform: translateY(-50%);
         }
+
         .carousel-button {
             background: rgba(0, 0, 0, 0.5);
             border: none;
@@ -118,6 +179,7 @@
             font-size: 18px;
             border-radius: 50%;
         }
+
         .carousel-dots {
             position: absolute;
             bottom: 10px;
@@ -126,6 +188,7 @@
             display: flex;
             gap: 5px;
         }
+
         .carousel-dot {
             width: 10px;
             height: 10px;
@@ -134,9 +197,11 @@
             border-radius: 50%;
             cursor: pointer;
         }
+
         .carousel-dot.active {
             opacity: 1;
         }
+
         .content {
             padding: 20px;
         }
@@ -201,28 +266,57 @@
 
     <!-- 搜尋欄 -->
     <div class="search-bar">
-        <input type="text" placeholder="請輸入關鍵字">
-        <button>搜尋</button>
+        <input type="text" id="keyword" placeholder="請輸入關鍵字">
+        <button onclick="search()">搜尋</button>
     </div>
+
+    <!-- 搜尋結果 -->
+    <div class="content" id="results"></div>
+
+    <script>
+        function search() {
+            const keyword = document.getElementById('keyword').value;
+            if (!keyword) return;
+
+            fetch('/search', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ keyword })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultsContainer = document.getElementById('results');
+                resultsContainer.innerHTML = '';
+
+                data.forEach(item => {
+                    const resultHTML = `
+                        <div class="proposal">
+                            <button>${item.categoryName}</button>
+                            <h3 onclick="window.location.href='/propose_detail/${item.issueID}'">
+                                ${item.title}
+                            </h3>
+                            <div class="details">
+                                <span>附議數：${item.voteCount}</span>
+                                <span>留言數：${item.commentCount}</span>
+                                <span>按讚數：${item.favoriteCount}</span>
+                                <span>日期：${item.publishTime}</span>
+                            </div>
+                        </div>
+                    `;
+                    resultsContainer.insertAdjacentHTML('beforeend', resultHTML);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+
 
     <!-- Carousel -->
     <div class="carousel">
         <div class="carousel-slides" id="carouselSlides">
-            <div class="carousel-slide" style="background-image: url('/placeholder.svg');">
-                <h2>改善居家托育人員制度陳情書</h2>
-                <p>提點子成案議題</p>
-                <p>感謝桃子媽提案及附議者促成提議成案</p>
-            </div>
-            <div class="carousel-slide" style="background-image: url('/placeholder.svg');">
-                <h2>新的公共政策提案</h2>
-                <p>最新熱門議題</p>
-                <p>參與討論，共創美好未來</p>
-            </div>
-            <div class="carousel-slide" style="background-image: url('/placeholder.svg');">
-                <h2>環境保護新政策</h2>
-                <p>綠色永續發展</p>
-                <p>為下一代打造更好的生活環境</p>
-            </div>
+            <div class="carousel-slide" style="background-image: url('images/1953.jpg');"></div>
+            <div class="carousel-slide" style="background-image: url('images/earth.jpg');"></div>
+            <div class="carousel-slide" style="background-image: url('images/sexualharamment.jpg');"></div>
         </div>
         <div class="carousel-buttons">
             <button class="carousel-button" id="prevButton">←</button>
@@ -231,14 +325,7 @@
         <div class="carousel-dots" id="carouselDots"></div>
     </div>
 
-
-    <div class="content">
-        <h2>熱門議題</h2>
-        <p>這裡可以加入更多的動態內容...</p>
-    </div>
-
     <script>
-        // JavaScript for Carousel
         const slides = document.querySelectorAll(".carousel-slide");
         const dotsContainer = document.getElementById("carouselDots");
         const slidesContainer = document.getElementById("carouselSlides");
@@ -247,7 +334,7 @@
 
         let currentIndex = 0;
 
-        // Generate dots
+        // 生成圓點
         slides.forEach((_, index) => {
             const dot = document.createElement("div");
             dot.classList.add("carousel-dot");
@@ -274,80 +361,12 @@
         nextButton.addEventListener("click", nextSlide);
         prevButton.addEventListener("click", prevSlide);
 
-        // Auto-slide
-        setInterval(nextSlide, 5000);
+        // 自動切換
+        setInterval(nextSlide, 5000); // 每5秒切換一次
     </script>
     <title>Tabs and Content Example</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f9f9f9;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .tabs {
-            display: flex;
-            border-bottom: 2px solid #ddd;
-        }
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            font-weight: bold;
-            color: #555;
-            border-bottom: 3px solid transparent;
-        }
-        .tab.active {
-            color: #000;
-            border-color: #007bff;
-        }
-        .tab-content {
-            display: none;
-            margin-top: 20px;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        .proposal {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-        .proposal h3 {
-            margin: 0 0 8px;
-        }
-        .proposal .details {
-            font-size: 14px;
-            color: #555;
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-        .categories {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-        .category-button {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            text-align: center;
-            background-color: #f9f9f9;
-            transition: background-color 0.3s;
-            cursor: pointer;
-        }
-        .category-button:hover {
-            background-color: #f0f0f0;
-        }
+        
     </style>
 </head>
 <body>
