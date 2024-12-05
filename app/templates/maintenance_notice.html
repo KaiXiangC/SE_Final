@@ -113,7 +113,7 @@
             <button id="history" onclick="SwitchButton()">歷史通知</button>
             <button id="publish" onclick="SwitchButton()">發布公告</button>
         </div>
-        <form id="maintenance_notice_Form" method="POST" action="/maintenance_notice">
+        <form id="maintenance_notice_Form" method="POST" action="{{ url_for('maintenance_notice') }}">
             <div class="form-group">
                 <label for="content">公告內容:</label>
                 <textarea id="content" name="content" required></textarea>
@@ -122,16 +122,6 @@
                 <button type="submit">發布公告</button>
             </div>
         </form>
-        <!--
-        <div class="notices"></div>
-            {% for notice in notices %}
-                <div class="notice">
-                    <div class="content">{{ notice.content }}</div>
-                    <div class="timestamp">{{ notice.timestamp }}</div>
-                </div>
-            {% endfor %}
-        </div>
-        -->
         <div id="table">
             <table id="categoryTable" style="display: none;">
                 <thead>
@@ -142,34 +132,19 @@
                 </thead>
                 <tbody id="categoryTableBody">
                     <!-- 資料會動態填充 -->
+                    {% for notice in notices %}
+                    <tr>
+                        <td>{{ notice.content }}</td>
+                        <td>{{ notice.timestamp }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="2">暫無通知</td>
+                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
-        <!--
-        <div id="table">
-        <table id="categoryTable" style="display: none;">
-            <thead>
-                <tr>
-                    <th>通知內容</th>
-                    <th>通知時間</th>
-                </tr>
-            </thead>
-            <tbody id="categoryTableBody">
-                <tr>
-                    <td>{{ notice.content }}</td>
-                    <td>{{ notice.timestamp }}</td>
-                </tr>
-                <tr>
-                    <td>{{ notice.content }}</td>
-                    <td>{{ notice.timestamp }}</td>
-                </tr>
-                <tr>
-                    <td>{{ notice.content }}</td>
-                    <td>{{ notice.timestamp }}</td>
-                </tr>
-            </tbody>
-        </table>
-        </div>-->
     </div>
     <script>
         // 當點擊歷史通知按鈕時發送請求
@@ -185,35 +160,6 @@
                 publish.style.display = 'inline-block';
                 maintenance_notice_Form.style.display = 'none';
                 categoryTable.style.display = 'inline-block';
-        
-                // 使用 AJAX 來獲取歷史通知資料
-                fetch('/get_notices')
-                    .then(response => response.json())
-                    .then(data => {
-                    if (data.notices.length === 0) {
-                        const row = document.createElement('tr');
-                        const cell = document.createElement('td');
-                        cell.colSpan = 2;
-                        cell.textContent = '暫無通知';
-                        row.appendChild(cell);
-                        categoryTableBody.appendChild(row);
-                    }
-                    const tableBody = document.getElementById('categoryTableBody');
-                    tableBody.innerHTML = '';  // 清空表格內容
-                    data.notices.forEach(notice => {
-                        const row = document.createElement('tr');
-                        const contentCell = document.createElement('td');
-                        contentCell.textContent = notice.content;
-                        const timestampCell = document.createElement('td');
-                        timestampCell.textContent = notice.timestamp;
-
-                        row.appendChild(contentCell);
-                        row.appendChild(timestampCell);
-                        tableBody.appendChild(row);
-                    });
-                })
-                    .catch(error => console.error('獲取通知資料錯誤:', error));
-        
             } else {
                 history.style.display = 'inline-block';
                 publish.style.display = 'none';
