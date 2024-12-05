@@ -157,7 +157,7 @@ def login():
             if user.is_admin:
                 return redirect(url_for('admin_dashboard'))
             else:
-                return redirect(url_for('member', user_id=user.userID))
+                return redirect(url_for('index', user_id=user.userID))
         else:
             flash('帳號或密碼錯誤', 'danger')
             return render_template('login.html', error='帳號或密碼錯誤')
