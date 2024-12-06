@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>變更密碼</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 40px;
+        }
+
+        .form-container {
+            background-color: #FFF3D4;
+            border-radius: 15px;
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-group label {
+            width: 120px;
+            text-align: right;
+            margin-right: 15px;
+        }
+
+        .form-group input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .button {
+            padding: 10px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            color: white;
+            font-size: 1em;
+            background-color: #4A4A4A;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #2E7D32;
+        }
+
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>變更密碼</h1>
+
+    <form id="password-form" method="POST" action="{{ url_for('update_password') }}" onsubmit="return validateForm()">
+        <div class="form-container">
+            <div class="form-group">
+                <label for="old-password">原密碼:</label>
+                <input type="password" id="old-password" name="old_password" required placeholder="請輸入原密碼">
+            </div>
+            <div class="form-group">
+                <label for="new-password">新密碼:</label>
+                <input type="password" id="new-password" name="new_password" required placeholder="輸入新密碼">
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">確認密碼:</label>
+                <input type="password" id="confirm-password" name="confirm_password" required placeholder="再次輸入新密碼">
+            </div>
+            <div id="error-message" class="error-message">新密碼與確認密碼不相符</div>
+        </div>
+
+        <div class="button-container">
+            <button type="button" class="button">取消</button>
+            <button type="submit" class="button">確認變更</button>
+        </div>
+    </form>
+
+    <script>
+        function validateForm() {
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const errorMessage = document.getElementById('error-message');
+
+            if (newPassword !== confirmPassword) {
+                errorMessage.style.display = 'block';
+                return false;
+            }
+
+            errorMessage.style.display = 'none';
+            return true;
+        }
+
+        // Clear error message when user starts typing
+        document.getElementById('new-password').addEventListener('input', function() {
+            document.getElementById('error-message').style.display = 'none';
+        });
+        document.getElementById('confirm-password').addEventListener('input', function() {
+            document.getElementById('error-message').style.display = 'none';
+        });
+    </script>
+</body>
+</html>

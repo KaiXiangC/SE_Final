@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>修改用戶資料</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 40px;
+        }
+
+        .profile-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .profile-image-container {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-bottom: 30px;
+            background-color: #f0f0f0;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .form-container {
+            background-color: #FFF3D4;
+            border-radius: 15px;
+            padding: 30px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-group label {
+            width: 80px;
+            text-align: right;
+            margin-right: 15px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"] {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            color: white;
+            font-size: 1em;
+            background-color: #4A4A4A;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #2E7D32;
+        }
+
+        #file-input {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>修改用戶資料</h1>
+
+    <div class="profile-container">
+        <div class="profile-image-container">
+            <img src="{{ url_for('static', filename='img/' + user.profileData) }}" alt="用戶頭像" class="profile-image" id="preview-image">
+        </div>
+
+        <form id="profile-form" method="POST" action="{{ url_for('update_profile') }}">
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="name">姓名:</label>
+                    <input type="text" id="name" name="name" value="{{ user.name }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">信箱:</label>
+                    <input type="email" id="email" name="email" value="{{ user.email }}" required>
+                </div>
+            </div>
+
+            <div class="button-container">
+                <input type="file" id="file-input" accept="image/*">
+                <button type="button" class="button" onclick="document.getElementById('file-input').click()">更新頭貼</button>
+                <button type="submit" class="button">確認變更</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Handle profile image upload
+        document.getElementById('file-input').addEventListener('change', async function(e) {
+            if (e.target.files && e.target.files[0]) {
+                const formData = new FormData();
+                formData.append('image', e.target.files[0]);
+
+                try {
+                    const response = await fetch('{{ url_for("update_profile_image") }}', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        // Update the profile image with the new one
+                        document.getElementById('preview-image').src = "{{ url_for('static', filename='img/') }}" + data.filename + "?t=" + new Date().getTime();
+                    }
+                } catch (error) {
+                    console.error('Error uploading image:', error);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
