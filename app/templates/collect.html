@@ -16,26 +16,6 @@
             font-size: 2.5em;
         }
         
-        .filter-buttons {
-            margin: 20px 0;
-        }
-        
-        .filter-button {
-            padding: 8px 20px;
-            margin-right: 10px;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-        }
-        
-        .category-button {
-            background-color: #e0e0e0;
-        }
-        
-        .latest-button {
-            background-color: #ffd700;
-        }
-        
         .content-container {
             background-color: #fff3d4;
             padding: 20px;
@@ -94,10 +74,6 @@
     <h1>收藏</h1>
     
     <div class="content-container">
-        <div class="filter-buttons">
-            <button class="filter-button category-button">類別 ▼</button>
-            <button class="filter-button latest-button">最新 △</button>
-        </div>
         
         <!-- Flask Jinja2 template for iterating through topics -->
         {% for topic in topics %}

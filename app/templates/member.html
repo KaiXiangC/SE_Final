@@ -1,246 +1,255 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>會員專區</title>
+    <title>公共政策網路參與平台</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
-            padding: 0;
-            background-color: #f9f9f9;
+            font-family: Arial, sans-serif;
         }
 
-        /* Header */
         .header {
             background-color: #FFD700;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header .logo {
-            font-size: 20px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .header nav a {
-            margin-right: 15px;
-            text-decoration: none;
-            font-size: 14px;
-            color: #333;
-        }
-
-        .header nav a:hover {
-            color: #000;
-        }
-
-        /* Main Content */
-        .container {
-            max-width: 900px;
-            margin: 30px auto;
-            background: #fff;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .profile-header {
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .container {
+            background-color: #FFF3D4;
+            padding: 20px;
+            min-height: calc(100vh - 100px);
+        }
+
+        .profile-section {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
-        .profile-header img {
+        .profile-image {
             width: 80px;
             height: 80px;
             border-radius: 50%;
             margin-right: 20px;
         }
 
-        .profile-header .name {
-            font-size: 18px;
-            font-weight: bold;
+        .profile-info {
+            flex-grow: 1;
         }
 
-        .buttons {
-            margin-top: 20px;
+        .profile-buttons {
             display: flex;
             gap: 10px;
         }
 
-        .buttons button {
+        .profile-button {
             padding: 8px 16px;
-            font-size: 14px;
-            border: 1px solid #FFD700;
-            background-color: #FFF;
-            color: #FFD700;
-            border-radius: 5px;
+            background-color: transparent;
+            border: 2px solid #FFD700;
+            border-radius: 4px;
             cursor: pointer;
         }
 
-        .buttons button:hover {
-            background-color: #FFD700;
-            color: #fff;
-        }
-
-        .section {
-            margin-bottom: 20px;
-        }
-
-        .section h3 {
-            font-size: 16px;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .tags {
+        .tabs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
+            margin-bottom: -1px;
+            position: relative;
+            z-index: 1;
         }
 
-        .tag {
+        .tab {
+            padding: 10px 30px;
             background-color: #FFD700;
-            color: #fff;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 12px;
-        }
-
-        .save-button {
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        .save-button button {
-            padding: 10px 20px;
-            font-size: 14px;
-            background-color: #FFD700;
-            color: #fff;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
+            position: relative;
+            margin-right: 5px;
+            clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
+            min-width: 120px;
+            text-align: center;
         }
 
-        .save-button button:hover {
-            background-color: #FFC107;
-        }
-        .dropdown {
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 10px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 16px;
-            color: #333;
+        .tab:hover {
+            background-color: #FFE44D;
         }
 
-        .dropdown:after {
-            content: '▼';
-            font-size: 12px;
-            color: #aaa;
+        .tab.active {
+            background-color: #FFE44D;
         }
 
-        .dropdown.active:after {
-            content: '▲';
-        }
-
-        .dropdown-content {
+        .content-area {
+            background-color: white;
+            padding: 20px;
+            border-radius: 0 0 8px 8px;
+            min-height: 400px;
             display: none;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-top: none;
-            font-size: 14px;
-            color: #555;
         }
 
-        .dropdown-content.active {
+        .content-area.active {
             display: block;
+        }
+
+        /**/
+        .content-container {
+            background-color: #feedaa;
+            padding: 20px;
+            border-radius: 15px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .topic-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+        
+        .category-circle {
+            background-color: #2e7d32;
+            color: white;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            flex-shrink: 0;
+            margin-right: 20px;
+            font-size: 14px;
+            line-height: 1.2;
+        }
+        
+        .topic-title {
+            flex-grow: 1;
+            font-size: 1.2em;
+        }
+        
+        .topic-stats {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .comment-icon {
+            width: 20px;
+            height: 20px;
         }
     </style>
 </head>
 <body>
+    <div class="header">
+        <h1>公共政策網路參與平台</h1>
+    </div>
 
-    <!-- Header -->
-    <header class="header">
-        <div class="logo">公共政策網路參與平臺</div>
-    </header>
-
-    <!-- Main Container -->
     <div class="container">
-        <!-- Profile Header -->
-        <div class="profile-header">
-            <img src="{{ url_for('static', filename='img/' + user.profileData) }}" alt="Profile Picture">
-            <div class="name">會員姓名: {{ user.name }}</div>
-        </div>
-
-        <!-- Buttons -->
-        <div class="buttons">
-            <button>修改密碼</button>
-            <button>基本資料</button>
-            <button>我的文章</button>
-        </div>
-
-        <!-- Sections -->
-
-
-        <div class="container">
-            <!-- 折疊區塊 -->
-            <div class="section">
-                <div class="dropdown" onclick="toggleDropdown('dropdown1')">
-                    我的提議
-                </div>
-                <div class="dropdown-content" id="dropdown1">
-                    這裡是提點子的詳細內容，可以根據需求展示相關資訊。
-                </div>
+        <div class="profile-section">
+            <img src="{{ url_for('static', filename='img/default-avatar.png') }}" alt="用戶頭像" class="profile-image">
+            <div class="profile-info">
+                <p>會員姓名：{{ user.name }}</p>
             </div>
-        
-            <div class="section">
-                <div class="dropdown" onclick="toggleDropdown('dropdown2')">
-                    我的草稿
-                </div>
-                <div class="dropdown-content" id="dropdown2">
-                    這裡是眾開講的詳細內容，可以根據需求展示相關資訊。
-                </div>
-            </div>
-        
-            <div class="section">
-                <div class="dropdown" onclick="toggleDropdown('dropdown3')">
-                    我的收藏
-                </div>
-                <div class="dropdown-content" id="dropdown3">
-                    這裡是來監督的詳細內容，可以根據需求展示相關資訊。
-                </div>
+            <div class="profile-buttons">
+                <a href="{{ url_for('memberEdit') }}" class="profile-button">修改個人資料</a>
+                <a href="{{ url_for('editPWD') }}" class="profile-button">修改密碼</a>
             </div>
         </div>
-        
-        <script>
-            // 切換折疊內容
-            function toggleDropdown(id) {
-                const content = document.getElementById(id);
-                const dropdown = content.previousElementSibling;
-        
-                if (content.classList.contains('active')) {
-                    content.classList.remove('active');
-                    dropdown.classList.remove('active');
-                } else {
-                    content.classList.add('active');
-                    dropdown.classList.add('active');
-                }
-            }
-        </script>
 
-        <!-- Save Button -->
-        <div class="save-button">
-            <button>儲存</button>
+        <div class="tabs">
+            <button class="tab" data-tab="collections">我的收藏</button>
+            <button class="tab" data-tab="votes">我的投票</button>
+            <button class="tab" data-tab="comments">我的留言</button>
+            <button class="tab" data-tab="proposals">我的提案</button>
+            <button class="tab" data-tab="drafts">我的草稿</button>
+        </div>
+
+        <div id="collections" class="content-area">
+            <div class="content-container">
+        
+                <!-- Flask Jinja2 template for iterating through topics -->
+                {% for topic in topics %}
+                <div class="topic-item">
+                    <div class="category-circle">
+                        {{ topic.category }}
+                    </div>
+                    <div class="topic-title">
+                        {{ topic.title }}
+                    </div>
+                    <div class="topic-stats">
+                        <div class="stat-item">
+                            投票數：{{ topic.votes }}
+                        </div>
+                        <div class="stat-item">
+                            <img src="{{ url_for('static', filename='comment-icon.png') }}" alt="留言" class="comment-icon">
+                            ：{{ topic.comments }}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div id="votes" class="content-area">
+            <!-- 投票內容將由AJAX動態載入 -->
+        </div>
+        <div id="comments" class="content-area">
+            <!-- 留言內容將由AJAX動態載入 -->
+        </div>
+        <div id="proposals" class="content-area">
+            <!-- 提案內容將由AJAX動態載入 -->
+        </div>
+        <div id="drafts" class="content-area">
+            <!-- 草稿內容將由AJAX動態載入 -->
         </div>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.tab');
+            const contentAreas = document.querySelectorAll('.content-area');
+
+            async function fetchTabContent(tabName) {
+                try {
+                    const response = await fetch(`{{ url_for('get_tab_content') }}?tab=${tabName}`);
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    const data = await response.json();
+                    
+                    // 使用獲取的數據更新對應的content area
+                    const contentArea = document.getElementById(tabName);
+                    contentArea.innerHTML = data.html;  // 後端返回的HTML內容
+                } catch (error) {
+                    console.error('Error fetching tab content:', error);
+                }
+            }
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // 移除所有active類
+                    tabs.forEach(t => t.classList.remove('active'));
+                    contentAreas.forEach(area => area.classList.remove('active'));
+
+                    // 添加active類到當前tab
+                    tab.classList.add('active');
+                    const tabName = tab.dataset.tab;
+                    const content = document.getElementById(tabName);
+                    content.classList.add('active');
+
+                    // 獲取該tab的內容
+                    fetchTabContent(tabName);
+                });
+            });
+        });
+    </script>
 </body>
 </html>
