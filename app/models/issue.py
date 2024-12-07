@@ -9,7 +9,8 @@ class Issue(db.Model):
     description = db.Column(db.Text, nullable=False)
     publishTime = db.Column(db.DateTime, nullable=False)
     deadline = db.Column(db.DateTime, nullable=True)
-    attachment = db.Column(db.String(255), nullable=True)
+    attachment_1 = db.Column(db.String(255), nullable=True)
+    attachment_2 = db.Column(db.String(255), nullable=True)
     is_review = db.Column(db.Boolean, default=False)
     status = db.Column(db.Boolean, default=False)
 
