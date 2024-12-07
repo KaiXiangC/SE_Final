@@ -55,12 +55,17 @@
             border-radius: 4px;
             cursor: pointer;
         }
+        .profile-button:hover {
+            background-color: #FFD700;
+            color: #4A4A4A;
+        }
 
         .tabs {
             display: flex;
             margin-bottom: -1px;
             position: relative;
             z-index: 1;
+            margin-left: 20%;
         }
 
         .tab {
@@ -70,9 +75,11 @@
             cursor: pointer;
             position: relative;
             margin-right: 5px;
-            clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
+            clip-path: polygon(15% 0%, 71% 0%, 85% 100%, 25% 100%);
             min-width: 120px;
             text-align: center;
+            text-decoration-line: none;
+            color:#000;
         }
 
         .tab:hover {
@@ -89,12 +96,19 @@
             border-radius: 0 0 8px 8px;
             min-height: 400px;
             display: none;
+            width: 70%; /* 寬度設為70% */
+            margin: 20px auto; /* 使 .content-area 水平居中，並增加一些垂直邊距 */
         }
-
+        
         .content-area.active {
             display: block;
         }
+        .profile-button {
+            color: #000; /* 修改文字顏色，可以換成你想要的顏色 */
+            text-decoration: none; /* 去掉底線 */
+        }
 
+        
         /**/
         .content-container {
             background-color: #feedaa;
@@ -148,6 +162,59 @@
             width: 20px;
             height: 20px;
         }
+        /*comment css*/
+        .messages-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .message-card {
+            background-color: #feedaa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .message-header {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .category-icon {
+            width: 4rem;
+            height: 4rem;
+            background-color: #2E7D32;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-right: 1rem;
+            flex-shrink: 0;
+            padding: 0.5rem;
+        }
+
+        .message-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+
+        .message-content {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            margin-left: 5rem;
+        }
+
+        .message-text {
+            margin: 0.5rem 0;
+        }
     </style>
 </head>
 <body>
@@ -168,88 +235,117 @@
         </div>
 
         <div class="tabs">
-            <button class="tab" data-tab="collections">我的收藏</button>
-            <button class="tab" data-tab="votes">我的投票</button>
-            <button class="tab" data-tab="comments">我的留言</button>
-            <button class="tab" data-tab="proposals">我的提案</button>
-            <button class="tab" data-tab="drafts">我的草稿</button>
+            <a href="{{ url_for('index', tab='proposals') }}" class="tab">我的提案</a>
+            <a href="{{ url_for('index', tab='drafts') }}" class="tab">我的草稿</a>
+            <a href="{{ url_for('index', tab='votes') }}" class="tab">我的投票</a>
+            <a href="{{ url_for('index', tab='collections') }}" class="tab">我的收藏</a>
+            <a href="{{ url_for('index', tab='comments') }}" class="tab">我的留言</a>
         </div>
 
-        <div id="collections" class="content-area">
+        <div class="content-area">
+            <!-- 根據Flask動態渲染對應Tab內容 -->
             <div class="content-container">
-        
-                <!-- Flask Jinja2 template for iterating through topics -->
-                {% for topic in topics %}
-                <div class="topic-item">
-                    <div class="category-circle">
-                        {{ topic.category }}
-                    </div>
-                    <div class="topic-title">
-                        {{ topic.title }}
-                    </div>
-                    <div class="topic-stats">
-                        <div class="stat-item">
-                            投票數：{{ topic.votes }}
+                {% if tab == 'proposals' %}
+                    {% for proposal in proposals %}
+                        <div class="topic-item">
+                            <div class="category-circle">{{ proposal.category }}</div>
+                            <div class="topic-title">{{ proposal.title }}</div>
+                            <div class="topic-stats">
+                                <div class="stat-item">投票數：{{ proposal.votes }}</div>
+                                <div class="stat-item">留言數：{{ proposal.comments }}</div>
+                            </div>
                         </div>
-                        <div class="stat-item">
-                            <img src="{{ url_for('static', filename='comment-icon.png') }}" alt="留言" class="comment-icon">
-                            ：{{ topic.comments }}
+                    {% endfor %}
+                {% elif tab == 'drafts' %}
+                    {% for draft in drafts %}
+                        <div class="topic-item">
+                            <div class="category-circle">{{ draft.category }}</div>
+                            <div class="topic-title">{{ draft.title }}</div>
+                            <div class="topic-stats">
+                                <div class="stat-item">投票數：{{ draft.votes }}</div>
+                                <div class="stat-item">留言數：{{ draft.comments }}</div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                {% endfor %}
+                    {% endfor %}
+                {% elif tab == 'votes' %}
+                    {% for vote in votes %}
+                        <div class="topic-item">
+                            <div class="category-circle">{{ vote.category }}</div>
+                            <div class="topic-title">{{ vote.title }}</div>
+                            <div class="topic-stats">
+                                <div class="stat-item">投票數：{{ vote.votes }}</div>
+                                <div class="stat-item">留言數：{{ vote.comments }}</div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% elif tab == 'collections' %}
+                    {% for collection in collections %}
+                        <div class="topic-item">
+                            <div class="category-circle">{{ collection.category }}</div>
+                            <div class="topic-title">{{ collection.title }}</div>
+                            <div class="topic-stats">
+                                <div class="stat-item">投票數：{{ collection.votes }}</div>
+                                <div class="stat-item">留言數：{{ collection.comments }}</div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% elif tab == 'comments' %}
+                    {% for comment in commentss %}
+                        <div class="message-card">
+                            <div class="message-header">
+                                <div class="category-icon">{{ comment.name }}</div>
+                                <div class="message-title">{{ comment.title }}</div>
+                            </div>
+                            <div class="message-content">
+                                {% for content_line in comment.content.split('\n') %}
+                                <p class="message-text">你的留言：{{ content_line }}</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
-        <div id="votes" class="content-area">
-            <!-- 投票內容將由AJAX動態載入 -->
-        </div>
-        <div id="comments" class="content-area">
-            <!-- 留言內容將由AJAX動態載入 -->
-        </div>
-        <div id="proposals" class="content-area">
-            <!-- 提案內容將由AJAX動態載入 -->
-        </div>
-        <div id="drafts" class="content-area">
-            <!-- 草稿內容將由AJAX動態載入 -->
-        </div>
+        
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const tabs = document.querySelectorAll('.tab');
-            const contentAreas = document.querySelectorAll('.content-area');
-
-            async function fetchTabContent(tabName) {
-                try {
-                    const response = await fetch(`{{ url_for('get_tab_content') }}?tab=${tabName}`);
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    const data = await response.json();
-                    
-                    // 使用獲取的數據更新對應的content area
-                    const contentArea = document.getElementById(tabName);
-                    contentArea.innerHTML = data.html;  // 後端返回的HTML內容
-                } catch (error) {
-                    console.error('Error fetching tab content:', error);
-                }
-            }
-
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    // 移除所有active類
-                    tabs.forEach(t => t.classList.remove('active'));
-                    contentAreas.forEach(area => area.classList.remove('active'));
-
-                    // 添加active類到當前tab
-                    tab.classList.add('active');
-                    const tabName = tab.dataset.tab;
-                    const content = document.getElementById(tabName);
-                    content.classList.add('active');
-
-                    // 獲取該tab的內容
-                    fetchTabContent(tabName);
-                });
-            });
-        });
-    </script>
 </body>
 </html>
+
+
+<!--
+from flask import Flask, render_template, request
+
+app = Flask(__name__)
+
+# 模擬數據
+user = {"name": "John Doe"}
+proposals = [{"category": "環境保護", "title": "減少碳排放", "votes": 100, "comments": 50}]
+drafts = [{"category": "教育改革", "title": "免費高等教育", "votes": 80, "comments": 40}]
+votes = [{"category": "交通建設", "title": "增加公共交通", "votes": 200, "comments": 70}]
+collections = [{"category": "健康政策", "title": "推動健保改革", "votes": 150, "comments": 60}]
+commentss = [{"name": "衛生勞動", "title": "周休三日", "content": "生活與工作需要取得平衡"}]
+
+@app.route('/')
+def index():
+    tab = request.args.get('tab', 'proposals')  # 默認顯示 'proposals'
+    return render_template('member.html', 
+                           user=user, 
+                           proposals=proposals, 
+                           drafts=drafts, 
+                           votes=votes, 
+                           collections=collections, 
+                           commentss=commentss, 
+                           tab=tab)
+
+@app.route('/memberEdit')
+def memberEdit():
+    return "Edit Member"
+
+@app.route('/editPWD')
+def editPWD():
+    return "Edit Password"
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+-->

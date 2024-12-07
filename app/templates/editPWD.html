@@ -6,16 +6,38 @@
     <title>變更密碼</title>
     <style>
         body {
+            margin: 0;
             font-family: Arial, sans-serif;
+        }
+
+        header {
+            background-color: #367039;
+            color: white;
+            padding: 15px 20px;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        header a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+            padding: 8px 15px;
+            border: 1px solid white;
+            border-radius: 4px;
+            background-color: transparent;
+            transition: all 0.3s ease;
+        }
+        header a:hover {
+            background-color: white;
+            color: #2c5282;
         }
 
         h1 {
             font-size: 2.5em;
             margin-bottom: 40px;
+            text-align: center;
         }
 
         .form-container {
@@ -24,6 +46,7 @@
             padding: 30px;
             width: 100%;
             max-width: 500px;
+            margin: 0 auto;
         }
 
         .form-group {
@@ -77,6 +100,10 @@
     </style>
 </head>
 <body>
+    <header>
+        <!-- 返回查看議題 -->
+        <a href="{{ url_for('member') }}" ><i class="fas fa-arrow-left"></i> 返回</a>
+    </header>
     <h1>變更密碼</h1>
 
     <form id="password-form" method="POST" action="{{ url_for('update_password') }}" onsubmit="return validateForm()">
@@ -97,7 +124,6 @@
         </div>
 
         <div class="button-container">
-            <button type="button" class="button">取消</button>
             <button type="submit" class="button">確認變更</button>
         </div>
     </form>

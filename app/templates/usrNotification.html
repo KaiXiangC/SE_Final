@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的通知</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: white;
+        }
+        header {
+            background-color: #367039;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        header a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+            padding: 8px 15px;
+            border: 1px solid white;
+            border-radius: 4px;
+            background-color: transparent;
+            transition: all 0.3s ease;
+        }
+        header a:hover {
+            background-color: white;
+            color: #2c5282;
+        }
+        .back-link {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        main {
+            padding: 1rem;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .notification-card {
+            background-color: #feedaa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: flex-start;
+        }
+        .category-icon {
+            width: 4rem;
+            height: 4rem;
+            background-color: #2E7D32;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 0.8rem;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        .notification-content {
+            flex-grow: 1;
+        }
+        .notification-header {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 0.5rem;
+        }
+        .notification-time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .notification-description {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <!-- 返回查看議題 -->
+        <a href="{{ url_for('member_homepage') }}" ><i class="fas fa-arrow-left"></i> 返回</a>
+        </header>
+
+    <main>
+        <h1>我的通知</h1>
+        
+        {% for notification in notifications %}
+        <div class="notification-card">
+            <div class="category-icon">
+                {{ notification.name }}
+            </div>
+            <div class="notification-content">
+                <div class="notification-header">
+                    <div class="notification-time">{{ notification.notificationTime }}</div>
+                </div>
+                <div class="notification-description">{{ notification.content }}</div>
+            </div>
+        </div>
+        {% endfor %}
+    </main>
+</body>
+</html>

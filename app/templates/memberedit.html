@@ -7,15 +7,36 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 0;
+        }
+        header {
+            background-color: #367039;
+            color: white;
+            padding: 15px 20px;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        header a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+            padding: 8px 15px;
+            border: 1px solid white;
+            border-radius: 4px;
+            background-color: transparent;
+            transition: all 0.3s ease;
+        }
+        header a:hover {
+            background-color: white;
+            color: #2c5282;
         }
 
         h1 {
             font-size: 2.5em;
             margin-bottom: 40px;
+            text-align: center;
         }
 
         .profile-container {
@@ -24,6 +45,7 @@
             align-items: center;
             width: 100%;
             max-width: 500px;
+            margin: 0 auto;
         }
 
         .profile-image-container {
@@ -98,6 +120,10 @@
     </style>
 </head>
 <body>
+    <header>
+        <!-- 返回查看議題 -->
+        <a href="{{ url_for('member') }}" ><i class="fas fa-arrow-left"></i> 返回</a>
+    </header>
     <h1>修改用戶資料</h1>
 
     <div class="profile-container">
@@ -118,36 +144,9 @@
             </div>
 
             <div class="button-container">
-                <input type="file" id="file-input" accept="image/*">
-                <button type="button" class="button" onclick="document.getElementById('file-input').click()">更新頭貼</button>
                 <button type="submit" class="button">確認變更</button>
             </div>
         </form>
     </div>
-
-    <script>
-        // Handle profile image upload
-        document.getElementById('file-input').addEventListener('change', async function(e) {
-            if (e.target.files && e.target.files[0]) {
-                const formData = new FormData();
-                formData.append('image', e.target.files[0]);
-
-                try {
-                    const response = await fetch('{{ url_for("update_profile_image") }}', {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    if (response.ok) {
-                        const data = await response.json();
-                        // Update the profile image with the new one
-                        document.getElementById('preview-image').src = "{{ url_for('static', filename='img/') }}" + data.filename + "?t=" + new Date().getTime();
-                    }
-                } catch (error) {
-                    console.error('Error uploading image:', error);
-                }
-            }
-        });
-    </script>
 </body>
 </html>
