@@ -18,7 +18,9 @@ def create_app():
     login_manager.login_view = 'login'
     # 測試組用Blueprint
     from app.routes import routes_bp
+    from .routes.issue import issue_bp
     app.register_blueprint(routes_bp, url_prefix='/test')  # 您可以根據需要更改 url_prefix
+    app.register_blueprint(issue_bp, url_prefix='/issue')
 
     from app.routes.main import configure_routes
     configure_routes(app)

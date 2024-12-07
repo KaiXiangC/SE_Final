@@ -108,6 +108,16 @@
             font-size: 1em;
             margin: 20px 0;
         }
+        .voted-button {
+            background-color: darkgray;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 20px 0;
+        }
 
         .comments-section {
             margin-top: 30px;
@@ -189,6 +199,7 @@
             cursor: pointer;
         }
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <header>
@@ -222,11 +233,62 @@
         <div class="description">
             {{ issue.description }}
         </div>
+        {% if has_voted %}
+            <form id="cancel-vote-form" method="POST">
+                <button class="voted-button" type="submit">取消投票</button>
+            </form>
+            <script>
+        $(document).ready(function() {
+            $('#cancel-vote-form').on('submit', function(event) {
+                event.preventDefault();
 
-        <a href="{{ url_for('usr_vote') }}">
-            <button class="vote-button">我要投票！</button>
-        </a>
+                $.ajax({
+                    url: "{{ url_for('issue.cancel_vote', issueID=issueID) }}",
+                    type: "POST",
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            alert(response.message);
+                            location.reload();  // 更新頁面
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function() {
+                        alert("發生錯誤，請稍後再試。");
+                    }
+                });
+            });
+        });
+    </script>
+        {% else %}
+           <form id="vote-form" method="POST">
+                <button class="vote-button" type="submit">我要投票！</button>
+           </form>
+            <script>
+            $(document).ready(function() {
+                $('#vote-form').on('submit', function(event) {
+                    event.preventDefault();
 
+                    // 發送AJAX請求
+                    $.ajax({
+                        url: "{{ url_for('issue.vote', issueID=issueID) }}",
+                        type: "POST",
+                        success: function(response) {
+                            if (response.status === 'success') {
+                                alert(response.message);
+                                location.reload();  // 更新頁面
+                            } else {
+                                alert(response.message);
+                            }
+                        },
+                        error: function() {
+                            alert("發生錯誤，請稍後再試。");
+                        }
+                    });
+                });
+            });
+            </script>
+        {% endif %}
         <div class="comments-section">
             <h3>留言</h3>
             <div class="comments-container">
@@ -237,11 +299,38 @@
                 </div>
                 {% endfor %}
             </div>
-
-            <form action="{{ url_for('maintenance_notice') }}" method="POST" class="comment-form">
+            <form id="comment-form" class="comment-form">
                 <input type="text" name="comment" placeholder="留個言吧..." required class="comment-input">
                 <button type="submit" class="submit-button">提交</button>
             </form>
+            <script>
+                $(document).ready(function() {
+                    // 當表單提交時觸發
+                    $('#comment-form').on('submit', function(event) {
+                        event.preventDefault(); // 防止表單默認提交
+
+                        var commentContent = $('input[name="comment"]').val(); // 獲取評論內容
+
+                        // 發送 AJAX 請求
+                        $.ajax({
+                            url: "{{ url_for('issue.add_comment', issueID=issueID) }}", // URL
+                            type: "POST", // 方法
+                            data: { 'comment': commentContent }, // 傳送的數據
+                            success: function(response) {
+                                if (response.status === 'success') {
+                                    alert(response.message);
+                                    location.reload(); // 重載頁面
+                                } else {
+                                    alert(response.message);
+                                }
+                            },
+                            error: function() {
+                                alert("發生錯誤，請稍後再試。");
+                            }
+                        });
+                    });
+                });
+            </script>
         </div>
     </div>
     <div id="imageModal" class="modal">
