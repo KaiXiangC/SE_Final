@@ -279,23 +279,27 @@
         <!-- 投票與收藏 -->
         <div class="action-buttons">
             {% if has_voted %}
-            <button class="button voted-button" onclick="location.href='{{ url_for('cancel_vote', issueID=issue.id) }}'">
+            <!-- <button class="button voted-button" onclick="location.href='{{ url_for('cancel_vote', issueID=issue.id) }}'">
                 取消投票
-            </button>
+            </button> -->
+            <a href="{{ url_for('cancel_vote', issueID=issue.id) }}" class="button voted-button" onclick="buttonClicked(this)">取消投票</a>
             {% else %}
-            <button class="button vote-button" onclick="location.href='{{ url_for('vote', issueID=issue.id) }}'">
+            <!-- <button class="button vote-button" onclick="location.href='{{ url_for('vote', issueID=issue.id) }}'">
                 我要投票！
-            </button>
+            </button> -->
+            <a href="{{ url_for('vote', issueID=issue.id) }}" class="button voted-button" onclick="buttonClicked(this)">我要投票！</a>
             {% endif %}
 
             {% if has_favorited %}
-            <button class="button voted-button" onclick="location.href='{{ url_for('cancel_favorite', issueID=issue.id) }}'">
+            <!-- <button class="button favorite-button" onclick="location.href='{{ url_for('cancel_favorite', issueID=issue.id) }}'">
                 取消收藏
-            </button>
+            </button> -->
+            <a href="{{ url_for('cancel_favorite', issueID=issue.id) }}" class="button favorite-button" onclick="buttonClicked(this)">取消收藏</a>
             {% else %}
-            <button class="button favorite-button" onclick="location.href='{{ url_for('favorite', issueID=issue.id) }}'">
+            <!-- <button class="button favorite-button" onclick="location.href='{{ url_for('favorite', issueID=issue.id) }}'">
                 收藏
-            </button>
+            </button> -->
+            <a href="{{ url_for('cancel_favorite', issueID=issue.id) }}" class="button favorite-button" onclick="buttonClicked(this)">收藏</a>
             {% endif %}
 
             <span>投票數：{{ vote_count }}</span>
