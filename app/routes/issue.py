@@ -213,23 +213,32 @@ def allowed_file(filename):
 
 
 @issue_bp.route('/process_issue', methods=['GET', 'POST'])
+@issue_bp.route('/process_issue/<int:issueID>', methods=['GET', 'POST'])
 @login_required
-def new_issue():
+def new_issue(issueID=None):
     if request.method == 'GET':
         categories = Category.query.all()  # 查詢所有類別
-        return render_template('add_issue.html', categories=categories)
+        if issueID:
+            issue = Issue.query.get_or_404(issueID)
+            if issue.userID != current_user.userID or issue.status != 0:
+                flash('這個議題無法編輯', 'warning')
+                print("aaa")
+                return redirect(url_for('index'))  # 如果不是該用戶的暫存議題，則跳轉
+            return render_template('add_issue.html', categories=categories, issue=issue)
+        else:
+            return render_template('add_issue.html', categories=categories)
 
     # POST 請求處理表單提交
     title = request.form.get('title')
     description = request.form.get('description')
     category_id = request.form.get('category')
-    action = request.form.get('action')
+    action_1 = request.form.get('action_1')  # 會收到 "add" 或 "save"
     attachment = request.files.get('attachment')
     attachment_2 = request.files.get('attachment_2')
 
     if not title or not description or not category_id:
         flash('所有必填欄位都必須填寫！', 'warning')
-        return redirect(url_for('issue.new_issue'))
+        return redirect(url_for('issue.process_issue', issueID=issueID))
 
     def save_attachment(attachment):
         if attachment and allowed_file(attachment.filename):
@@ -241,22 +250,37 @@ def new_issue():
 
     attachment_filename_1 = save_attachment(attachment)
     attachment_filename_2 = save_attachment(attachment_2)
-    # 處理附件
-    if action == 'save':
+
+    if action_1 == 'save':
         # 創建議題
-        new_issue = Issue(
-            title=title,
-            description=description,
-            categoryID=category_id,
-            userID=current_user.userID,
-            attachment_1=attachment_filename_1,
-            attachment_2=attachment_filename_2,
-            publishTime=datetime.now(),
-            status=0 if action == 'save' else 1
-        )
-        db.session.add(new_issue)
-        db.session.commit()
-        return redirect(url_for('issue.issue_detail', issueID=new_issue.issueID))
+        if issueID:
+            issue = Issue.query.get_or_404(issueID)
+            # 更新議題
+            issue.title = title
+            issue.description = description
+            issue.categoryID = category_id
+            issue.attachment_1 = attachment_filename_1
+            issue.attachment_2 = attachment_filename_2
+            issue.status = 0  # 確保為暫存狀態
+            db.session.commit()
+            flash('議題已保存', 'info')
+            return redirect(url_for('issue.issue_detail', issueID=issue.issueID))
+        else:
+            # 創建新議題
+            new_issue = Issue(
+                title=title,
+                description=description,
+                categoryID=category_id,
+                userID=current_user.userID,
+                attachment_1=attachment_filename_1,
+                attachment_2=attachment_filename_2,
+                publishTime=datetime.now(),
+                status=0  # 暫存狀態
+            )
+            db.session.add(new_issue)
+            db.session.commit()
+            flash('議題已暫存', 'info')
+            return redirect(url_for('issue.issue_detail', issueID=new_issue.issueID))
 
     categories = Category.query.all()  # 假設有 Category 模型
     return render_template(
@@ -269,6 +293,9 @@ def new_issue():
         selected_category=int(category_id),
         proposer_name=current_user.name
     )
+
+
+
 
 
 @issue_bp.route('/finalize_issue', methods=['GET', 'POST'])
