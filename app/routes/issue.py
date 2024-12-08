@@ -1,20 +1,27 @@
+import os
+
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import current_user, login_required
 from datetime import datetime
-from app.models.issue import Issue
-from app.models.user import User
-from app.models.comment import Comment
-from app.models.vote import Vote
+
+from werkzeug.utils import secure_filename
+
+from app.models import Vote, Category, Comment, Issue, User
 from flask import jsonify
 from .. import db
 
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 issue_bp = Blueprint('issue', __name__)
+UPLOAD_FOLDER = os.path.join('app', 'static', 'img')
 
 @issue_bp.route('/<int:issueID>')
 def issue_detail(issueID):
     # 查詢議題
     issue = Issue.query.get_or_404(issueID)
-
+    if issue.status == 0:
+        flash('該議題尚未公開，無法檢視。', 'warning')
+        return redirect(url_for('index'))  # 導回首頁
     # 格式化剩餘時間
     deadline_str = None
     if issue.deadline:
@@ -115,6 +122,116 @@ def cancel_vote(issueID):
 
     return jsonify({'status': 'success', 'message': '投票已取消！'})
 
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@issue_bp.route('/process_issue', methods=['GET', 'POST'])
+@login_required
+def new_issue():
+    if request.method == 'GET':
+        categories = Category.query.all()  # 查詢所有類別
+        return render_template('add_issue.html', categories=categories)
+
+    # POST 請求處理表單提交
+    title = request.form.get('title')
+    description = request.form.get('description')
+    category_id = request.form.get('category')
+    action = request.form.get('action')
+    attachment = request.files.get('attachment')
+    attachment_2 = request.files.get('attachment_2')
+
+    if not title or not description or not category_id:
+        flash('所有必填欄位都必須填寫！', 'warning')
+        return redirect(url_for('issue.new_issue'))
+
+    def save_attachment(attachment):
+        if attachment and allowed_file(attachment.filename):
+            filename = secure_filename(attachment.filename)
+            file_path = os.path.join(UPLOAD_FOLDER, filename)
+            attachment.save(file_path)
+            return filename
+        return None
+
+    attachment_filename_1 = save_attachment(attachment)
+    attachment_filename_2 = save_attachment(attachment_2)
+    # 處理附件
+    if action == 'save':
+        # 創建議題
+        new_issue = Issue(
+            title=title,
+            description=description,
+            categoryID=category_id,
+            userID=current_user.userID,
+            attachment_1=attachment_filename_1,
+            attachment_2=attachment_filename_2,
+            publishTime=datetime.now(),
+            status=0 if action == 'save' else 1
+        )
+        db.session.add(new_issue)
+        db.session.commit()
+        return redirect(url_for('issue.issue_detail', issueID=new_issue.issueID))
+
+    categories = Category.query.all()  # 假設有 Category 模型
+    return render_template(
+        'finish_issue.html',
+        title=title,
+        description=description,
+        attachment_1=attachment_filename_1,
+        attachment_2=attachment_filename_2,
+        categories=categories,
+        selected_category=int(category_id),
+        proposer_name=current_user.name
+    )
+
+
+@issue_bp.route('/finalize_issue', methods=['GET', 'POST'])
+def finalize_issue():
+
+    if request.method == 'POST':
+        action = request.form.get('action')
+        title = request.form.get('title')  # 從表單中獲取
+        description = request.form.get('description')  # 從表單中獲取
+        attachment_1 = request.form.get('attachment_1')
+        attachment_2 = request.form.get('attachment_2')
+        category_id = request.form.get('category')
+
+        if not title or not description or not category_id:
+            flash('請確保所有欄位都已填寫！', 'danger')
+            return redirect(url_for('issue.finalize_issue'))
+        # 儲存最終資料到資料庫
+        if action == 'add':
+            # 儲存議題
+            new_issue = Issue(
+                title=title,
+                description=description,
+                categoryID=category_id,
+                userID=current_user.userID,
+                attachment_1=attachment_1,
+                attachment_2=attachment_2,
+                publishTime=datetime.now(),
+                status=1  # 假設為草稿狀態
+            )
+
+            db.session.add(new_issue)
+            db.session.commit()
+            flash('議題成功新增!', 'success')
+            return redirect(url_for('issue.issue_detail', issueID=new_issue.issueID))
+
+
+
+        return redirect(url_for('index'))  # 取消或其他操作
+
+    categories = Category.query.all()
+    return render_template(
+        'finish_issue.html',
+        title=request.args.get('title'),  # 可以從 URL 參數中獲取
+        description=request.args.get('description'),  # 可以從 URL 參數中獲取
+        attachment_1=request.args.get('attachment_1'),
+        attachment_2=request.args.get('attachment_2'),
+        categories=categories,
+        selected_category=request.args.get('category_id')
+    )
 
 # @issue_bp.route('/issue/<int:issueID>/comment', methods=['POST'])
 # @login_required
