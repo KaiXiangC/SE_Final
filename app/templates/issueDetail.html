@@ -154,17 +154,65 @@
         }
 
         .comments-container {
-            max-height: 300px;
-            overflow-y: auto;
-            margin-bottom: 20px;
+            max-height: 300px; /* 設定最大高度，超出部分滾動顯示 */
+            overflow-y: auto; /* 啟用垂直滾動條 */
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .comment {
-            background-color: #FFF3D4;
-            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
             margin-bottom: 10px;
-            border-radius: 8px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
+
+        .comment-username {
+            font-weight: bold;
+            color: #333;
+            white-space: nowrap; /* 確保名字不會換行 */
+        }
+
+        .comment-content {
+            flex: 1; /* 占用剩餘空間，讓內容自適應 */
+            color: #555;
+            word-wrap: break-word; /* 長單詞換行 */
+        }
+
+        .comment-time {
+            font-size: 0.9em;
+            color: #888;
+            white-space: nowrap; /* 確保時間不會換行 */
+        }
+
+        .no-comments {
+            text-align: center;
+            color: #888;
+            font-style: italic;
+        }
+
+        /* 自訂滾動條樣式（可選） */
+        .comments-container::-webkit-scrollbar {
+            width: 8px; /* 滾動條寬度 */
+        }
+
+        .comments-container::-webkit-scrollbar-thumb {
+            background-color: #888; /* 滾動條顏色 */
+            border-radius: 4px;
+        }
+
+        .comments-container::-webkit-scrollbar-thumb:hover {
+            background-color: #555; /* 滾動條懸停顏色 */
+        }
+
+
 
         .comment-form {
             display: flex;
@@ -172,6 +220,7 @@
         }
 
         .comment-input {
+            margin-top: 10px;
             flex: 1;
             padding: 10px;
             border: 1px solid #ddd;
@@ -179,7 +228,8 @@
         }
 
         .submit-button {
-            background-color: #4A4A4A;
+            margin-top: 10px;
+            background-color: #4CAF50;
             color: white;
             border: none;
             padding: 10px 20px;
@@ -255,14 +305,18 @@
         <div class="comments-section">
             <h3>留言</h3>
             <div class="comments-container">
-                {% for comment in comments %}
-                <div class="comment">
-                    <strong>{{ comment.username }}</strong>
-                    <p>{{ comment.content }}</p>
-                    <small>{{ comment.commentTime }}</small>
-                </div>
-                {% endfor %}
-            </div>
+                {% if comments %}
+                    {% for comment in comments %}
+                    <div class="comment">
+                        <span class="comment-username">{{ comment.username }}</span>
+                        <span class="comment-content">{{ comment.content }}</span>
+                        <span class="comment-time">{{ comment.commentTime.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="no-comments">暫無留言</p>
+                {% endif %}
+            </div>            
 
             <form action="{{ url_for('add_comment', issueID=issue.id) }}" method="POST" class="comment-form">
                 <input type="text" name="comment" placeholder="輸入留言..." required class="comment-input">
