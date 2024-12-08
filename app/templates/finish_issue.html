@@ -122,10 +122,12 @@
             <div style="display: flex; gap: 10px;">
                 {% if attachment_1 %}
                     <img src="{{ url_for('static', filename='img/' + attachment_1) }}" alt="Attachment 1" class="preview-image">
+                    <input type="hidden" name="attachment_1" value="{{ attachment_1 }}">
                 {% endif %}
 
                 {% if attachment_2 %}
                     <img src="{{ url_for('static', filename='img/' + attachment_2) }}" alt="Attachment 2" class="preview-image">
+                    <input type="hidden" name="attachment_2" value="{{ attachment_2 }}">
                 {% endif %}
             </div>
 <!--            <input type="file" id="attachment" name="attachment" accept="image/*">-->
