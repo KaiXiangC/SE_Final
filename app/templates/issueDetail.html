@@ -8,6 +8,273 @@
         body {
             margin: 0;
             font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+
+        header {
+            background-color: #367039;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        header a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+            padding: 8px 15px;
+            border: 1px solid white;
+            border-radius: 4px;
+            background-color: transparent;
+            transition: all 0.3s ease;
+        }
+
+        header a:hover {
+            background-color: white;
+            color: #2c5282;
+        }
+
+        .content {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .issue-header {
+            margin-bottom: 20px;
+        }
+
+        .status-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .status {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .status.voting {
+            color: blue;
+        }
+
+        .status.reviewing {
+            color: orange;
+        }
+
+        .status.passed {
+            color: green;
+        }
+
+        .status.closed {
+            color: red;
+        }
+
+        .remaining-time {
+            background-color: #FFD700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .username {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .images-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .issue-image {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .description {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .vote-button {
+            background-color: #2E7D32;
+        }
+
+        .vote-button:hover {
+            background-color: #1b5e20;
+        }
+
+        .voted-button {
+            background-color: darkgray;
+        }
+
+        .voted-button:hover {
+            background-color: gray;
+        }
+
+        .favorite-button {
+            background-color: #FFD700;
+            color: black;
+        }
+
+        .favorite-button:hover {
+            background-color: #FFC107;
+        }
+
+        .comments-section {
+            margin-top: 30px;
+        }
+
+        .comments-container {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .comment {
+            background-color: #FFF3D4;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        .comment-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .comment-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .submit-button {
+            background-color: #4A4A4A;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .submit-button:hover {
+            background-color: #2E7D32;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="{{ url_for('index') }}">返回首頁</a>
+    </header>
+
+    <div class="content">
+        <!-- 議題標題 -->
+        <div class="issue-header">
+            <h1>{{ issue.title }}</h1>
+        </div>
+
+        <!-- 目前進度與截止日期 -->
+        <div class="status-container">
+            <span class="status {{ issue.status_class }}">{{ issue.status }}</span>
+            <span class="remaining-time">截止日期：{{ issue.deadline }}</span>
+        </div>
+
+        <!-- 提議者 -->
+        <div class="username">
+            提議者：{{ issue.proposer }}
+        </div>
+
+        <!-- 議題圖片 -->
+        <div class="images-container">
+            {% if issue.attachment %}
+            <img src="{{ url_for('static', filename='img/' + issue.attachment) }}" alt="議題圖片" class="issue-image">
+            {% endif %}
+        </div>
+
+        <!-- 議題描述 -->
+        <div class="description">
+            {{ issue.description }}
+        </div>
+
+        <!-- 投票與收藏 -->
+        <div class="action-buttons">
+            {% if has_voted %}
+            <button class="button voted-button" onclick="location.href='{{ url_for('cancel_vote', issueID=issue.id) }}'">取消投票</button>
+            {% else %}
+            <button class="button vote-button" onclick="location.href='{{ url_for('vote', issueID=issue.id) }}'">我要投票！</button>
+            {% endif %}
+
+            {% if has_favorited %}
+            <button class="button voted-button" onclick="location.href='{{ url_for('cancel_favorite', issueID=issue.id) }}'">取消收藏</button>
+            {% else %}
+            <button class="button favorite-button" onclick="location.href='{{ url_for('favorite', issueID=issue.id) }}'">收藏</button>
+            {% endif %}
+
+            <span>投票數：{{ vote_count }}</span>
+        </div>
+
+        <!-- 留言 -->
+        <div class="comments-section">
+            <h3>留言</h3>
+            <div class="comments-container">
+                {% for comment in comments %}
+                <div class="comment">
+                    <strong>{{ comment.username }}</strong>
+                    <p>{{ comment.content }}</p>
+                    <small>{{ comment.commentTime }}</small>
+                </div>
+                {% endfor %}
+            </div>
+
+            <form action="{{ url_for('add_comment', issueID=issue.id) }}" method="POST" class="comment-form">
+                <input type="text" name="comment" placeholder="輸入留言..." required class="comment-input">
+                <button type="submit" class="submit-button">送出</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>議題詳情</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
         }
 
         header {
@@ -202,7 +469,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <header>
+    <header> 
         <!-- 返回查看議題 -->
         <a href="{{ url_for('propose') }}" ><i class="fas fa-arrow-left"></i> 返回</a>
         </header>
@@ -371,7 +638,7 @@
         }
     </script>
 </body>
-</html>
+</html> -->
 
 <!--
 @app.route('/issue/<int:issueID>')
