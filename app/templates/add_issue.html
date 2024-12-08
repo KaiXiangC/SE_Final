@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>新增議題</title>
+    <title>新增議題 / 編輯議題</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -99,8 +99,8 @@
     </style>
 </head>
 <body>
-    <h1>新增議題</h1>
-    <form action="/issue/process_issue" method="POST" enctype="multipart/form-data">
+    <h1>{{ '編輯議題' if issue else '新增議題' }}</h1>
+    <form action="{{ url_for('issue.new_issue', issueID=issue.issueID if issue else None) }}" method="POST" enctype="multipart/form-data">
         <!-- 進度條 -->
         <div>
             <label>目前進度：輸入提案內容</label>
@@ -109,13 +109,13 @@
         <!-- 議題標題 -->
         <div>
             <label for="title">議題標題：</label>
-            <textarea type="text" id="title" name="title" required></textarea>
+            <textarea type="text" id="title" name="title" required>{{ issue.title if issue else '' }}</textarea>
         </div>
 
         <!-- 內容描述 -->
         <div>
             <label for="description">內容描述：</label>
-            <textarea id="description" name="description" required></textarea>
+            <textarea id="description" name="description" required>{{ issue.description if issue else '' }}</textarea>
         </div>
 
         <!-- 選擇類別 -->
@@ -123,7 +123,9 @@
             <label for="category">請選擇類別：</label>
             <select id="category" name="category" required>
                 {% for category in categories %}
-                <option value="{{ category.categoryID }}">{{ category.name }}</option>
+                    <option value="{{ category.categoryID }}" {% if issue and category.categoryID == issue.categoryID %}selected{% endif %}>
+                        {{ category.name }}
+                    </option>
                 {% endfor %}
             </select>
         </div>
@@ -136,8 +138,8 @@
         </div>
 
         <!-- 操作按鈕 -->
-        <button type="addsubmit" name="action" value="add">新增議題</button>
-        <button type="savesubmit" name="action" value="save">暫存議題</button>
+        <button type="addsubmit" name="action_1" value="add">新增議題</button>
+        <button type="savesubmit" name="action_1" value="save">暫存議題</button>
         <button type="button" onclick="location.href='/'">取消</button>
     </form>
 </body>
