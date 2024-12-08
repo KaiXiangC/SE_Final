@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>預覽並送出議題</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #444;
+            margin-top: 20px;
+        }
+        form {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        textarea, select {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 1em;
+            padding: 10px;
+            width: 100%; /* 填滿容器 */
+            resize: none;
+            overflow: hidden; /* 隱藏滾動條 */
+            box-sizing: border-box; /* 包含內邊距與邊框 */
+        }
+
+        textarea {
+            min-height: 50px; /* 設定最小高度 */
+            max-height: 300px; /* 限制最大高度 */
+            overflow-y: auto; /* 如果內容過多，則出現滾動條 */
+        }
+        input[type="file"] {
+            border: none;
+        }
+        .buttons {
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button[type="submit"] {
+            background-color: #28a745;
+            color: white;
+        }
+        button[type="submit"]:hover {
+            background-color: #218838;
+        }
+        button[type="button"] {
+            background-color: #ffc107;
+            color: white;
+        }
+        button[type="button"]:hover {
+            background-color: #e0a800;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .preview-image {
+            max-width: 100%;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>預覽並送出議題</h1>
+    <form action="/finalize_issue" method="POST" enctype="multipart/form-data">
+        <label>目前進度：送出提案</label>
+        <!-- 提醒標籤 -->
+        <div class="error">請先預覽您的內容，並確認內容正確</div>
+        
+        <!-- 議題標題 -->
+        <div>
+            <label for="title">議題標題：</label>
+            <textarea id="title" name="title" required>{{ title }}</textarea>
+        </div>
+
+        <!-- 提議者 -->
+        <div>
+            <label>提議者：</label>
+            <span>{{ proposer_name }}</span>
+        </div>
+
+        <!-- 附加照片 -->
+        <div>
+            <label>附加照片：</label>
+            {% if attachment %}
+            <img src="{{ url_for('static', filename='uploads/' + attachment) }}" alt="Attachment" class="preview-image">
+            {% endif %}
+            <input type="file" id="attachment" name="attachment" accept="image/*">
+        </div>
+
+        <!-- 內容描述 -->
+        <div>
+            <label for="description">內容描述：</label>
+            <textarea id="description" name="description" required>{{ description }}</textarea>
+        </div>
+
+        <!-- 類別 -->
+        <div>
+            <label for="category">類別：</label>
+            <select id="category" name="category" required>
+                {% for category in categories %}
+                <option value="{{ category.categoryID }}" {% if category.categoryID == selected_category %}selected{% endif %}>
+                    {{ category.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- 操作按鈕 -->
+        <div class="buttons">
+            <button type="submit" name="action" value="add">新增議題</button>
+            <button type="button" onclick="location.href='/'">取消</button>
+        </div>
+    </form>
+</body>
+</html>
