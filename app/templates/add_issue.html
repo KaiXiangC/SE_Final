@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新增議題</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #444;
+            margin-top: 20px;
+        }
+        form {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff4cc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        textarea, select {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            padding: 10px;
+            width: 100%; /* 填滿容器 */
+            resize: none;
+            overflow: hidden; /* 隱藏滾動條 */
+            box-sizing: border-box; /* 包含內邊距與邊框 */
+        }
+
+        textarea {
+            min-height: 50px; /* 設定最小高度 */
+            max-height: 300px; /* 限制最大高度 */
+            overflow-y: auto; /* 如果內容過多，則出現滾動條 */
+        }
+
+        input[type="file"] {
+
+            border: none;
+        }
+        .buttons {
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button[type="addsubmit"] {
+            background-color: #4CAF50;
+            color: white;
+        }
+        button[type="addsubmit"]:hover {
+            background-color: #a3d0fa;
+        }
+        button[type="savesubmit"] {
+            background-color: #ffc107;
+            color: white;
+        }
+        button[type="savesubmit"]:hover {
+            background-color: #a3d0fa;
+        }
+        button[type="button"] {
+            background-color: #f44336;
+            color: white;
+        }
+        button[type="button"]:hover {
+            background-color: #a3d0fa;
+        }
+        .progress {
+            margin-bottom: 20px;
+            background: #eee;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .progress span {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>新增議題</h1>
+    <form action="/process_issue" method="POST" enctype="multipart/form-data">
+        <!-- 進度條 -->
+        <div>
+            <label>目前進度：輸入提案內容</label>
+        </div>
+        
+        <!-- 議題標題 -->
+        <div>
+            <label for="title">議題標題：</label>
+            <textarea type="text" id="title" name="title" required></textarea>
+        </div>
+
+        <!-- 內容描述 -->
+        <div>
+            <label for="description">內容描述：</label>
+            <textarea id="description" name="description" required></textarea>
+        </div>
+
+        <!-- 選擇類別 -->
+        <div>
+            <label for="category">請選擇類別：</label>
+            <select id="category" name="category" required>
+                {% for category in categories %}
+                <option value="{{ category.categoryID }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- 附加圖片 -->
+        <div>
+            <label for="attachment">附加照片：</label>
+            <input type="file" id="attachment" name="attachment" accept="image/*">
+        </div>
+
+        <!-- 操作按鈕 -->
+        <button type="addsubmit" name="action" value="add">新增議題</button>
+        <button type="savesubmit" name="action" value="save">暫存議題</button>
+        <button type="button" onclick="location.href='/'">取消</button>
+    </form>
+</body>
+</html>

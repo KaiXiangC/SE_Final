@@ -63,10 +63,10 @@ def search():
 
     return jsonify(results)
 
-@app.route('/propose_detail/<int:issueID>')
-def propose_detail(issueID):
+@app.route('/issue_detail/<int:issueID>')
+def issue_detail(issueID):
     issue = Issue.query.get_or_404(issueID)
-    return render_template('propose_detail.html', issue=issue)
+    return render_template('issue_detail.html', issue=issue)
 
 if __name__ == '__main__':
     app.run(debug=True)
