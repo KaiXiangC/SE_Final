@@ -6,7 +6,7 @@ from datetime import datetime
 
 from werkzeug.utils import secure_filename
 
-from app.models import Vote, Category, Comment, Issue, User
+from app.models import Vote, Category, Comment, Issue, User, Favorite
 from flask import jsonify
 from .. import db
 
@@ -35,6 +35,7 @@ def issue_detail(issueID):
     # 查詢相關評論
     comments = Comment.query.filter_by(issueID=issueID).order_by(Comment.commentTime.desc()).all()
 
+    vote_count = Vote.query.filter_by(issueID=issueID).count()
     # 查找每條評論的 username
     comments_data = []
     for comment in comments:
@@ -58,6 +59,7 @@ def issue_detail(issueID):
             'image2': issue.attachment_2,
             'description': issue.description
         },
+        vote_count=vote_count,
         comments=comments_data
     )
 
@@ -86,41 +88,125 @@ def add_comment(issueID):
     return jsonify({'status': 'success', 'message': '評論已提交！'})
 
 
-@issue_bp.route('/<int:issueID>/vote', methods=['POST'])
+# @issue_bp.route('/<int:issueID>/vote', methods=['POST'])
+# @login_required
+# def vote(issueID):
+#     # 確認用戶是否已經投票
+#     existing_vote = Vote.query.filter_by(userID=current_user.userID, issueID=issueID).first()
+#     if existing_vote:
+#         return jsonify({'status': 'error', 'message': '你已經投過票了！'})
+#
+#
+#     # 創建新的投票記錄
+#     new_vote = Vote(
+#         userID=current_user.userID,
+#         issueID=issueID,
+#         voteOption='1',
+#         voteTime=datetime.now()
+#     )
+#
+#     db.session.add(new_vote)
+#     db.session.commit()
+#
+#     return jsonify({'status': 'success', 'message': '投票成功！'})
+
+@issue_bp.route('/vote/<int:issueID>', methods=['POST'])
 @login_required
 def vote(issueID):
-    # 確認用戶是否已經投票
+    issue = Issue.query.get_or_404(issueID)
+
+    # 檢查用戶是否已經投票
     existing_vote = Vote.query.filter_by(userID=current_user.userID, issueID=issueID).first()
+
     if existing_vote:
-        return jsonify({'status': 'error', 'message': '你已經投過票了！'})
+        # 用戶已投票，取消投票
+        db.session.delete(existing_vote)
+        is_vote = False
+        message = '取消投票成功！'
+    else:
+        # 用戶尚未投票，新增投票
+        new_vote = Vote(
+            userID=current_user.userID,
+            issueID=issueID,
+            voteTime=datetime.now()
+        )
+        db.session.add(new_vote)
+        is_vote = True
+        message = '投票成功！'
 
+    try:
+        db.session.commit()
 
-    # 創建新的投票記錄
-    new_vote = Vote(
-        userID=current_user.userID,
-        issueID=issueID,
-        voteOption='1',
-        voteTime=datetime.now()
-    )
+        # 返回更新後的投票狀態和投票數量
+        vote_count = Vote.query.filter_by(issueID=issueID).count()
+        return jsonify({
+            'status': 'success',
+            'is_vote': is_vote,
+            'vote_count': vote_count,
+            'message': message
+        })
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
 
-    db.session.add(new_vote)
-    db.session.commit()
-
-    return jsonify({'status': 'success', 'message': '投票成功！'})
-
-@issue_bp.route('/<int:issueID>/cancel_vote', methods=['POST'])
+@issue_bp.route('/favorite/<int:issueID>', methods=['POST'])
 @login_required
-def cancel_vote(issueID):
-    # 查詢用戶是否已經投票
-    existing_vote = Vote.query.filter_by(userID=current_user.userID, issueID=issueID).first()
-    if not existing_vote:
-        return jsonify({'status': 'error', 'message': '你還沒有投票！'})
+def favorite(issueID):
+    issue = Issue.query.get_or_404(issueID)
 
-    # 刪除投票
-    db.session.delete(existing_vote)
-    db.session.commit()
+    # 檢查用戶是否已收藏
+    existing_favorite = Favorite.query.filter_by(
+        userID=current_user.userID,
+        issueID=issueID
+    ).first()
 
-    return jsonify({'status': 'success', 'message': '投票已取消！'})
+    if existing_favorite:
+        # 如果已收藏，則取消收藏
+        db.session.delete(existing_favorite)
+        is_favorited = False
+        message = '取消收藏成功！'
+    else:
+        # 如果未收藏，則添加收藏
+        new_favorite = Favorite(
+            userID=current_user.userID,
+            issueID=issueID,
+            favoriteTime=datetime.now()
+        )
+        db.session.add(new_favorite)
+        is_favorited = True
+        message = '收藏成功！'
+
+    try:
+        db.session.commit()
+        return jsonify({
+            'status': 'success',
+            'is_favorited': is_favorited,
+            'favorite_count': Favorite.query.filter_by(issueID=issueID).count(),
+            'message': message
+        })
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+
+# @issue_bp.route('/<int:issueID>/cancel_vote', methods=['POST'])
+# @login_required
+# def cancel_vote(issueID):
+#     # 查詢用戶是否已經投票
+#     existing_vote = Vote.query.filter_by(userID=current_user.userID, issueID=issueID).first()
+#     if not existing_vote:
+#         return jsonify({'status': 'error', 'message': '你還沒有投票！'})
+#
+#     # 刪除投票
+#     db.session.delete(existing_vote)
+#     db.session.commit()
+#
+#     return jsonify({'status': 'success', 'message': '投票已取消！'})
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
