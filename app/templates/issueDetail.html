@@ -222,12 +222,21 @@
                     <span class="remaining-time">{{ issue.deadline }}截止</span>
                 {% endif %}
             </div>
-            <div class="username">提議者：{{ issue.username }}</div>
+            <div class="username">提議者名稱：{{ issue.username }}</div>
         </div>
 
         <div class="images-container">
-            <img src="{{ url_for('static', filename=issue.image1) }}" alt="議題圖片1" class="issue-image">
-            <!-- <img src="{{ url_for('static', filename=issue.image2) }}" alt="議題圖片2" class="issue-image"> -->
+            {% if issue.image1 %}
+                <img src="{{ url_for('static', filename='img/' ~ issue.image1) }}" alt="議題圖片1" class="issue-image">
+            {% else %}
+                <p></p>  <!-- 替代文字或圖片 -->
+            {% endif %}
+
+            {% if issue.image2 %}
+                <img src="{{ url_for('static', filename='img/' ~ issue.image2) }}" alt="議題圖片2" class="issue-image">
+            {% else %}
+                <p></p>  <!-- 替代文字或圖片 -->
+            {% endif %}
         </div>
 
         <div class="description">

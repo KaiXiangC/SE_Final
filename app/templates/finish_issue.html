@@ -90,16 +90,16 @@
             margin-bottom: 20px;
         }
         .preview-image {
-            max-width: 100%;
+            max-width: 30%;
             margin-bottom: 20px;
-            border: 1px solid #ccc;
+            border: 0px solid #ccc;
             border-radius: 5px;
         }
     </style>
 </head>
 <body>
     <h1>預覽並送出議題</h1>
-    <form action="/finalize_issue" method="POST" enctype="multipart/form-data">
+    <form action="finalize_issue" method="POST" enctype="multipart/form-data">
         <label>目前進度：送出提案</label>
         <!-- 提醒標籤 -->
         <div class="error">請先預覽您的內容，並確認內容正確</div>
@@ -119,10 +119,16 @@
         <!-- 附加照片 -->
         <div>
             <label>附加照片：</label>
-            {% if attachment %}
-            <img src="{{ url_for('static', filename='uploads/' + attachment) }}" alt="Attachment" class="preview-image">
-            {% endif %}
-            <input type="file" id="attachment" name="attachment" accept="image/*">
+            <div style="display: flex; gap: 10px;">
+                {% if attachment_1 %}
+                    <img src="{{ url_for('static', filename='img/' + attachment_1) }}" alt="Attachment 1" class="preview-image">
+                {% endif %}
+
+                {% if attachment_2 %}
+                    <img src="{{ url_for('static', filename='img/' + attachment_2) }}" alt="Attachment 2" class="preview-image">
+                {% endif %}
+            </div>
+<!--            <input type="file" id="attachment" name="attachment" accept="image/*">-->
         </div>
 
         <!-- 內容描述 -->
