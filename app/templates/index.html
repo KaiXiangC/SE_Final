@@ -138,34 +138,23 @@
         }
         .carousel {
             width: 100%;
-            max-width: 1000px; /* 限制最大寬度 */
-            margin: 0 auto; /* 居中顯示 */
+            max-width: 600px;
+            margin: 0 auto;
             overflow: hidden;
+            position: relative;
         }
 
         .carousel-images {
             display: flex;
-            transition: transform 1s ease; /* 使圖片有滑動效果 */
+            transition: transform 0.5s ease-in-out;
+            will-change: transform;
         }
 
         .carousel-images img {
-            width: 100%; /* 確保每張圖片都填滿容器 */
-            height: 400px; /* 設定圖片高度 */
-            object-fit: cover; /* 使圖片填滿容器而不變形 */
+            width: 100%;
+            flex-shrink: 0;
         }
 
-        /* 自動播放效果 */
-        @keyframes slide {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(-100%); }
-            50% { transform: translateX(-200%); }
-            75% { transform: translateX(-300%); }
-            100% { transform: translateX(0); }
-        }
-
-        .carousel-images {
-            animation: slide 6s infinite; /* 6秒自動輪播 */
-        }
 
         .content {
             padding: 20px;
@@ -275,13 +264,24 @@
     
     <div class="carousel">
         <div class="carousel-images">
-            <img src="images/1953.jpg" alt="Ad 1">
-            <img src="images/earth.jpg" alt="Ad 2">
-            <img src="images/sexualharamment.jpg" alt="Ad 3">
-            <img src="images/ad4.jpg" alt="Ad 4">
-            <img src="images/ad5.jpg" alt="Ad 5">
+            {% for image in images %}
+            <img src="{{ url_for('static', filename='img/' + image) }}" alt="Ad {{ loop.index }}">
+            {% endfor %}
         </div>
     </div>
+    <script>
+        const carouselImages = document.querySelector('.carousel-images');
+        let currentIndex = 0;
+    
+        function slideCarousel() {
+            const totalImages = carouselImages.children.length;
+            currentIndex = (currentIndex + 1) % totalImages;
+            carouselImages.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }
+    
+        setInterval(slideCarousel, 5000); // 每5秒切換一張圖片
+    </script>
+    
     <div class="announcement-container">
         <div class="announcement-title">公告:</div>
         <div class="announcement-content">
