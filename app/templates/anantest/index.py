@@ -32,6 +32,11 @@ class Category(db.Model):
 @app.route('/')
 def index():
     return render_template('index.html')
+@app.route('/api/ad')
+def api_ad():
+    img_folder = os.path.join(app.static_folder, 'img')
+    images = [f for f in os.listdir(img_folder) if 'ad' in f and f.endswith(('.png', '.jpg', '.jpeg', '.gif'))]
+    return jsonify(images)
 
 @app.route('/search', methods=['POST'])
 def search():
