@@ -1,6 +1,26 @@
 # SE_Final
  2024Fall_SE_FinalProject 
 
+## 前端頁面
+登入頁面:login
+註冊頁面:register
+### 管理者端
+管理員首頁:manager_homepage
+議題討論與監控:propose_manage
+審核留言review_comment
+審核議題 review_issue
+管理議題類別propose_category_manage.html
+管理通知 maintenance_notice.html
+### 使用者端
+首頁 index.html
+查看議題 propose.html
+新增暫存議題 add_issue.html、finish_issue.html
+議題頁面 issue_detail.html
+用戶頁面member.html
+通知usrNotification.html
+變更密碼editPWD.html
+修改用戶資料memberEdit.html
+
 
 ## 環境建置
 ```
