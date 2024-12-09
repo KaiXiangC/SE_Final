@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>公告管理</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+
+<div class="container my-5">
+    <h1 class="mb-4">公告列表</h1>
+    <form method="get" action="{{ url_for('notification.view_notifications') }}" class="mb-3 d-flex">
+        <input type="text" name="q" class="form-control me-2" value="{{ search_title }}" placeholder="搜尋標題...">
+        <button type="submit" class="btn btn-primary">搜尋</button>
+    </form>
+
+    <button id="createBtn" class="btn btn-success mb-3">新增公告</button>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>標題</th>
+                <th>內容</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody id="notifTableBody">
+            {% for notif in notifications %}
+            <tr id="row-{{ notif.notificationID }}">
+                <td class="fw-bold">{{ notif.title }}</td>
+                <td>{{ notif.content }}</td>
+                <td>
+                    <button class="btn btn-sm btn-warning editBtn" data-id="{{ notif.notificationID }}" data-title="{{ notif.title }}" data-content="{{ notif.content }}">修改</button>
+                    <button class="btn btn-sm btn-danger deleteBtn" data-id="{{ notif.notificationID }}">刪除</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- 新增公告Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        <form id="createForm">
+            <div class="modal-header">
+                <h5 class="modal-title">新增公告</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">標題</label>
+                    <input type="text" class="form-control" name="title" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">內容</label>
+                    <textarea class="form-control" name="content" rows="3" required></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">確定新增</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+            </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+<!-- 修改公告Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        <form id="editForm">
+            <div class="modal-header">
+                <h5 class="modal-title">修改公告</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="notificationID" id="editID">
+                <div class="mb-3">
+                    <label class="form-label">標題</label>
+                    <input type="text" class="form-control" name="title" id="editTitle" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">內容</label>
+                    <textarea class="form-control" name="content" id="editContent" rows="3" required></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">確定修改</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+            </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+<!-- 刪除確認Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">刪除公告</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p>確定要刪除此公告嗎？</p>
+            <input type="hidden" id="deleteID">
+        </div>
+        <div class="modal-footer">
+            <button id="confirmDeleteBtn" class="btn btn-danger">確認刪除</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+        </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- 以下透過JS執行AJAX及Modal操作 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const createModal = new bootstrap.Modal(document.getElementById('createModal'));
+    const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+
+    const createBtn = document.getElementById('createBtn');
+    const createForm = document.getElementById('createForm');
+    const editForm = document.getElementById('editForm');
+    const deleteID = document.getElementById('deleteID');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+
+    // 開啟新增 Modal
+    createBtn.addEventListener('click', () => {
+        createForm.reset();
+        createModal.show();
+    });
+
+    // 新增公告
+    createForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(createForm);
+        const res = await fetch('/notification/create', {
+            method: 'POST',
+            body: formData
+        });
+
+        if(res.ok){
+            const data = await res.json();
+            if(data.status === 'success'){
+                // 新增到表格
+                const tbody = document.getElementById('notifTableBody');
+                const tr = document.createElement('tr');
+                tr.id = `row-${data.notificationID}`;
+                tr.innerHTML = `
+                    <td class="fw-bold">${data.title}</td>
+                    <td>${data.content}</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning editBtn" data-id="${data.notificationID}" data-title="${data.title}" data-content="${data.content}">修改</button>
+                        <button class="btn btn-sm btn-danger deleteBtn" data-id="${data.notificationID}">刪除</button>
+                    </td>
+                `;
+                tbody.prepend(tr);
+                createModal.hide();
+                bindRowEvents(tr);
+            } else {
+                alert(data.message);
+            }
+        } else {
+            alert('建立公告時發生錯誤');
+        }
+    });
+
+    // 綁定修改與刪除按鈕事件
+    function bindRowEvents(row) {
+        const editBtn = row.querySelector('.editBtn');
+        const deleteBtn = row.querySelector('.deleteBtn');
+
+        if(editBtn){
+            editBtn.addEventListener('click', () => {
+                document.getElementById('editID').value = editBtn.dataset.id;
+                document.getElementById('editTitle').value = editBtn.dataset.title;
+                document.getElementById('editContent').value = editBtn.dataset.content;
+                editModal.show();
+            });
+        }
+
+        if(deleteBtn){
+            deleteBtn.addEventListener('click', () => {
+                deleteID.value = deleteBtn.dataset.id;
+                deleteModal.show();
+            });
+        }
+    }
+
+    // 初始化頁面上的按鈕事件
+    document.querySelectorAll('#notifTableBody tr').forEach(bindRowEvents);
+
+    // 修改公告
+    editForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(editForm);
+        const notifID = formData.get('notificationID');
+        const res = await fetch(`/notification/update/${notifID}`, {
+            method: 'POST',
+            body: formData
+        });
+
+        if(res.ok){
+            const data = await res.json();
+            if(data.status === 'success') {
+                const row = document.getElementById(`row-${notifID}`);
+                if(row){
+                    row.querySelector('td:nth-child(1)').innerText = data.title;
+                    row.querySelector('td:nth-child(2)').innerText = data.content;
+                    // 更新 data attribute
+                    const editBtn = row.querySelector('.editBtn');
+                    editBtn.dataset.title = data.title;
+                    editBtn.dataset.content = data.content;
+                }
+                editModal.hide();
+            } else {
+                alert(data.message);
+            }
+        } else {
+            alert('修改公告時發生錯誤');
+        }
+    });
+
+    // 刪除公告
+    confirmDeleteBtn.addEventListener('click', async () => {
+        const notifID = deleteID.value;
+        const res = await fetch(`/notification/delete/${notifID}`, {
+            method: 'POST'
+        });
+
+        if(res.ok){
+            const data = await res.json();
+            if(data.status === 'success'){
+                const row = document.getElementById(`row-${notifID}`);
+                if(row) row.remove();
+                deleteModal.hide();
+            } else {
+                alert(data.message);
+            }
+        } else {
+            alert('刪除公告時發生錯誤');
+        }
+    });
+</script>
+</body>
+</html>

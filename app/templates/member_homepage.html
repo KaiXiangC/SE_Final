@@ -84,7 +84,8 @@
         <a href="{{ url_for('member_manage') }}" class="button" onclick="buttonClicked(this)">會員認證管理</a>
         <a href="{{ url_for('propose_manage') }}" class="button" onclick="buttonClicked(this)">議題與討論監控</a>
         <a href="{{ url_for('propose_category_manage') }}" class="button" onclick="buttonClicked(this)">議題類別管理</a>
-        <a href="{{ url_for('maintenance_notice') }}" class="button" onclick="buttonClicked(this)">維護通知與公告</a>
+        <a href="{{ url_for('notification.view_notifications')
+    }}" class="button" onclick="buttonClicked(this)">維護通知與公告</a>
     </div>
     <script>
         // 點擊按鈕後變綠色
