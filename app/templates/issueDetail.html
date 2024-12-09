@@ -241,6 +241,7 @@
             background-color: #2E7D32;
         }
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <header>
@@ -255,19 +256,22 @@
 
         <!-- 目前進度與截止日期 -->
         <div class="status-container">
-            <span class="status {{ issue.status_class }}">{{ issue.status }}</span>
+<!--            <span class="status {{ issue.status_class }}">{{ issue.status }}</span>-->
             <span class="remaining-time">截止日期：{{ issue.deadline }}</span>
         </div>
 
         <!-- 提議者 -->
         <div class="username">
-            提議者：{{ issue.proposer }}
+            提議者：{{ issue.username }}
         </div>
 
         <!-- 議題圖片 -->
         <div class="images-container">
-            {% if issue.attachment %}
-            <img src="{{ url_for('static', filename='img/' + issue.attachment) }}" alt="議題圖片" class="issue-image">
+            {% if issue.image1 %}
+                <img src="{{ url_for('static', filename='img/' ~ issue.image1) }}" alt="議題圖片1" class="issue-image">
+            {% endif %}
+            {% if issue.image2 %}
+                <img src="{{ url_for('static', filename='img/' ~ issue.image2) }}" alt="議題圖片2" class="issue-image">
             {% endif %}
         </div>
 
@@ -278,31 +282,63 @@
 
         <!-- 投票與收藏 -->
         <div class="action-buttons">
+
             {% if has_voted %}
-            <!-- <button class="button voted-button" onclick="location.href='{{ url_for('cancel_vote', issueID=issue.id) }}'">
-                取消投票
-            </button> -->
-            <a href="{{ url_for('cancel_vote', issueID=issue.id) }}" class="button voted-button" onclick="buttonClicked(this)">取消投票</a>
+            <a href="#" class="button vote-button" data-issue-id="{{ issue.issueID }}" onclick="toggleVote(this)">取消投票</a>
             {% else %}
-            <!-- <button class="button vote-button" onclick="location.href='{{ url_for('vote', issueID=issue.id) }}'">
-                我要投票！
-            </button> -->
-            <a href="{{ url_for('vote', issueID=issue.id) }}" class="button voted-button" onclick="buttonClicked(this)">我要投票！</a>
+            <a href="#" class="button vote-button" data-issue-id="{{ issue.issueID }}" onclick="toggleVote(this)">我要投票！</a>
             {% endif %}
+            <script>
+                function toggleVote(element) {
+                    const url = '{{ url_for("issue.vote", issueID=issueID) }}';
+
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        contentType: 'application/json',  // 使用 CSRF 保護（如果需要）
+                        success: function(data) {
+                            if (data.status === 'success') {
+                                element.textContent = data.is_vote ? '取消投票' : '我要投票！';
+                                // 更新投票數量
+                                $('#vote-count').text(`投票數：${data.vote_count}`);
+                                alert(data.message);
+                            }
+                        },
+                        error: function(error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                }
+            </script>
 
             {% if has_favorited %}
-            <!-- <button class="button favorite-button" onclick="location.href='{{ url_for('cancel_favorite', issueID=issue.id) }}'">
-                取消收藏
-            </button> -->
-            <a href="{{ url_for('cancel_favorite', issueID=issue.id) }}" class="button favorite-button" onclick="buttonClicked(this)">取消收藏</a>
+            <a href="#" class="button favorite-button" data-issue-id="{{ issue.issueID }}" onclick="toggleFavorite(this)">取消收藏</a>
             {% else %}
-            <!-- <button class="button favorite-button" onclick="location.href='{{ url_for('favorite', issueID=issue.id) }}'">
-                收藏
-            </button> -->
-            <a href="{{ url_for('cancel_favorite', issueID=issue.id) }}" class="button favorite-button" onclick="buttonClicked(this)">收藏</a>
+            <a href="#" class="button favorite-button" data-issue-id="{{ issue.issueID }}" onclick="toggleFavorite(this)">收藏</a>
             {% endif %}
+            <script>
+                function toggleFavorite(element) {
+                    const url = '{{ url_for("issue.favorite", issueID=issueID) }}';
 
-            <span>投票數：{{ vote_count }}</span>
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        contentType: 'application/json', // 如果使用 CSRF 保護
+                        success: function(data) {
+                            if (data.status === 'success') {
+                                element.textContent = data.is_favorited ? '取消收藏' : '收藏';
+                                alert(data.message);
+                                // 可選：更新收藏狀態的視覺效果
+                            }
+                        },
+                        error: function(error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                }
+            </script>
+
+            <span id="vote-count">投票數：{{ vote_count }}</span>
         </div>
 
         <!-- 留言 -->
@@ -314,18 +350,46 @@
                     <div class="comment">
                         <span class="comment-username">{{ comment.username }}</span>
                         <span class="comment-content">{{ comment.content }}</span>
-                        <span class="comment-time">{{ comment.commentTime.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                        <span class="comment-time">{{ comment.commentTime}}</span>
                     </div>
                     {% endfor %}
                 {% else %}
                     <p class="no-comments">暫無留言</p>
                 {% endif %}
-            </div>            
+            </div>
 
-            <form action="{{ url_for('add_comment', issueID=issue.id) }}" method="POST" class="comment-form">
+            <form id="comment-form" class="comment-form">
                 <input type="text" name="comment" placeholder="輸入留言..." required class="comment-input">
                 <button type="submit" class="submit-button">送出</button>
             </form>
+            <script>
+                $(document).ready(function() {
+                    // 當表單提交時觸發
+                    $('#comment-form').on('submit', function(event) {
+                        event.preventDefault(); // 防止表單默認提交
+
+                        var commentContent = $('input[name="comment"]').val(); // 獲取評論內容
+
+                        // 發送 AJAX 請求
+                        $.ajax({
+                            url: "{{ url_for('issue.add_comment', issueID=issueID) }}", // URL
+                            type: "POST", // 方法
+                            data: { 'comment': commentContent }, // 傳送的數據
+                            success: function(response) {
+                                if (response.status === 'success') {
+                                    alert(response.message);
+                                    location.reload(); // 重載頁面
+                                } else {
+                                    alert(response.message);
+                                }
+                            },
+                            error: function() {
+                                alert("發生錯誤，請稍後再試。");
+                            }
+                        });
+                    });
+                });
+            </script>
         </div>
     </div>
 </body>
