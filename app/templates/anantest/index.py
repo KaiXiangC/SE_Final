@@ -68,5 +68,20 @@ def issue_detail(issueID):
     issue = Issue.query.get_or_404(issueID)
     return render_template('issue_detail.html', issue=issue)
 
+@app.route('/announcements')
+def announcements():
+    conn = get_db()
+
+    # 獲取 Notification 表中最新的 5 筆資料
+    notifications = conn.execute(
+        'SELECT content FROM Notification ORDER BY notificationTime DESC LIMIT 5'
+    ).fetchall()
+
+    conn.close()
+
+    # 傳遞數據到前端
+    return render_template('announcements.html', notifications=notifications)
+
+
 if __name__ == '__main__':
     app.run(debug=True)

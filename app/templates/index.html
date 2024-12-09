@@ -207,6 +207,51 @@
         .search-bar button:hover {
             background-color: #ffd700;
         }
+        .announcement-container {
+            width: 300px;
+            height: 50px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 20px auto;
+            background-color: #fff;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .announcement-title {
+            position: absolute;
+            top: 0;
+            left: 10px;
+            height: 50px;
+            line-height: 50px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .announcement-content {
+            position: absolute;
+            top: 0;
+            left: 60px;
+            height: 50px;
+            line-height: 50px;
+            font-size: 14px;
+            color: #555;
+            white-space: nowrap;
+            animation: slide2 25s linear infinite; /* 總時間=5秒x5則 */
+        }
+
+        @keyframes slide2 {
+            0% { transform: translateY(0); }
+            20% { transform: translateY(0); }
+            25% { transform: translateY(-50px); }
+            45% { transform: translateY(-50px); }
+            50% { transform: translateY(-100px); }
+            70% { transform: translateY(-100px); }
+            75% { transform: translateY(-150px); }
+            95% { transform: translateY(-150px); }
+            100% { transform: translateY(-200px); }
+        }
 
     </style>
 </head>
@@ -235,6 +280,14 @@
             <img src="images/sexualharamment.jpg" alt="Ad 3">
             <img src="images/ad4.jpg" alt="Ad 4">
             <img src="images/ad5.jpg" alt="Ad 5">
+        </div>
+    </div>
+    <div class="announcement-container">
+        <div class="announcement-title">公告:</div>
+        <div class="announcement-content">
+            {% for notification in notifications %}
+            <div>{{ notification.content }}</div>
+            {% endfor %}
         </div>
     </div>
     <!-- 搜尋欄 -->
