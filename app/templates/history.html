@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>歷史互動議題</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .filter-buttons {
+            margin-bottom: 20px;
+        }
+        .filter-button {
+            display: inline-block;
+            margin-right: 10px;
+            padding: 5px 10px;
+            background-color: #eee;
+            color: #333;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .filter-button.active {
+            background-color: #aaa; /* 深色表示已選取 */
+            color: #fff;
+        }
+
+        .issue-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .issue-list li {
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+            position: relative;
+        }
+
+        .issue-list li a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .issue-icons {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
+        
+        .issue-preview {
+            margin-top: 5px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>您曾互動過的議題</h1>
+    <div class="filter-buttons">
+        <button class="filter-button" data-filter="">全部</button>
+        <button class="filter-button" data-filter="created">創建</button>
+        <button class="filter-button" data-filter="commented">留言</button>
+        <button class="filter-button" data-filter="favorited">收藏</button>
+        <button class="filter-button" data-filter="voted">投票</button>
+    </div>
+    <ul class="issue-list" id="issueList">
+        {% for issue in issues %}
+        <li>
+            <a href="{{ url_for('issue.issue_detail', issueID=issue.issueID) }}">{{ issue.title }}</a>
+            <div class="issue-preview">{{ issue.preview }}</div>
+            <div class="issue-icons">{{ issue.icons|safe }}</div>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // 當頁面載入完畢後，將所有按鈕事件掛上
+        $(document).ready(function() {
+            $('.filter-button').on('click', function() {
+                var filter = $(this).data('filter');
+                // 改變按鈕外觀
+                $('.filter-button').removeClass('active');
+                $(this).addClass('active');
+                // 使用 AJAX 載入對應議題
+                loadIssues(filter);
+            });
+        });
+
+        function loadIssues(filter) {
+            $.ajax({
+                url: '{{ url_for("hist.history_filter") }}',
+                method: 'GET',
+                data: { filter: filter },
+                dataType: 'json',
+                success: function(data) {
+                    var $list = $('#issueList');
+                    $list.empty(); // 清空列表
+                    data.forEach(function(issue) {
+                        var iconsHtml = issue.icons.map(function(icon) {
+                            if (icon === '★') {
+                                return '<span style="color: yellow;">★</span>';
+                            } else if (icon === '💬') {
+                                return '<span style="font-size: 24px;">💬</span>';
+                            } else if (icon === '🗳️') {
+                                return '<span style="font-size: 24px;">🗳️</span>';
+                            } else if (icon === '✍️') {
+                                return '<span style="font-size: 24px;">✍️</span>';
+                            }
+                            return icon;
+                        }).join(' ');
+
+                        var li = '<li>' +
+                                    '<a href="/issue/' + issue.issueID + '">' + issue.title + '</a>' +
+                                    '<div class="issue-preview">' + issue.preview + '</div>' +
+                                    '<div class="issue-icons">' + iconsHtml + '</div>' +
+                                 '</li>';
+                        $list.append(li);
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>

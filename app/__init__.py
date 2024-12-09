@@ -17,10 +17,15 @@ def create_app():
     login_manager.init_app(app)
     login_manager.login_view = 'login'
     # 測試組用Blueprint
-    from app.routes import routes_bp
+    from .routes.routes import routes_bp
     from .routes.issue import issue_bp
+    from .routes.hist import hist_bp
+    from .routes.notification import noti_bp
+
     app.register_blueprint(routes_bp, url_prefix='/test')  # 您可以根據需要更改 url_prefix
     app.register_blueprint(issue_bp, url_prefix='/issue')
+    app.register_blueprint(hist_bp, url_prefix='/hist')
+    app.register_blueprint(noti_bp, url_prefix='/notification')
 
     from app.routes.main import configure_routes
     configure_routes(app)

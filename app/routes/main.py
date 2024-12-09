@@ -4,8 +4,6 @@ from flask_login import login_user, login_required, logout_user, current_user, L
 from app import db
 from app.models.user import User
 from app.models.issue import Issue
-from app.models.notification import Notification
-from datetime import datetime
 import logging
 import os
 from werkzeug.utils import secure_filename
@@ -238,29 +236,6 @@ def configure_routes(app):
     def propose_category_manage():
         """議題類別管理"""
         return render_template('propose_category_manage.html')
-
-    @app.route('/maintenance_notice', methods=['GET', 'POST'])
-    @login_required
-    def maintenance_notice():
-        """維護通知"""
-        if request.method == 'POST':
-            content = request.form['content']
-            new_notice = Notification(
-                userID=current_user.userID,
-                notificationTime=datetime.now(),
-                content=content
-            )
-            
-            try:
-                db.session.add(new_notice)
-                db.session.commit()
-                flash('公告已發布', 'success')
-            except:
-                db.session.rollback()
-                flash('公告發布失敗', 'danger')
-        
-        notices = Notification.query.order_by(Notification.notificationTime.desc()).all()
-        return render_template('maintenance_notice.html', notices=notices)
 
     @app.route('/member_auth/<int:user_id>', methods=['GET', 'POST'])
     @login_required
