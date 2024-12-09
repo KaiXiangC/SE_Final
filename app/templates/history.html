@@ -7,8 +7,36 @@
         body {
             font-family: Arial, sans-serif;
         }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        header {
+            background-color: #367039;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        header a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+            padding: 8px 15px;
+            border: 1px solid white;
+            border-radius: 4px;
+            background-color: transparent;
+            transition: all 0.3s ease;
+        }
+        header a:hover {
+            background-color: white;
+            color: #2c5282;
+        }
         .filter-buttons {
             margin-bottom: 20px;
+            text-align: center;
         }
         .filter-button {
             display: inline-block;
@@ -22,25 +50,40 @@
             border-radius: 4px;
         }
         .filter-button.active {
-            background-color: #aaa; /* 深色表示已選取 */
-            color: #fff;
+            background-color: #feedaa; /* 深色表示已選取 */
+            color: black;
+        }
+        .filter-button:hover{
+            background-color: #FFF3D4;
+            color: black;
+        }
+        .content{
+            width:70%;
+            background-color: #feedaa;
+            padding: 0 20px 0 20px;
+            border-radius:15px;
+            margin: auto;
         }
 
         .issue-list {
             list-style-type: none;
-            padding: 0;
+            padding: 20px;
         }
 
         .issue-list li {
-            border-bottom: 1px solid #ccc;
-            padding: 10px 0;
+            /*border-bottom: 1px solid #ccc;*/
+            padding: 10px;
             position: relative;
+            background-color: white;
+            border-radius: 8px;
+            margin-top: 20px;
         }
 
         .issue-list li a {
             text-decoration: none;
             color: #333;
             font-weight: bold;
+            font-size: large;
         }
 
         .issue-icons {
@@ -56,6 +99,10 @@
     </style>
 </head>
 <body>
+    <header>
+        <!-- 返回查看議題 -->
+        <a><i class="fas fa-arrow-left"></i> 返回</a>
+    </header>
     <h1>您曾互動過的議題</h1>
     <div class="filter-buttons">
         <button class="filter-button" data-filter="">全部</button>
@@ -64,15 +111,17 @@
         <button class="filter-button" data-filter="favorited">收藏</button>
         <button class="filter-button" data-filter="voted">投票</button>
     </div>
-    <ul class="issue-list" id="issueList">
-        {% for issue in issues %}
-        <li>
-            <a href="{{ url_for('issue.issue_detail', issueID=issue.issueID) }}">{{ issue.title }}</a>
-            <div class="issue-preview">{{ issue.preview }}</div>
-            <div class="issue-icons">{{ issue.icons|safe }}</div>
-        </li>
-        {% endfor %}
-    </ul>
+    <div class="content">
+        <ul class="issue-list" id="issueList">
+            {% for issue in issues %}
+            <li>
+                <a href="{{ url_for('issue.issue_detail', issueID=issue.issueID) }}">{{ issue.title }}</a>
+                <div class="issue-preview">{{ issue.preview }}</div>
+                <div class="issue-icons">{{ issue.icons|safe }}</div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
