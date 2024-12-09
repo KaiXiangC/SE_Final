@@ -5,191 +5,218 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>議題詳情</title>
     <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #2ecc71;
+            --background-color: #f4f4f4;
+            --text-color: #333;
+            --border-radius: 8px;
+        }
+
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
         }
 
         header {
-            background-color: #367039;
+            background-color: var(--primary-color);
             color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 1rem;
+            text-align: left;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         header a {
             text-decoration: none;
             color: white;
-            font-size: 16px;
-            padding: 8px 15px;
-            border: 1px solid white;
-            border-radius: 4px;
-            background-color: transparent;
+            font-weight: bold;
+            padding: 0.5rem 1rem;
+            border: 2px solid white;
+            border-radius: var(--border-radius);
             transition: all 0.3s ease;
         }
 
         header a:hover {
             background-color: white;
-            color: #2c5282;
+            color: var(--primary-color);
         }
 
         .content {
-            padding: 20px;
             max-width: 800px;
-            margin: 0 auto;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .issue-header {
-            margin-bottom: 20px;
+            margin-bottom: 2rem;
         }
 
-        .status-container {
+        .issue-header h1 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .issue-meta {
             display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
             align-items: center;
-            gap: 10px;
-            margin: 10px 0;
-        }
-
-        .status {
-            font-size: 1.1em;
-            font-weight: bold;
-        }
-
-        .status.voting {
-            color: blue;
-        }
-
-        .status.reviewing {
-            color: orange;
-        }
-
-        .status.passed {
-            color: green;
-        }
-
-        .status.closed {
-            color: red;
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: var(--border-radius);
         }
 
         .remaining-time {
-            background-color: #FFD700;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.9em;
+            background-color: #f9c500;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            font-weight: bold;
+        }
+
+        #vote-count {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
         }
 
         .username {
-            color: #666;
-            margin-bottom: 20px;
-        }
-
-        .images-container {
             display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        .issue-image {
+            justify-content: space-between;
+            align-items: center;
             width: 100%;
-            max-width: 400px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
         }
 
-        .description {
-            background-color: #f5f5f5;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        .action-buttons {
+        .username .buttons {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 1rem;
         }
 
         .button {
-            padding: 10px 20px;
-            font-size: 1em;
-            border-radius: 5px;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            border-radius: var(--border-radius);
             cursor: pointer;
             border: none;
             color: white;
             transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
         }
 
         .vote-button {
-            background-color: #2E7D32;
+            background-color: var(--primary-color);
         }
 
         .vote-button:hover {
-            background-color: #1b5e20;
-        }
-
-        .voted-button {
-            background-color: darkgray;
-        }
-
-        .voted-button:hover {
-            background-color: gray;
+            background-color: #f39c12;
         }
 
         .favorite-button {
-            background-color: #FFD700;
-            color: black;
+            background-color: #f44336;
         }
 
         .favorite-button:hover {
-            background-color: #FFC107;
+            background-color: #f39c12;
+        }
+
+        .images-container {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .images-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .images-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .images-container::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        .images-container::-webkit-scrollbar-thumb:hover {
+            background: #2980b9;
+        }
+
+        .issue-image {
+            max-width: none;
+            height: 300px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            object-fit: cover;
+            scroll-snap-align: start;
+            flex-shrink: 0;
+        }
+
+        .description {
+            background-color: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary-color);
         }
 
         .comments-section {
-            margin-top: 30px;
+            background-color: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
         }
 
         .comments-container {
-            max-height: 300px; /* 設定最大高度，超出部分滾動顯示 */
-            overflow-y: auto; /* 啟用垂直滾動條 */
-            padding: 10px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 1rem;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .comment {
             display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-            margin-bottom: 10px;
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            flex-direction: column;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: #f0f0f0;
+            border-radius: var(--border-radius);
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
         }
 
         .comment-username {
             font-weight: bold;
-            color: #333;
-            white-space: nowrap; /* 確保名字不會換行 */
-        }
-
-        .comment-content {
-            flex: 1; /* 占用剩餘空間，讓內容自適應 */
-            color: #555;
-            word-wrap: break-word; /* 長單詞換行 */
+            color: var(--primary-color);
         }
 
         .comment-time {
-            font-size: 0.9em;
+            font-size: 0.9rem;
             color: #888;
-            white-space: nowrap; /* 確保時間不會換行 */
+        }
+
+        .comment-content {
+            color: var(--text-color);
         }
 
         .no-comments {
@@ -198,47 +225,51 @@
             font-style: italic;
         }
 
-        /* 自訂滾動條樣式（可選） */
-        .comments-container::-webkit-scrollbar {
-            width: 8px; /* 滾動條寬度 */
-        }
-
-        .comments-container::-webkit-scrollbar-thumb {
-            background-color: #888; /* 滾動條顏色 */
-            border-radius: 4px;
-        }
-
-        .comments-container::-webkit-scrollbar-thumb:hover {
-            background-color: #555; /* 滾動條懸停顏色 */
-        }
-
-
-
         .comment-form {
             display: flex;
-            gap: 10px;
+            gap: 1rem;
+            margin-top: 1rem;
         }
 
         .comment-input {
-            margin-top: 10px;
             flex: 1;
-            padding: 10px;
+            padding: 0.5rem;
             border: 1px solid #ddd;
-            border-radius: 5px;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
         }
 
         .submit-button {
-            margin-top: 10px;
-            background-color: #4CAF50;
+            background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         .submit-button:hover {
-            background-color: #2E7D32;
+            background-color: #2980b9;
+        }
+
+        @media (max-width: 600px) {
+            .content {
+                padding: 1rem;
+            }
+
+            .issue-meta, .username {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .username .buttons {
+                margin-top: 1rem;
+            }
+
+            .issue-image {
+                height: 200px;
+            }
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -249,23 +280,29 @@
     </header>
 
     <div class="content">
-        <!-- 議題標題 -->
         <div class="issue-header">
             <h1>{{ issue.title }}</h1>
+            <div class="issue-meta">
+                <span class="remaining-time">截止日期：{{ issue.deadline }}</span>
+                <span id="vote-count">投票數：{{ vote_count }}</span>
+                <span class="username">
+                    提議者：{{ issue.username }}
+                    <span class="buttons">
+                        {% if has_voted %}
+                        <a href="#" class="button vote-button" data-issue-id="{{ issue.issueID }}" onclick="toggleVote(this)">取消投票</a>
+                        {% else %}
+                        <a href="#" class="button vote-button" data-issue-id="{{ issue.issueID }}" onclick="toggleVote(this)">我要投票！</a>
+                        {% endif %}
+                        {% if has_favorited %}
+                        <a href="#" class="button favorite-button" data-issue-id="{{ issue.issueID }}" onclick="toggleFavorite(this)">取消收藏</a>
+                        {% else %}
+                        <a href="#" class="button favorite-button" data-issue-id="{{ issue.issueID }}" onclick="toggleFavorite(this)">收藏</a>
+                        {% endif %}
+                    </span>
+                </span>
+            </div>
         </div>
 
-        <!-- 目前進度與截止日期 -->
-        <div class="status-container">
-<!--            <span class="status {{ issue.status_class }}">{{ issue.status }}</span>-->
-            <span class="remaining-time">截止日期：{{ issue.deadline }}</span>
-        </div>
-
-        <!-- 提議者 -->
-        <div class="username">
-            提議者：{{ issue.username }}
-        </div>
-
-        <!-- 議題圖片 -->
         <div class="images-container">
             {% if issue.image1 %}
                 <img src="{{ url_for('static', filename='img/' ~ issue.image1) }}" alt="議題圖片1" class="issue-image">
@@ -275,82 +312,21 @@
             {% endif %}
         </div>
 
-        <!-- 議題描述 -->
         <div class="description">
             {{ issue.description }}
         </div>
 
-        <!-- 投票與收藏 -->
-        <div class="action-buttons">
-
-            {% if has_voted %}
-            <a href="#" class="button vote-button" data-issue-id="{{ issue.issueID }}" onclick="toggleVote(this)">取消投票</a>
-            {% else %}
-            <a href="#" class="button vote-button" data-issue-id="{{ issue.issueID }}" onclick="toggleVote(this)">我要投票！</a>
-            {% endif %}
-            <script>
-                function toggleVote(element) {
-                    const url = '{{ url_for("issue.vote", issueID=issueID) }}';
-
-                    $.ajax({
-                        url: url,
-                        type: 'POST',
-                        contentType: 'application/json',  // 使用 CSRF 保護（如果需要）
-                        success: function(data) {
-                            if (data.status === 'success') {
-                                element.textContent = data.is_vote ? '取消投票' : '我要投票！';
-                                // 更新投票數量
-                                $('#vote-count').text(`投票數：${data.vote_count}`);
-                                alert(data.message);
-                            }
-                        },
-                        error: function(error) {
-                            console.error('Error:', error);
-                        }
-                    });
-                }
-            </script>
-
-            {% if has_favorited %}
-            <a href="#" class="button favorite-button" data-issue-id="{{ issue.issueID }}" onclick="toggleFavorite(this)">取消收藏</a>
-            {% else %}
-            <a href="#" class="button favorite-button" data-issue-id="{{ issue.issueID }}" onclick="toggleFavorite(this)">收藏</a>
-            {% endif %}
-            <script>
-                function toggleFavorite(element) {
-                    const url = '{{ url_for("issue.favorite", issueID=issueID) }}';
-
-                    $.ajax({
-                        url: url,
-                        type: 'POST',
-                        contentType: 'application/json', // 如果使用 CSRF 保護
-                        success: function(data) {
-                            if (data.status === 'success') {
-                                element.textContent = data.is_favorited ? '取消收藏' : '收藏';
-                                alert(data.message);
-                                // 可選：更新收藏狀態的視覺效果
-                            }
-                        },
-                        error: function(error) {
-                            console.error('Error:', error);
-                        }
-                    });
-                }
-            </script>
-
-            <span id="vote-count">投票數：{{ vote_count }}</span>
-        </div>
-
-        <!-- 留言 -->
         <div class="comments-section">
             <h3>留言</h3>
             <div class="comments-container">
                 {% if comments %}
                     {% for comment in comments %}
                     <div class="comment">
-                        <span class="comment-username">{{ comment.username }}</span>
+                        <div class="comment-header">
+                            <span class="comment-username">{{ comment.username }}</span>
+                            <span class="comment-time">{{ comment.commentTime }}</span>
+                        </div>
                         <span class="comment-content">{{ comment.content }}</span>
-                        <span class="comment-time">{{ comment.commentTime}}</span>
                     </div>
                     {% endfor %}
                 {% else %}
@@ -362,35 +338,74 @@
                 <input type="text" name="comment" placeholder="輸入留言..." required class="comment-input">
                 <button type="submit" class="submit-button">送出</button>
             </form>
-            <script>
-                $(document).ready(function() {
-                    // 當表單提交時觸發
-                    $('#comment-form').on('submit', function(event) {
-                        event.preventDefault(); // 防止表單默認提交
-
-                        var commentContent = $('input[name="comment"]').val(); // 獲取評論內容
-
-                        // 發送 AJAX 請求
-                        $.ajax({
-                            url: "{{ url_for('issue.add_comment', issueID=issueID) }}", // URL
-                            type: "POST", // 方法
-                            data: { 'comment': commentContent }, // 傳送的數據
-                            success: function(response) {
-                                if (response.status === 'success') {
-                                    alert(response.message);
-                                    location.reload(); // 重載頁面
-                                } else {
-                                    alert(response.message);
-                                }
-                            },
-                            error: function() {
-                                alert("發生錯誤，請稍後再試。");
-                            }
-                        });
-                    });
-                });
-            </script>
         </div>
     </div>
+
+    <script>
+        function toggleVote(element) {
+            const url = '{{ url_for("issue.vote", issueID=issueID) }}';
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                contentType: 'application/json',
+                success: function(data) {
+                    if (data.status === 'success') {
+                        element.textContent = data.is_vote ? '取消投票' : '我要投票！';
+                        $('#vote-count').text(`投票數：${data.vote_count}`);
+                        alert(data.message);
+                    }
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+
+        function toggleFavorite(element) {
+            const url = '{{ url_for("issue.favorite", issueID=issueID) }}';
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                contentType: 'application/json',
+                success: function(data) {
+                    if (data.status === 'success') {
+                        element.textContent = data.is_favorited ? '取消收藏' : '收藏';
+                        alert(data.message);
+                    }
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            $('#comment-form').on('submit', function(event) {
+                event.preventDefault();
+
+                var commentContent = $('input[name="comment"]').val();
+
+                $.ajax({
+                    url: "{{ url_for('issue.add_comment', issueID=issueID) }}",
+                    type: "POST",
+                    data: { 'comment': commentContent },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            alert(response.message);
+                            location.reload();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function() {
+                        alert("發生錯誤，請稍後再試。");
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
+
