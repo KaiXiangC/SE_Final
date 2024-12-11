@@ -27,7 +27,7 @@ def login():
                 login_user(user)
                 flash('登入成功', 'success')
                 if user.is_admin:
-                    return redirect(url_for('admin_dashboard'))
+                    return redirect(url_for('login.admin_dashboard'))
                 else:
                     return redirect(url_for('login.index', user_id=user.userID))
             else:
@@ -48,4 +48,10 @@ def logout():
         """登出"""
         logout_user()
         flash('您已登出', 'success')
-        return redirect(url_for('login'))
+        return redirect(url_for('login.login'))
+
+@login_bp.route('/admin_dashboard')
+@login_required
+def admin_dashboard():
+        """管理員儀表板"""
+        return render_template('member_homepage.html')

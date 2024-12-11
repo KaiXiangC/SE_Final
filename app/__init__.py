@@ -31,6 +31,7 @@ def create_app():
     from .routes.member import member_bp
     from .routes.login import login_bp
     from .routes.register import register_bp
+    from .routes.admin import admin_bp
 
     app.register_blueprint(routes_bp, url_prefix='/test')  # 您可以根據需要更改 url_prefix
     app.register_blueprint(issue_bp, url_prefix='/issue')
@@ -40,6 +41,7 @@ def create_app():
     app.register_blueprint(member_bp, url_prefix='/member')
     app.register_blueprint(login_bp)
     app.register_blueprint(register_bp)
+    app.register_blueprint(admin_bp, url_prefix='/admin')
 
     return app
 
