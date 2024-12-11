@@ -16,7 +16,7 @@
 查看議題 propose.html
 新增暫存議題 add_issue.html、finish_issue.html
 議題頁面 issue_detail.html
-用戶頁面member.html
+用戶頁面usrProfile.html
 通知usrNotification.html
 變更密碼editPWD.html
 修改用戶資料memberEdit.html

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用戶資料</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            background-color: #367039;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        header a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+            padding: 8px 15px;
+            border: 1px solid white;
+            border-radius: 4px;
+            background-color: transparent;
+            transition: all 0.3s ease;
+        }
+        header a:hover {
+            background-color: white;
+            color: #2c5282;
+        }
+
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            margin-top: 30px;
+        }
+
+        .profile-card {
+            background-color: #FFD700;
+            border-radius: 15px;
+            padding: 20px;
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: auto;
+        }
+
+        .profile-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .profile-name {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .profile-email {
+            color: #333;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        .change-pwd {
+            background-color: #4A4A4A;
+        }
+
+        .edit-profile {
+            background-color: #2E7D32;
+        }
+
+        .change-pwd:hover,
+        .edit-profile:hover {
+            background-color: #2E7D32;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <!-- 返回查看議題 -->
+        <a href="{{ url_for('index') }}" ><i class="fas fa-arrow-left"></i> 返回</a>
+    </header>
+    <h1>用戶資料</h1>
+
+    <div class="profile-card">
+        <img src="{{ url_for('static', filename='img/' + user.profileData) }}" alt="大頭貼" class="profile-image">
+        <div class="profile-info">
+            <div class="profile-name">{{ user.name }}</div>
+            <div class="profile-email">{{ user.email }}</div>
+        </div>
+    </div>
+
+    <div class="button-container">
+        <a href="{{ url_for('editPWD') }}" class="button change-pwd">變更密碼</a>
+        <a href="{{ url_for('memberedit') }}" class="button edit-profile">修改用戶資料</a>
+    </div>
+</body>
+</html>
