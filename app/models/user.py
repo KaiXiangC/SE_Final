@@ -1,7 +1,7 @@
-from .. import db
+from app import db
+from flask_login import UserMixin
 
-
-class User(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = 'user'
     userID = db.Column(db.Integer, primary_key=True)
     idPhoto = db.Column(db.String(255), nullable=True)
