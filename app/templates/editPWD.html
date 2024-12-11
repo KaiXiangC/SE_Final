@@ -102,11 +102,11 @@
 <body>
     <header>
         <!-- 返回查看議題 -->
-        <a href="{{ url_for('member') }}" ><i class="fas fa-arrow-left"></i> 返回</a>
+        <a href="{{ url_for('member.member', user_id=current_user.userID) }}" ><i class="fas fa-arrow-left"></i> 返回</a>
     </header>
     <h1>變更密碼</h1>
 
-    <form id="password-form" method="POST" action="{{ url_for('update_password') }}" onsubmit="return validateForm()">
+    <form id="password-form" method="POST" action="{{ url_for('member.change_password', user_id=current_user.userID) }}" onsubmit="return validateForm()">
         <div class="form-container">
             <div class="form-group">
                 <label for="old-password">原密碼:</label>

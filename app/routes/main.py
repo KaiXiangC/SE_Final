@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import login_user, login_required, logout_user, current_user, LoginManager
 from app import db
@@ -10,8 +10,13 @@ from werkzeug.utils import secure_filename
 # 設置日誌記錄
 logging.basicConfig(level=logging.DEBUG)
 
-login_manager = LoginManager()
 
+main_bp = Blueprint('main', __name__)
+@main_bp.route('/')
+def home():
+        """首頁"""
+        return render_template('login.html')
+'''
 def configure_routes(app):
     login_manager.init_app(app)
     
@@ -291,3 +296,4 @@ def configure_routes(app):
             flash('會員退件失敗', 'danger')
         
         return redirect(url_for('member_manage'))
+'''

@@ -2,6 +2,7 @@ from app import create_app, db
 from sqlalchemy import text
 import logging
 
+
 app = create_app()
 
 if __name__ == '__main__':
