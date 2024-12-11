@@ -229,17 +229,17 @@
                 <p>會員姓名：{{ user.name }}</p>
             </div>
             <div class="profile-buttons">
-                <a href="{{ url_for('memberEdit') }}" class="profile-button">修改個人資料</a>
-                <a href="{{ url_for('editPWD') }}" class="profile-button">修改密碼</a>
+                <a href="{{ url_for('member.memberedit', user_id=current_user.userID) }}" class="profile-button">修改個人資料</a>
+                <a href="{{ url_for('member.editpwd', user_id=current_user.userID) }}" class="profile-button">修改密碼</a>
             </div>
         </div>
 
         <div class="tabs">
-            <a href="{{ url_for('index', tab='proposals') }}" class="tab">我的提案</a>
-            <a href="{{ url_for('index', tab='drafts') }}" class="tab">我的草稿</a>
-            <a href="{{ url_for('index', tab='votes') }}" class="tab">我的投票</a>
-            <a href="{{ url_for('index', tab='collections') }}" class="tab">我的收藏</a>
-            <a href="{{ url_for('index', tab='comments') }}" class="tab">我的留言</a>
+            <a href="{{ url_for('login.index', tab='proposals') }}" class="tab">我的提案</a>
+            <a href="{{ url_for('login.index', tab='drafts') }}" class="tab">我的草稿</a>
+            <a href="{{ url_for('login.index', tab='votes') }}" class="tab">我的投票</a>
+            <a href="{{ url_for('login.index', tab='collections') }}" class="tab">我的收藏</a>
+            <a href="{{ url_for('login.index', tab='comments') }}" class="tab">我的留言</a>
         </div>
 
         <div class="content-area">

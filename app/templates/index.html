@@ -254,9 +254,9 @@
         <div class="nav-container">
             <nav>
                 <a href="{{ url_for('issue.new_issue') }}">想提議</a>
-                <a href="{{ url_for('logout') }}">登出</a>
+                <a href="{{ url_for('login.logout') }}">登出</a>
             </nav>
-            <a href="{{ url_for('member', user_id=current_user.userID) }}" class="profile-link">
+            <a href="{{ url_for('member.member', user_id=current_user.userID) }}" class="profile-link">
                 <img src="profile-placeholder.png" alt="頭像" class="profile-img">
             </a>
         </div>
