@@ -2,12 +2,6 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user, LoginManager
 from app import db
 from app.models.issue import Issue
-import logging
-
-# 設置日誌記錄
-logging.basicConfig(level=logging.DEBUG)
-
-login_manager = LoginManager()
 
 propose_bp = Blueprint('propose', __name__)
 

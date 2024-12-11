@@ -1,17 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from werkzeug.security import generate_password_hash
-from flask_login import LoginManager
 from app import db
 import app
 from app.models.user import User
 import logging
 import os
 from werkzeug.utils import secure_filename
-
-# 設置日誌記錄
-logging.basicConfig(level=logging.DEBUG)
-
-login_manager = LoginManager()
 
 register_bp = Blueprint('register', __name__)
 

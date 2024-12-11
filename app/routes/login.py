@@ -3,16 +3,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import login_user, login_required, logout_user, current_user, LoginManager
 from app import db
 from app.models.user import User
-import logging
-import os
-
-# 設置日誌記錄
-logging.basicConfig(level=logging.DEBUG)
-
-# login_manager = LoginManager()
 
 login_bp = Blueprint('login', __name__)
-
 
 @login_bp.route('/login', methods=['GET', 'POST'])
 def login():

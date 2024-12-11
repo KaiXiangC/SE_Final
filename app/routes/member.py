@@ -3,12 +3,6 @@ from werkzeug.security import generate_password_hash
 from flask_login import login_required, current_user, LoginManager
 from app import db
 from app.models.user import User
-import logging
-
-# 設置日誌記錄
-logging.basicConfig(level=logging.DEBUG)
-
-# login_manager = LoginManager()
 
 member_bp = Blueprint('member', __name__)
 
