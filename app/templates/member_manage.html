@@ -144,7 +144,7 @@
                     <tr>
                         <td>{{ user.userID }}</td>
                         <td>{{ user.name }}</td>
-                        <td><button class="btn" onclick="window.location.href='/member_auth/{{ user.userID }}'">審核</button></td>
+                        <td><button class="btn" onclick="window.location.href='/admin/member_auth/{{ user.userID }}'">審核</button></td>
                     </tr>
                 {% endfor %}
             {% else %}

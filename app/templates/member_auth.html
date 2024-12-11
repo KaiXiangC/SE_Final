@@ -149,7 +149,7 @@
 <body>
 
     <!-- 返回會員管理頁面 -->
-    <a href="{{ url_for('member_manage') }}" class="back-btn"><i class="fas fa-arrow-left"></i> 返回會員管理</a>
+    <a href="{{ url_for('admin.member_manage') }}" class="back-btn"><i class="fas fa-arrow-left"></i> 返回會員管理</a>
     
     <!-- Modal 小視窗 -->
     <div class="modal-overlay">
@@ -194,7 +194,7 @@
     <script>
         // 觸發關閉小視窗
         function closeModal() {
-            window.location.href = "/member_manage"; // 返回會員管理頁面
+            window.location.href = "/admin/member_manage"; // 返回會員管理頁面
         }
     </script>
 

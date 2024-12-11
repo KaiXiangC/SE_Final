@@ -79,57 +79,57 @@ def edit_category():
         flash('類別不存在', 'danger')
     return redirect(url_for('admin.propose_category_manage'))
 
-@admin_bp.route('/member_auth/<int:user_id>', methods=['GET', 'POST'])
+@admin_bp.route('/member_auth/<int:user_id>', methods=['GET'])
 @login_required
 def member_auth(user_id):
-        """會員審核"""
-        user = User.query.get_or_404(user_id)
+    """會員審核"""
+    user = User.query.get_or_404(user_id)
+    
+    if request.method == 'POST':
+        user.authenticationStatus = 'authenticationStatus' in request.form
         
-        if request.method == 'POST':
-            user.authenticationStatus = 'authenticationStatus' in request.form
-            
-            try:
-                db.session.commit()
-                flash('會員認證狀態已更新', 'success')
-            except Exception as e:
-                db.session.rollback()
-                logging.error(f"會員認證狀態更新失敗: {e}")
-                flash('會員認證狀態更新失敗', 'danger')
-            
-            return redirect(url_for('admin.member_manage'))
+        try:
+            db.session.commit()
+            flash('會員認證狀態已更新', 'success')
+        except Exception as e:
+            db.session.rollback()
+            logging.error(f"會員認證狀態更新失敗: {e}")
+            flash('會員認證狀態更新失敗', 'danger')
         
-        return render_template('member_auth.html', user=user)
+        return redirect(url_for('admin.member_manage'))
+    
+    return render_template('member_auth.html', user=user)
 
 @admin_bp.route('/approve/<int:user_id>', methods=['GET'])
 @login_required
 def approve(user_id):
-        """審核會員"""
-        user = User.query.get_or_404(user_id)
-        user.authenticationStatus = True
-        
-        try:
-            db.session.commit()
-            flash('會員已審核通過', 'success')
-        except Exception as e:
-            db.session.rollback()
-            logging.error(f"會員審核失敗: {e}")
-            flash('會員審核失敗', 'danger')
-        
-        return redirect(url_for('admin.member_manage'))
+    """審核會員"""
+    user = User.query.get_or_404(user_id)
+    user.authenticationStatus = True
+    
+    try:
+        db.session.commit()
+        flash('會員已審核通過', 'success')
+    except Exception as e:
+        db.session.rollback()
+        logging.error(f"會員審核失敗: {e}")
+        flash('會員審核失敗', 'danger')
+    
+    return redirect(url_for('admin.member_manage'))
 
 @admin_bp.route('/reject/<int:user_id>', methods=['GET'])
 @login_required
 def reject(user_id):
-        """退件會員"""
-        user = User.query.get_or_404(user_id)
-        user.authenticationStatus = False
-        
-        try:
-            db.session.commit()
-            flash('會員已退件', 'success')
-        except Exception as e:
-            db.session.rollback()
-            logging.error(f"會員退件失敗: {e}")
-            flash('會員退件失敗', 'danger')
-        
-        return redirect(url_for('admin.member_manage'))
+    """退件會員"""
+    user = User.query.get_or_404(user_id)
+    user.authenticationStatus = False
+    
+    try:
+        db.session.commit()
+        flash('會員已退件', 'success')
+    except Exception as e:
+        db.session.rollback()
+        logging.error(f"會員退件失敗: {e}")
+        flash('會員退件失敗', 'danger')
+    
+    return redirect(url_for('admin.member_manage'))
