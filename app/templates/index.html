@@ -66,26 +66,37 @@
             gap: 16px;
             align-items: center;
         }
-        .categories {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-        .category-button {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        #category-menu {
+            display: none; /* 預設隱藏 */
+            position: fixed; /* 固定位置 */
+            top: 0;
+            left: 0;
+            width: 25%; /* 占據螢幕 1/3 寬度 */
+            height: 100%; /* 占據整個高度 */
+            background: #fff;
+            border-right: 1px solid #ddd;
             padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            text-align: center;
-            background-color: #f9f9f9;
-            transition: background-color 0.3s;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            overflow-y: auto; /* 若內容超出則可滾動 */
+            z-index: 1000; /* 確保顯示在其他元素上方 */
+        }
+        #close-menu-btn {
+            display: block;
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            background-color: #ff6b6b; /* 紅色背景 */
+            color: white;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
+            font-size: 16px;
         }
-        .category-button:hover {
-            background-color: #f0f0f0;
+
+        #close-menu-btn:hover {
+            background-color: #ff4c4c; /* 懸停時加深顏色 */
         }
+
+
         /* 左側標題 */
         .title h1 {
             font-size: 20px;
@@ -251,6 +262,15 @@
 
     <!-- Header -->
     <header class="header">
+        <img id="menu-icon" src="static/img/menu.png" alt="Menu" style="cursor: pointer; width: 30px; height: 30px;">
+        <div id="category-menu" style="display: none; position: fixed; top: 0; left: 0; width: 25%; height: 100%; background: #fff; border-right: 1px solid #ddd; padding: 20px; box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); overflow-y: auto; z-index: 1000;">
+            <button id="close-menu-btn" style="display: block; margin-bottom: 20px; padding: 10px 15px; background-color: #ff6b6b; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                關閉
+            </button>
+            <!-- 動態插入分類名稱 -->
+        </div>
+        
+        
         <div class="title">
             <h1>公共政策網路參與平臺</h1>
         </div>
@@ -362,7 +382,53 @@
             search();  // 頁面載入時自動載入所有資料
         });
     </script>
+    <script>
+        document.getElementById('menu-icon').addEventListener('click', function () {
+        const menu = document.getElementById('category-menu');
+        menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
 
+        if (menu.style.display === 'block') {
+            fetch('/categories')
+                .then(response => response.json())
+                .then(data => {
+                    menu.innerHTML = ''; // 清空舊的菜單內容
+
+                    // 添加關閉的 icon
+                    const closeIcon = document.createElement('img');
+                    closeIcon.src = 'static/img/menu.png';
+                    closeIcon.alt = 'Close Menu';
+                    closeIcon.style.cursor = 'pointer';
+                    closeIcon.style.width = '30px';
+                    closeIcon.style.height = '30px';
+                    closeIcon.style.marginBottom = '20px';
+
+                    // 綁定關閉功能
+                    closeIcon.addEventListener('click', () => {
+                        menu.style.display = 'none';
+                    });
+                    menu.appendChild(closeIcon);
+
+                    // 動態生成分類名稱
+                    data.forEach(category => {
+                        const item = document.createElement('div');
+                        item.style.cursor = 'pointer';
+                        item.style.padding = '10px';
+                        item.style.borderBottom = '1px solid #ddd';
+                        item.textContent = category.name;
+
+                        // 點擊分類名稱後導向對應頁面
+                        item.addEventListener('click', function () {
+                            window.location.href = `/issue_list.html?categoryID=${category.categoryID}`;
+                        });
+                        menu.appendChild(item);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    });
+
+    </script>
+    
 
 </body>
 </html>
