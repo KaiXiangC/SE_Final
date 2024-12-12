@@ -36,9 +36,7 @@ def history():
         preview_length = 50
         preview = issue.description[:preview_length] + '...' if len(issue.description) > preview_length else issue.description
 
-        # 判斷是否截止
         is_expired = issue.deadline and issue.deadline < datetime.utcnow()
-        print(is_expired)
         issues_info.append({
             'issueID': issue.issueID,
             'title': issue.title,
@@ -85,12 +83,15 @@ def history_filter():
 
         preview_length = 50
         preview = issue.description[:preview_length] + '...' if len(issue.description) > preview_length else issue.description
+        
+        is_expired = issue.deadline and issue.deadline < datetime.utcnow()
 
         issues_data.append({
             'issueID': issue.issueID,
             'title': issue.title,
             'preview': preview,
-            'icons': icons
+            'icons': icons,
+            'is_expired': is_expired  # 新增這一行
         })
 
     return jsonify(issues_data)
