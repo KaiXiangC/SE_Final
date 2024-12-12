@@ -1,4 +1,3 @@
-# app/models/issue.py
 from app import db
 
 class Issue(db.Model):
@@ -18,6 +17,33 @@ class Issue(db.Model):
     favorites = db.relationship('Favorite', backref='issue', lazy=True)
     votes = db.relationship('Vote', backref='issue', lazy=True)
     comments = db.relationship('Comment', backref='issue', lazy=True)
+
+    @classmethod
+    def get_votes(cls, issue_id):
+        
+        from app.models.vote import Vote
+        """
+        Get all votes for a specific issue.
+        """
+        return Vote.query.filter_by(issueID=issue_id).all()
+
+    @classmethod
+    def get_comments(cls, issue_id):
+        from app.models.comment import Comment
+
+        """
+        Get all comments for a specific issue.
+        """
+        return Comment.query.filter_by(issueID=issue_id).all()
+
+    @classmethod
+    def get_favorites(cls, issue_id):
+        from app.models.favorite import Favorite
+
+        """
+        Get all favorites for a specific issue.
+        """
+        return Favorite.query.filter_by(issueID=issue_id).all()
     
     @classmethod
     def get_all_issues(cls):

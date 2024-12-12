@@ -3,533 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>公共政策網路參與平臺</title>
+    <title>公共政策網路參與平台</title>
     <style>
-        /* 通用樣式 */
         body {
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
+            background-color: #fff6e5;
         }
-
-        /* Header 樣式 */
-    
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 60px; /* 確保 header 高度固定 */
-            background-color: #ffef12;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            z-index: 1000;
+        header {
+            background-color: #ffcc00;
+            padding: 10px;
         }
-
-        #category-menu {
-            position: fixed;
-            top: 60px; /* header 的高度 */
-            left: 0;
-            width: 15%; /* 左側區域占用 15% */
-            height: calc(100vh - 60px); /* 減去 header 的高度 */
-            background: #f9f9f9;
-            border-right: 1px solid #ddd;
-            overflow-y: auto; /* 支援滾動 */
-            padding: 20px;
-            z-index: 999;
-        }
-    
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
-        }
-        .tabs {
-            display: flex;
-            border-bottom: 2px solid #ddd;
-        }
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            font-weight: bold;
-            color: #555;
-            border-bottom: 3px solid transparent;
-        }
-        .tab.active {
-            color: #000;
-            border-color: #007bff;
-        }
-        .tab-content {
-            display: none;
-            margin-top: 20px;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        .proposal {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-        .proposal h3 {
-            margin: 0 0 8px;
-        }
-        .proposal .details {
-            font-size: 14px;
-            color: #555;
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-        
-
-        main {
-            margin-left: 15%; /* 避免被 menu 遮擋 */
-            padding: 20px;
-        }
-
-        /* 左側標題 */
-        .title h1 {
-            font-size: 20px;
-            margin: 0;
-            color: #333;
-        }
-
-        /* 右側導航和頭像 */
-        .nav-container {
-            display: flex;
-            align-items: center;
-            gap: 10px; /* 控制文字和頭像之間的距離 */
-        }
-
-        nav a {
-            text-decoration: none;
-            color: #4a148c; /* 紫色 */
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        nav a:hover {
-            color: #000; /* 懸停時變黑 */
-        }
-
-        /* 頭像圖片 */
-        .profile-link {
-            display: flex;
-            align-items: center;
-        }
-
-        .profile-img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid #ccc;
-            transition: border-color 0.3s, transform 0.3s;
-        }
-
-        .profile-img:hover {
-            border-color: #333;
-            transform: scale(1.1); /* 懸停放大 */
-        }
-
-        .header h1 {
-            font-size: 20px;
-            font-weight: bold;
-        }
-        .carousel {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .carousel-images {
-            display: flex;
-            transition: transform 0.5s ease-in-out;
-            will-change: transform;
-        }
-
-        .carousel-images img {
-            width: 100%;
-            flex-shrink: 0;
-        }
-
-
-        .content {
-            padding: 20px;
+            padding: 0 15px;
         }
         .search-bar {
+            display: inline-block;
+            margin-left: 20px;
+        }
+        .nav-links {
+            float: right;
+        }
+        .nav-links a {
+            margin-left: 15px;
+            text-decoration: none;
+            color: black;
+        }
+        .main-content {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 20px auto;
-            padding: 10px;
-            width: 700px;
-            border: 1px solid #ddd;
-            border-radius: 50px;
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
         }
-
-        .search-bar input {
-            flex: 1;
-            border: none;
-            outline: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 50px 0 0 50px;
+        .sidebar {
+            width: 200px;
         }
-
-        .search-bar button {
-            border: none;
-            outline: none;
-            background-color: #ffef12;
-            color: #333;
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 0 50px 50px 0;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+        .sidebar a {
+            display: block;
+            margin-bottom: 10px;
+            color: purple;
+            text-decoration: none;
         }
-
-        .search-bar button:hover {
-            background-color: #ffd700;
+        .policy-list {
+            flex-grow: 1;
         }
-        .announcement-container {
-            width: 600px;
-            height: 50px;
-            overflow: hidden;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin: 20px auto;
-            background-color: #fff;
-            position: relative;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        .policy-card {
+            background-color: #ffcc00;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
         }
-
-        .announcement-title {
-            position: absolute;
-            top: 0;
-            left: 10px;
-            height: 50px;
-            line-height: 50px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .announcement-content {
-            position: absolute;
-            top: 0;
-            left: 60px;
-            height: 50px;
-            line-height: 50px;
-            font-size: 14px;
-            color: #555;
-            white-space: nowrap;
-            animation: slide2 25s linear infinite; /* 總時間=5秒x5則 */
-        }
-        .announcement-title {
-            font-weight: bold;
-        }
-        .announcement-time {
-            color: gray;
-        }
-        @keyframes slide2 {
-            0% { transform: translateY(0); }
-            20% { transform: translateY(0); }
-            25% { transform: translateY(-50px); }
-            45% { transform: translateY(-50px); }
-            50% { transform: translateY(-100px); }
-            70% { transform: translateY(-100px); }
-            75% { transform: translateY(-150px); }
-            95% { transform: translateY(-150px); }
-            100% { transform: translateY(-200px); }
-        }
-        #notification-window {
-            display: none; /* 預設隱藏 */
-            position: fixed;
-            top: 50px; /* 距離頂部的距離 */
-            right: 20px; /* 靠右側顯示 */
-            width: 100px;
-            height: 150px;
-            background: white;
-            border: 1px solid #ddd;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            padding: 10px;
-            overflow-y: auto; /* 超出範圍滾動 */
-            z-index: 1000;
-        }
-
-        #notification-window h2 {
-            font-size: 14px;
-            margin: 0 0 10px 0;
-        }
-
-        #notification-window ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        #notification-window ul li {
-            font-size: 12px;
-            margin-bottom: 5px;
-            color: #333;
-        }
-
-        .issue-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            padding: 20px;
-        }
-
-        .issue-item {
-            display: flex;
-            align-items: center;
-            background-color: #ffef12;
-            border-radius: 5px;
-            padding: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .category-label {
-            background-color: #008000;
+        .policy-tag {
+            background-color: #2d5a27;
             color: white;
-            font-size: 14px;
             padding: 5px 10px;
-            border-radius: 3px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .policy-stats {
+            margin-top: 10px;
+        }
+        .policy-stats span {
             margin-right: 15px;
         }
-
-        .issue-title {
-            flex: 1;
-            font-size: 16px;
-            font-weight: bold;
-            color: #333;
+        footer {
+            background-color: #f0f0f0;
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
         }
-
-        .stats {
-            display: flex;
-            gap: 15px;
-            font-size: 14px;
-            color: #555;
-        }
-        #announcement-footer {
-            position: fixed; /* 固定在視窗底部 */
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background-color: rgba(255, 255, 255, 0.8); /* 半透明黃色背景 */
-            padding: 10px 20px;
-            z-index: 1000; /* 保證位於最前層 */
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 14px;
-            color: #333; /* 確保文字顏色對比明顯 */
-            backdrop-filter: blur(5px); /* 添加背景模糊效果（可選） */
-        }
-
     </style>
 </head>
 <body>
-
-    <!-- Header -->
-    <header class="header">
-    
-        <div class="title">
-            <h1>公共政策網路參與平臺</h1>
-        </div>
-        <!-- 搜尋欄 -->
-        <div class="search-bar">
-            <input type="text" id="keyword" placeholder="請輸入關鍵字">
-            <button onclick="search()">搜尋</button>
-        </div>
-        <div class="nav-container">
-            <nav>
-                <img id="notify-icon" src="static/img/notify.png" alt="Notifications" style="cursor: pointer; width: 30px; height: 30px;">
-
-                <!-- 通知小視窗 -->
-                <div id="notification-window" style="display: none; position: fixed; top: 50px; right: 20px; width: 300px; height: 350px; background: white; border: 1px solid #ddd; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); padding: 10px; overflow-y: auto; z-index: 1000;">
-                    <main>
-                        <h2>我的通知</h2>
-                        <ul id="notification-list">
-                            <!-- 動態插入通知內容 -->
-                        </ul>
-                    </main>
-                </div>
-                <a href="{{ url_for('issue.history') }}">歷史紀錄</a>
+    <header>
+        <div class="container">
+            <h1 style="display: inline-block;">公共政策網路參與平台</h1>
+            <div class="search-bar">
+                <input type="text" placeholder="請輸入關鍵字">
+                <button>搜尋</button>
+            </div>
+            <nav class="nav-links">
+                <a href="#" id="notification-link">通知</a>
                 <a href="{{ url_for('issue.new_issue') }}">想提議</a>
+                <a href="{{ url_for('hist.history') }}">歷史紀錄</a>
                 <a href="{{ url_for('login.logout') }}">登出</a>
             </nav>
-            <a href="{{ url_for('member.member', user_id=current_user.userID) }}" class="profile-link">
-                <img src="https://img.icons8.com/?size=100&id=SSa3O7HCPrBv&format=png&color=000000" class="profile-img">
-            </a>
         </div>
     </header>
-    <aside id="category-menu" style="width: 15%; height: calc(100vh - 60px); position: fixed; top: 60px; left: 0; background: #f9f9f9; border-right: 1px solid #ddd; padding: 20px; overflow-y: auto;">
-        <h2>類別</h2>
-        <div id="category-list">
-            <!-- 動態插入類別 -->
-        </div>
-    </aside>
-    <main style="margin-left: 15%; padding: 20px;">
-        <div class="carousel">
-            <div class="carousel-images" id="carousel-images"></div>
-        </div>
-        <!-- 議題 -->
-        <h1>Issue 列表：</h1>
-        <ul id="issue-list">
-            <!-- 動態插入內容 -->
-        </ul>
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-            const issueList = document.getElementById('issue-list');
 
-            fetch('/issues') // 從後端獲取數據
-                .then(response => response.json())
-                .then(data => {
-                    issueList.innerHTML = ''; // 清空舊內容
-
-                    data.forEach(issue => {
-                        const listItem = document.createElement('li');
-                        listItem.innerHTML = `
-                            <strong>[${issue.category_name}]</strong> 
-                            ${issue.title} - 
-                            投票數: ${issue.vote_count}, 
-                            評論數: ${issue.comment_count}, 
-                            收藏數: ${issue.favorite_count}
-                        `;
-
-                        issueList.appendChild(listItem);
-                    });
-                })
-                .catch(error => console.error('Error:', error));
-        });
-
-        </script>
-        <!-- <div class="content" id="results">
-            
-        
-            <h1>Issue 列表：</h1>
-            <ul>
-            {% for issue in issues %}
-                <li>{{ issue.title }}: {{ issue.description }}</li>
-            {% endfor %}
-            </ul>
-        </div> -->
-        
-        <footer id="announcement-footer">
-            <div class="announcement-container">
-                <div class="announcement-title">公告:</div>
-                
-                <div class="announcement-content">
-                {% for notification in notifications %}
-                    <div>
-                        <span class="announcement-title">{{ notification.title }}</span>
-                        <span class="announcement-time">{{ notification.createTime }}</span>
-                    </div>
+    <div id="notification-container" style="display: none; background: #fff6e5; border: 1px solid #ffcc00; padding: 15px; position: absolute; top: 60px; right: 20px; z-index: 1000;">
+        <h3>您的通知</h3>
+        <ul id="notification-list"></ul>
+    </div>
+    
+    <div class="container main-content">
+        <aside class="sidebar">
+            <nav>
+                {% for category in categories %}
+                <a href="#" class="category-link" data-category-id="{{ category.id }}">{{ category.name }}</a>
                 {% endfor %}
+            </nav>
+        </aside>
+
+        <main class="policy-list">
+            {% for issue in issues %}
+            <div class="policy-card">
+                <span class="policy-tag">{{ issue.category }}</span>
+                <h2>{{ issue.title }}</h2>
+                <p>{{ issue.description }}</p>
+                <div class="policy-stats">
+                    <span>投票數：{{ issue.votes_count }}</span>
+                    <span>評論：{{ issue.comments_count }}</span>
+                    <span>收藏：{{ issue.favorites_count }}</span>
                 </div>
-                
             </div>
-        </footer>
-        <!-- 類別菜單 -->
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-            const categoryList = document.getElementById('category-list');
+            {% endfor %}
+        </main>
+        </div>
 
-            // 請求類別資料
-            fetch('/categories')
-                .then(response => response.json())
-                .then(data => {
-                    categoryList.innerHTML = ''; // 清空舊內容
-                    data.forEach(category => {
-                        const item = document.createElement('div');
-                        item.className = 'category-item';
-                        item.style.cursor = 'pointer';
-                        item.style.padding = '10px';
-                        item.style.borderBottom = '1px solid #ddd';
-                        item.textContent = category.name;
-
-                        // 點擊類別時跳轉到對應的頁面
-                        item.addEventListener('click', () => {
-                            window.location.href = `/issue_list.html?categoryID=${category.categoryID}`;
-                        });
-
-                        categoryList.appendChild(item);
-                    });
-                })
-                .catch(error => console.error('Error:', error));
-        });
-
-        </script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-            const notifyIcon = document.getElementById('notify-icon');
-            const notificationWindow = document.getElementById('notification-window');
-            const notificationList = document.getElementById('notification-list');
-
-            notifyIcon.addEventListener('click', function () {
-                // 切換通知視窗顯示/隱藏
-                notificationWindow.style.display = notificationWindow.style.display === 'none' ? 'block' : 'none';
-
-                if (notificationWindow.style.display === 'block') {
-                    // 如果小視窗已顯示，動態載入通知內容
-                    fetch('/notifications') // 請求通知資料
-                        .then(response => response.json())
-                        .then(data => {
-                            notificationList.innerHTML = ''; // 清空舊內容
-
-                            // 動態生成通知列表
-                            data.notifications.forEach(notification => {
-                                const listItem = document.createElement('li');
-                                listItem.textContent = `${notification.title} - ${notification.content}`;
-                                notificationList.appendChild(listItem);
-                            });
-                        })
-                        .catch(error => console.error('Error fetching notifications:', error));
-                }
-            });
-        });
-
-        </script>
-        <!-- 跑馬燈 -->
-        <script>
-            async function fetchImages() {
-                const response = await fetch('/api/ad'); // 動態請求圖片數據
-                const images = await response.json();
-                const carouselContainer = document.getElementById('carousel-images');
-                images.forEach((image, index) => {
-                    const imgElement = document.createElement('img');
-                    imgElement.src = `/static/img/${image}`;
-                    imgElement.alt = `Ad ${index + 1}`;
-                    carouselContainer.appendChild(imgElement);
-                });
-                startCarousel();
-            }
-
-            function startCarousel() {
-                const carouselImages = document.querySelector('.carousel-images');
-                let currentIndex = 0;
-
-                function slideCarousel() {
-                    const totalImages = carouselImages.children.length;
-                    currentIndex = (currentIndex + 1) % totalImages;
-                    carouselImages.style.transform = `translateX(-${currentIndex * 100}%)`;
-                }
-
-                setInterval(slideCarousel, 5000); // 每5秒切換一張圖片
-            }
-
-            fetchImages();
-        </script>
-    </main>
+    <footer>
+        <p>文字跑馬燈：{{ admin_notifications[0].content if admin_notifications else '暫無公告' }}</p>
+    </footer>
 </body>
 </html>
+
+<script>
+    document.querySelectorAll('.category-link').forEach(link => {
+        link.addEventListener('click', function (event) {
+            event.preventDefault(); // 阻止默認的超連結行為
+            const categoryId = this.getAttribute('data-category-id');
+            
+            // 發送 AJAX 請求到後端
+            fetch(`/filter_issues_by_category?category_id=${categoryId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        // 使用回傳的議題資料更新頁面
+                        const policyList = document.querySelector('.policy-list');
+                        policyList.innerHTML = ''; // 清空舊的議題
+                        data.issues.forEach(issue => {
+                            policyList.innerHTML += `
+                                <div class="policy-card">
+                                    <span class="policy-tag">類別ID: ${issue.issueID}</span>
+                                    <h2>${issue.title}</h2>
+                                    <p>${issue.description}</p>
+                                    <div class="policy-stats">
+                                        <span>發佈時間：${issue.publishTime || '無'}</span>
+                                        <span>截止時間：${issue.deadline || '無'}</span>
+                                        <span>狀態：${issue.status}</span>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        alert(data.message || "發生錯誤，無法載入議題！");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching issues:", error);
+                    alert("發生錯誤，請稍後再試！");
+                });
+        });
+    });
+</script>
+
+<script>
+    // 模擬後端傳遞的 notifications，實際應該由後端渲染到頁面中的腳本
+    const notifications = {{ notifications | tojson }};
+
+    document.getElementById('notification-link').addEventListener('click', function (event) {
+        event.preventDefault(); // 阻止預設行為
+        const container = document.getElementById('notification-container');
+        const list = document.getElementById('notification-list');
+
+        // 切換顯示或隱藏通知區域
+        if (container.style.display === 'none') {
+            // 清空舊的通知內容
+            list.innerHTML = '';
+
+            // 動態填充通知內容
+            notifications.forEach(notification => {
+                const listItem = document.createElement('li');
+                listItem.textContent = notification.content;
+                list.appendChild(listItem);
+            });
+
+            // 顯示通知區域
+            container.style.display = 'block';
+        } else {
+            // 隱藏通知區域
+            container.style.display = 'none';
+        }
+    });
+
+    // 點擊其他地方時關閉通知
+    document.addEventListener('click', function (event) {
+        const container = document.getElementById('notification-container');
+        if (!container.contains(event.target) && event.target.id !== 'notification-link') {
+            container.style.display = 'none';
+        }
+    });
+</script>

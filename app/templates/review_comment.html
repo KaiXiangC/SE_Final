@@ -99,7 +99,7 @@
         <div class="modal-header">
             議題標題：{{ issue.title if issue else '未知議題' }}
             <span class="comment-id">#{{ comment.commentID if comment else '無' }}</span>
-            <a href="{{ url_for('propose_manage') }}" class="close">×</a>
+            <a href="{{ url_for('admin.propose_manage') }}" class="close">×</a>
 
         </div>
         {% if comment %}
@@ -108,19 +108,19 @@
             <textarea readonly>{{ comment.content }}</textarea>
         </div>
         <div class="buttons">
-            <form method="get" action="{{ url_for('review_comment', issue_id=issue_id) }}">
+            <form method="get" action="{{ url_for('admin.review_comment', issue_id=issue_id) }}">
                 <input type="hidden" name="index" value="{{ current_index - 1 }}">
                 <button type="submit" class="navigate" {% if current_index <= 0 %}disabled{% endif %}>上一筆留言</button>
             </form>
-            <form method="post" action="{{ url_for('delete_comment', comment_id=comment.commentID) }}">
+            <form method="post" action="{{ url_for('admin.delete_comment', comment_id=comment.commentID) }}">
                 <input type="hidden" name="issue_id" value="{{ issue_id }}">
                 <button type="submit" class="delete">刪除留言</button>
             </form>
-            <form method="post" action="{{ url_for('approve_comment', comment_id=comment.commentID) }}">
+            <form method="post" action="{{ url_for('admin.approve_comment', comment_id=comment.commentID) }}">
                 <input type="hidden" name="issue_id" value="{{ issue_id }}">
                 <button type="submit" class="approve">通過審核</button>
             </form>
-            <form method="get" action="{{ url_for('review_comment', issue_id=issue_id) }}">
+            <form method="get" action="{{ url_for('admin.review_comment', issue_id=issue_id) }}">
                 <input type="hidden" name="index" value="{{ current_index + 1 }}">
                 <button type="submit" class="navigate" {% if current_index >= total_comments - 1 %}disabled{% endif %}>下一筆留言</button>
             </form>
