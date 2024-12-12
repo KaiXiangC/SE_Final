@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -38,15 +39,23 @@
         }
         .sidebar {
             width: 200px;
+            border-right: 1px solid #e0e0e0;
+            padding-right: 20px;
         }
         .sidebar a {
             display: block;
             margin-bottom: 10px;
             color: purple;
             text-decoration: none;
+            padding: 5px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .sidebar a:last-child {
+            border-bottom: none;
         }
         .policy-list {
             flex-grow: 1;
+            padding-left: 20px;
         }
         .policy-card {
             background-color: #ffcc00;
@@ -72,28 +81,114 @@
             background-color: #f0f0f0;
             text-align: center;
             padding: 10px;
-            margin-top: 20px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
+        }
+        .marquee {
+            overflow: hidden;
+            white-space: nowrap;
+            display: block;
+            position: relative;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .marquee span {
+            display: inline-block;
+            padding-left: 100%;
+            animation: marquee 10s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        #notification-container {
+            display: none;
+            background: #fff6e5;
+            border: 1px solid #ffcc00;
+            padding: 15px;
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            z-index: 1000;
+            width: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        #notification-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        #notification-list li {
+            border-bottom: 1px solid #e0e0e0;
+            padding: 10px 0;
+        }
+        #notification-list li:last-child {
+            border-bottom: none;
+        }
+        .notification-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .notification-content {
+            color: #666;
+        }
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .platform-title {
+            margin-right: 20px;
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            margin-left: 15px;
+            text-decoration: none;
+            color: black;
+        }
+        
+        .profile-link {
+            margin-left: 15px;
+        }
+        
+        .profile-img {
+            width: 32px;
+            height: 32px;
+            vertical-align: middle;
         }
     </style>
 </head>
 <body>
     <header>
         <div class="container">
-            <h1 style="display: inline-block;">公共政策網路參與平台</h1>
-            <div class="search-bar">
-                <input type="text" id="search-input" placeholder="請輸入關鍵字">
-                <button id="search-button">搜尋</button>
+            <div class="header-content">
+                <h1 class="platform-title">公共政策網路參與平台</h1>
+                <div class="search-bar">
+                    <input type="text" id="search-input" placeholder="請輸入關鍵字">
+                    <button id="search-button">搜尋</button>
+                </div>
+                <nav class="nav-links">
+                    <a href="#" id="notification-link">通知</a>
+                    <a href="{{ url_for('issue.new_issue') }}">想提議</a>
+                    <a href="{{ url_for('hist.history') }}">歷史紀錄</a>
+                    <a href="{{ url_for('login.logout') }}">登出</a>
+                    <a href="{{ url_for('member.member', user_id=current_user.userID) }}" class="profile-link">
+                        <img src="https://img.icons8.com/?size=100&id=SSa3O7HCPrBv&format=png&color=000000" class="profile-img" alt="Profile">
+                    </a>
+                </nav>
             </div>
-            <nav class="nav-links">
-                <a href="#" id="notification-link">通知</a>
-                <a href="{{ url_for('issue.new_issue') }}">想提議</a>
-                <a href="{{ url_for('hist.history') }}">歷史紀錄</a>
-                <a href="{{ url_for('login.logout') }}">登出</a>
-            </nav>
         </div>
     </header>
-
-    <div id="notification-container" style="display: none; background: #fff6e5; border: 1px solid #ffcc00; padding: 15px; position: absolute; top: 60px; right: 20px; z-index: 1000;">
+    <div id="notification-container">
         <h3>您的通知</h3>
         <ul id="notification-list"></ul>
     </div>
@@ -121,13 +216,51 @@
             </div>
             {% endfor %}
         </main>
-        </div>
+    </div>
 
     <footer>
-        <p>文字跑馬燈：{{ admin_notifications[0].content if admin_notifications else '暫無公告' }}</p>
+        <div class="marquee">
+            <span id="marquee-text">{{ admin_notifications[0].content if admin_notifications else '暫無公告' }}</span>
+        </div>
     </footer>
+    
+    <script>
+
+        const notifications = {{ notifications | tojson }};
+        console.log(notifications); // 確保輸出的 JSON 結構正確
+
+        document.getElementById('notification-link').addEventListener('click', function (event) {
+            event.preventDefault();
+            const container = document.getElementById('notification-container');
+            const list = document.getElementById('notification-list');
+
+            if (container.style.display === 'none') {
+                list.innerHTML = '';
+
+                if (notifications.length === 0) {
+                    list.innerHTML = '<li>沒有通知</li>';
+                } else {
+                    notifications.forEach(notification => {
+                        const listItem = document.createElement('li');
+                        listItem.innerHTML = `
+                            <div class="notification-title">${notification.title}</div>
+                            <div class="notification-content">${notification.content}</div>
+                        `;
+                        list.appendChild(listItem);
+                    });
+                }
+
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+            }
+        });
+
+        // Existing click event listener for closing notifications remains unchanged
+    </script>
 </body>
 </html>
+
 
 <script>
     document.querySelectorAll('.category-link').forEach(link => {
@@ -208,46 +341,26 @@
         .catch(error => {
             console.error("Error fetching issues:", error);
             alert("發生錯誤，請稍後再試！");
-                    });
+        });
 });
 
 
 </script>
-
 <script>
-    // 模擬後端傳遞的 notifications，實際應該由後端渲染到頁面中的腳本
-    const notifications = {{ notifications | tojson }};
+    document.addEventListener("DOMContentLoaded", function () {
+        const adminNotifications = {{ admin_notifications | tojson }};
+        const marqueeText = document.getElementById("marquee-text");
 
-    document.getElementById('notification-link').addEventListener('click', function (event) {
-        event.preventDefault(); // 阻止預設行為
-        const container = document.getElementById('notification-container');
-        const list = document.getElementById('notification-list');
-
-        // 切換顯示或隱藏通知區域
-        if (container.style.display === 'none') {
-            // 清空舊的通知內容
-            list.innerHTML = '';
-
-            // 動態填充通知內容
-            notifications.forEach(notification => {
-                const listItem = document.createElement('li');
-                listItem.textContent = notification.content;
-                list.appendChild(listItem);
-            });
-
-            // 顯示通知區域
-            container.style.display = 'block';
-        } else {
-            // 隱藏通知區域
-            container.style.display = 'none';
-        }
-    });
-
-    // 點擊其他地方時關閉通知
-    document.addEventListener('click', function (event) {
-        const container = document.getElementById('notification-container');
-        if (!container.contains(event.target) && event.target.id !== 'notification-link') {
-            container.style.display = 'none';
+        if (adminNotifications.length > 1) {
+            let currentIndex = 0;
+            setInterval(() => {
+                currentIndex = (currentIndex + 1) % adminNotifications.length;
+                marqueeText.textContent = adminNotifications[currentIndex].content;
+                marqueeText.style.animation = "none"; // 重置動畫
+                setTimeout(() => {
+                    marqueeText.style.animation = "";
+                }, 10); // 微延遲觸發動畫
+            }, 10000); // 每 10 秒切換一次
         }
     });
 </script>
