@@ -14,13 +14,32 @@
         }
 
         /* Header 樣式 */
+    
         .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px; /* 確保 header 高度固定 */
+            background-color: #ffef12;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #ffef12;
             padding: 10px 20px;
-            border-bottom: 1px solid #ddd;
+            z-index: 1000;
+        }
+
+        #category-menu {
+            position: fixed;
+            top: 60px; /* header 的高度 */
+            left: 0;
+            width: 15%; /* 左側區域占用 15% */
+            height: calc(100vh - 60px); /* 減去 header 的高度 */
+            background: #f9f9f9;
+            border-right: 1px solid #ddd;
+            overflow-y: auto; /* 支援滾動 */
+            padding: 20px;
+            z-index: 999;
         }
     
         .container {
@@ -66,21 +85,12 @@
             gap: 16px;
             align-items: center;
         }
-        #category-menu {
-            display: none; /* 預設隱藏 */
-            position: fixed; /* 固定位置 */
-            top: 0;
-            left: 0;
-            width: 25%; /* 占據螢幕 1/3 寬度 */
-            height: 100%; /* 占據整個高度 */
-            background: #fff;
-            border-right: 1px solid #ddd;
-            padding: 20px;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-            overflow-y: auto; /* 若內容超出則可滾動 */
-            z-index: 1000; /* 確保顯示在其他元素上方 */
-        }
+        
 
+        main {
+            margin-left: 15%; /* 避免被 menu 遮擋 */
+            padding: 20px;
+        }
 
         /* 左側標題 */
         .title h1 {
@@ -159,7 +169,7 @@
             align-items: center;
             margin: 20px auto;
             padding: 10px;
-            width: 800px;
+            width: 700px;
             border: 1px solid #ddd;
             border-radius: 50px;
             background-color: #fff;
@@ -223,10 +233,10 @@
             white-space: nowrap;
             animation: slide2 25s linear infinite; /* 總時間=5秒x5則 */
         }
-        .notification-title {
+        .announcement-title {
             font-weight: bold;
         }
-        .notification-time {
+        .announcement-time {
             color: gray;
         }
         @keyframes slide2 {
@@ -240,6 +250,91 @@
             95% { transform: translateY(-150px); }
             100% { transform: translateY(-200px); }
         }
+        #notification-window {
+            display: none; /* 預設隱藏 */
+            position: fixed;
+            top: 50px; /* 距離頂部的距離 */
+            right: 20px; /* 靠右側顯示 */
+            width: 100px;
+            height: 150px;
+            background: white;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            overflow-y: auto; /* 超出範圍滾動 */
+            z-index: 1000;
+        }
+
+        #notification-window h2 {
+            font-size: 14px;
+            margin: 0 0 10px 0;
+        }
+
+        #notification-window ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #notification-window ul li {
+            font-size: 12px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .issue-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 20px;
+        }
+
+        .issue-item {
+            display: flex;
+            align-items: center;
+            background-color: #ffef12;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-label {
+            background-color: #008000;
+            color: white;
+            font-size: 14px;
+            padding: 5px 10px;
+            border-radius: 3px;
+            margin-right: 15px;
+        }
+
+        .issue-title {
+            flex: 1;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stats {
+            display: flex;
+            gap: 15px;
+            font-size: 14px;
+            color: #555;
+        }
+        #announcement-footer {
+            position: fixed; /* 固定在視窗底部 */
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.8); /* 半透明黃色背景 */
+            padding: 10px 20px;
+            z-index: 1000; /* 保證位於最前層 */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #333; /* 確保文字顏色對比明顯 */
+            backdrop-filter: blur(5px); /* 添加背景模糊效果（可選） */
+        }
 
     </style>
 </head>
@@ -247,14 +342,7 @@
 
     <!-- Header -->
     <header class="header">
-        <img id="menu-icon" src="static/img/menu.png" alt="Menu" style="cursor: pointer; width: 30px; height: 30px;">
-        <div id="category-menu" style="display: none; position: fixed; top: 0; left: 0; width: 25%; height: 100%; background: #fff; border-right: 1px solid #ddd; padding: 20px; box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); overflow-y: auto; z-index: 1000;">
-            <img id="close-menu-icon" src="static/img/menu.png" alt="Close Menu" style="cursor: pointer; width: 30px; height: 30px; margin-bottom: 20px;">
-            <!-- 動態插入分類名稱 -->
-        </div>
-        
-        
-        
+    
         <div class="title">
             <h1>公共政策網路參與平臺</h1>
         </div>
@@ -265,6 +353,17 @@
         </div>
         <div class="nav-container">
             <nav>
+                <img id="notify-icon" src="static/img/notify.png" alt="Notifications" style="cursor: pointer; width: 30px; height: 30px;">
+
+                <!-- 通知小視窗 -->
+                <div id="notification-window" style="display: none; position: fixed; top: 50px; right: 20px; width: 300px; height: 350px; background: white; border: 1px solid #ddd; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); padding: 10px; overflow-y: auto; z-index: 1000;">
+                    <main>
+                        <h2>我的通知</h2>
+                        <ul id="notification-list">
+                            <!-- 動態插入通知內容 -->
+                        </ul>
+                    </main>
+                </div>
                 <a href="{{ url_for('issue.history') }}">歷史紀錄</a>
                 <a href="{{ url_for('issue.new_issue') }}">想提議</a>
                 <a href="{{ url_for('login.logout') }}">登出</a>
@@ -274,157 +373,163 @@
             </a>
         </div>
     </header>
-    
-    <div class="carousel">
-        <div class="carousel-images" id="carousel-images"></div>
-    </div>
-    <script>
-        async function fetchImages() {
-            const response = await fetch('/api/ad'); // 動態請求圖片數據
-            const images = await response.json();
-            const carouselContainer = document.getElementById('carousel-images');
-            images.forEach((image, index) => {
-                const imgElement = document.createElement('img');
-                imgElement.src = `/static/img/${image}`;
-                imgElement.alt = `Ad ${index + 1}`;
-                carouselContainer.appendChild(imgElement);
-            });
-            startCarousel();
-        }
-
-        function startCarousel() {
-            const carouselImages = document.querySelector('.carousel-images');
-            let currentIndex = 0;
-
-            function slideCarousel() {
-                const totalImages = carouselImages.children.length;
-                currentIndex = (currentIndex + 1) % totalImages;
-                carouselImages.style.transform = `translateX(-${currentIndex * 100}%)`;
-            }
-
-            setInterval(slideCarousel, 5000); // 每5秒切換一張圖片
-        }
-
-        fetchImages();
-    </script>
-    
-    <div class="announcement-container">
-        <div class="announcement-title">公告:</div>
-        
-        <div class="announcement-content">
-        {% for notification in notifications %}
-            <div>
-                <span class="notification-title">{{ notification.title }}</span>
-                <span class="notification-time">{{ notification.createTime }}</span>
-            </div>
-        {% endfor %}
+    <aside id="category-menu" style="width: 15%; height: calc(100vh - 60px); position: fixed; top: 60px; left: 0; background: #f9f9f9; border-right: 1px solid #ddd; padding: 20px; overflow-y: auto;">
+        <h2>類別</h2>
+        <div id="category-list">
+            <!-- 動態插入類別 -->
         </div>
-        
-    </div>
-
-    <div class="content" id="results">
-        <h1>通知列表：</h1>
-        <ul>
-        {% for notification in notifications %}
-            <li>{{ notification.title }} - {{ notification.content }}</li>
-        {% endfor %}
-        </ul>
-    
+    </aside>
+    <main style="margin-left: 15%; padding: 20px;">
+        <div class="carousel">
+            <div class="carousel-images" id="carousel-images"></div>
+        </div>
+        <!-- 議題 -->
         <h1>Issue 列表：</h1>
-        <ul>
-        {% for issue in issues %}
-            <li>{{ issue.title }}: {{ issue.description }}</li>
-        {% endfor %}
+        <ul id="issue-list">
+            <!-- 動態插入內容 -->
         </ul>
-    </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+            const issueList = document.getElementById('issue-list');
 
-    <script>
-        function search() {
-            const keyword = document.getElementById('keyword').value;
+            fetch('/issues') // 從後端獲取數據
+                .then(response => response.json())
+                .then(data => {
+                    issueList.innerHTML = ''; // 清空舊內容
 
-            fetch('/search', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ keyword })
-            })
-            .then(response => response.json())
-            .then(data => {
-                const resultsContainer = document.getElementById('results');
-                resultsContainer.innerHTML = '';  // 清空舊的結果
+                    data.forEach(issue => {
+                        const listItem = document.createElement('li');
+                        listItem.innerHTML = `
+                            <strong>[${issue.category_name}]</strong> 
+                            ${issue.title} - 
+                            投票數: ${issue.vote_count}, 
+                            評論數: ${issue.comment_count}, 
+                            收藏數: ${issue.favorite_count}
+                        `;
 
-                data.forEach(item => {
-                    const resultHTML = `
-                        <div class="proposal">
-                            <button>${item.categoryName}</button>
-                            <h3 onclick="window.location.href='/issue_detail/${item.issueID}'">
-                                ${item.title}
-                            </h3>
-                            <div class="details">
-                                <span>附議數：${item.voteCount}</span>
-                                <span>留言數：${item.commentCount}</span>
-                                <span>按讚數：${item.favoriteCount}</span>
-                                <span>日期：${item.publishTime}</span>
-                            </div>
-                        </div>
-                    `;
-                    resultsContainer.insertAdjacentHTML('beforeend', resultHTML);
-                });
-            })
-            .catch(error => console.error('Error:', error));
-        }
-
-        // 初始化頁面載入所有資料
-        document.addEventListener('DOMContentLoaded', () => {
-            search();  // 頁面載入時自動載入所有資料
+                        issueList.appendChild(listItem);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
         });
-    </script>
-    <script>
-        document.getElementById('menu-icon').addEventListener('click', function () {
-        const menu = document.getElementById('category-menu');
-        menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
 
-        if (menu.style.display === 'block') {
+        </script>
+        <!-- <div class="content" id="results">
+            
+        
+            <h1>Issue 列表：</h1>
+            <ul>
+            {% for issue in issues %}
+                <li>{{ issue.title }}: {{ issue.description }}</li>
+            {% endfor %}
+            </ul>
+        </div> -->
+        
+        <footer id="announcement-footer">
+            <div class="announcement-container">
+                <div class="announcement-title">公告:</div>
+                
+                <div class="announcement-content">
+                {% for notification in notifications %}
+                    <div>
+                        <span class="announcement-title">{{ notification.title }}</span>
+                        <span class="announcement-time">{{ notification.createTime }}</span>
+                    </div>
+                {% endfor %}
+                </div>
+                
+            </div>
+        </footer>
+        <!-- 類別菜單 -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+            const categoryList = document.getElementById('category-list');
+
+            // 請求類別資料
             fetch('/categories')
                 .then(response => response.json())
                 .then(data => {
-                    menu.innerHTML = ''; // 清空舊的菜單內容
-
-                    // 添加關閉的 icon
-                    const closeIcon = document.createElement('img');
-                    closeIcon.src = 'static/img/icon.png';
-                    closeIcon.alt = 'Close Menu';
-                    closeIcon.style.cursor = 'pointer';
-                    closeIcon.style.width = '30px';
-                    closeIcon.style.height = '30px';
-                    closeIcon.style.marginBottom = '20px';
-
-                    // 綁定關閉功能
-                    closeIcon.addEventListener('click', () => {
-                        menu.style.display = 'none';
-                    });
-                    menu.appendChild(closeIcon);
-
-                    // 動態生成分類名稱
+                    categoryList.innerHTML = ''; // 清空舊內容
                     data.forEach(category => {
                         const item = document.createElement('div');
+                        item.className = 'category-item';
                         item.style.cursor = 'pointer';
                         item.style.padding = '10px';
                         item.style.borderBottom = '1px solid #ddd';
                         item.textContent = category.name;
 
-                        // 點擊分類名稱後導向對應頁面
-                        item.addEventListener('click', function () {
+                        // 點擊類別時跳轉到對應的頁面
+                        item.addEventListener('click', () => {
                             window.location.href = `/issue_list.html?categoryID=${category.categoryID}`;
                         });
-                        menu.appendChild(item);
+
+                        categoryList.appendChild(item);
                     });
                 })
                 .catch(error => console.error('Error:', error));
-        }
-    });
+        });
 
-    </script>
-    
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+            const notifyIcon = document.getElementById('notify-icon');
+            const notificationWindow = document.getElementById('notification-window');
+            const notificationList = document.getElementById('notification-list');
 
+            notifyIcon.addEventListener('click', function () {
+                // 切換通知視窗顯示/隱藏
+                notificationWindow.style.display = notificationWindow.style.display === 'none' ? 'block' : 'none';
+
+                if (notificationWindow.style.display === 'block') {
+                    // 如果小視窗已顯示，動態載入通知內容
+                    fetch('/notifications') // 請求通知資料
+                        .then(response => response.json())
+                        .then(data => {
+                            notificationList.innerHTML = ''; // 清空舊內容
+
+                            // 動態生成通知列表
+                            data.notifications.forEach(notification => {
+                                const listItem = document.createElement('li');
+                                listItem.textContent = `${notification.title} - ${notification.content}`;
+                                notificationList.appendChild(listItem);
+                            });
+                        })
+                        .catch(error => console.error('Error fetching notifications:', error));
+                }
+            });
+        });
+
+        </script>
+        <!-- 跑馬燈 -->
+        <script>
+            async function fetchImages() {
+                const response = await fetch('/api/ad'); // 動態請求圖片數據
+                const images = await response.json();
+                const carouselContainer = document.getElementById('carousel-images');
+                images.forEach((image, index) => {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = `/static/img/${image}`;
+                    imgElement.alt = `Ad ${index + 1}`;
+                    carouselContainer.appendChild(imgElement);
+                });
+                startCarousel();
+            }
+
+            function startCarousel() {
+                const carouselImages = document.querySelector('.carousel-images');
+                let currentIndex = 0;
+
+                function slideCarousel() {
+                    const totalImages = carouselImages.children.length;
+                    currentIndex = (currentIndex + 1) % totalImages;
+                    carouselImages.style.transform = `translateX(-${currentIndex * 100}%)`;
+                }
+
+                setInterval(slideCarousel, 5000); // 每5秒切換一張圖片
+            }
+
+            fetchImages();
+        </script>
+    </main>
 </body>
 </html>
