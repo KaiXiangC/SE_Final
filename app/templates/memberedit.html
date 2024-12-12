@@ -125,12 +125,22 @@
         <a href="{{ url_for('member.member', user_id=current_user.userID) }}" ><i class="fas fa-arrow-left"></i> 返回</a>
     </header>
     <h1>修改用戶資料</h1>
-
+    
     <div class="profile-container">
         <div class="profile-image-container">
             <img src="{{ url_for('static', filename='img/' + user.profileData) }}" alt="用戶頭像" class="profile-image" id="preview-image">
         </div>
-
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flashes">
+                {% for category, message in messages %}
+                    {% if category == 'p' %}
+                        <div class="{{ category }}">{{ message }}</div>
+                    {% endif %}
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
         <form id="profile-form" method="POST" action="{{ url_for('member.update_profile', user_id=current_user.userID) }}">
             <div class="form-container">
                 <div class="form-group">
