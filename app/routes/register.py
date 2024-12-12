@@ -21,6 +21,12 @@ def register():
             profileData_filename = ""
             authenticationStatus = False  # 'authenticationStatus' in request.form
             is_admin = False
+            # 檢查電子郵件是否已存在
+            existing_user = User.query.filter_by(email=email).first()
+            if existing_user:
+                flash('此電子郵件已經註冊過!!', 'danger')
+                return render_template('register.html')
+        
             if email == 'admin@mail.com':
                 is_admin = True
                 authenticationStatus = True      

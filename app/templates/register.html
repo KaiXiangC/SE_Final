@@ -81,6 +81,9 @@
         button:hover {
             background-color: #555;
         }
+        p{
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -118,10 +121,19 @@
                     <input type="file" id="id_back" name="id_back" accept="image/*">
                 </div>
             </div>
-        
+            
             <div class="submit-container">
                 <button type="submit">註冊</button>
             </div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flashes">
+                    {% for category, message in messages %}
+                        <p class="{{ category }}">{{ message }}</p>
+                    {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
         </form>
     </div>
 

@@ -98,6 +98,7 @@
             background-color: #367039; /* 深綠色 */
             margin: 0; /* 確保沒有額外間距 */
         }
+        p{color:red;}
     </style>
 </head>
 <body>
@@ -116,10 +117,18 @@
                 
                 <button type="submit">登入</button>
             </form>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flashes">
+                        {% for category, message in messages %}
+                            {% if category == 'danger' %}
+                                <p class="error-message">{{ message }}</p>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
             <a href="{{ url_for('register.register') }}">還沒有帳號嗎？立即註冊</a>
-            <!-- {% if error %}
-            <p class="error-message">{{ error }}</p>
-            {% endif %} -->
         </div>
     </div>
     <footer>
