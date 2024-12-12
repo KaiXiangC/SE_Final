@@ -25,7 +25,7 @@ def history():
     for issue in all_issues:
         icons = []
         if issue.userID == user_id:
-            icons.append('<img src="https://img.icons8.com/?size=100&id=8ggStxqyboK5&format=png&color=000000">')#創建
+            icons.append('<img src="https://img.icons8.com/?size=100&id=9_NQcM4E-KeP&format=png&color=000000">')#創建
         if issue in commented_issues:
             icons.append('<img src="https://img.icons8.com/?size=100&id=WK5zjEkjX6HF&format=png&color=000000">')#留言
         if issue in voted_issues:
