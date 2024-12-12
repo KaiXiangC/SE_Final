@@ -105,24 +105,34 @@
         <a href="{{ url_for('member.member', user_id=current_user.userID) }}" ><i class="fas fa-arrow-left"></i> 返回</a>
     </header>
     <h1>變更密碼</h1>
-
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+            {% for category, message in messages %}
+                {% if category == 'd' %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endif %}
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
     <form id="password-form" method="POST" action="{{ url_for('member.change_password', user_id=current_user.userID) }}" onsubmit="return validateForm()">
         <div class="form-container">
             <div class="form-group">
                 <label for="old-password">原密碼:</label>
-                <input type="password" id="old-password" name="old_password" required placeholder="請輸入原密碼">
+                <input type="password" id="old-password" name="old-password" required placeholder="請輸入原密碼">
             </div>
             <div class="form-group">
                 <label for="new-password">新密碼:</label>
-                <input type="password" id="new-password" name="new_password" required placeholder="輸入新密碼">
+                <input type="password" id="new-password" name="new-password" required placeholder="輸入新密碼">
             </div>
             <div class="form-group">
                 <label for="confirm-password">確認密碼:</label>
-                <input type="password" id="confirm-password" name="confirm_password" required placeholder="再次輸入新密碼">
+                <input type="password" id="confirm-password" name="confirm-password" required placeholder="再次輸入新密碼">
             </div>
             <div id="error-message" class="error-message">新密碼與確認密碼不相符</div>
+            
         </div>
-
         <div class="button-container">
             <button type="submit" class="button">確認變更</button>
         </div>
