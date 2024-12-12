@@ -177,13 +177,19 @@
                             return icon;
                         }).join(' ');
 
-                        var li = '<li>' +
+                                                // 根據 is_expired 設置類別
+                        var liClass = issue.is_expired ? 'expired' : '';
+
+                        var li = '<li class="' + liClass + '">' +
                                     '<a href="/issue/' + issue.issueID + '">' + issue.title + '</a>' +
                                     '<div class="issue-preview">' + issue.preview + '</div>' +
                                     '<div class="issue-icons">' + iconsHtml + '</div>' +
                                  '</li>';
                         $list.append(li);
                     });
+                },
+                error: function(xhr, status, error) {
+                    console.error('載入議題失敗:', error);
                 }
             });
         }
