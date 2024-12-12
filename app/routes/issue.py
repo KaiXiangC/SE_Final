@@ -2,7 +2,7 @@ import os
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import current_user, login_required
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from werkzeug.utils import secure_filename
 
@@ -365,7 +365,8 @@ def finalize_issue():
                 attachment_1=attachment_1,
                 attachment_2=attachment_2,
                 publishTime=datetime.now(),
-                status=1  # 假設為草稿狀態
+                deadline=datetime.now() + timedelta(days=90),
+                status=1
             )
 
             db.session.add(new_issue)
