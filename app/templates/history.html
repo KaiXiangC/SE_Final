@@ -9,15 +9,17 @@
             font-family: Arial, sans-serif;
         }
         h1 {
-            text-align: center;
+            margin: 0;
             margin-bottom: 30px;
+            color: white;
         }
         header {
             background-color: #367039;
             color: white;
             padding: 15px 20px;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
+            gap: 100px;
             align-items: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
@@ -91,6 +93,10 @@
             position: absolute;
             right: 10px;
             top: 10px;
+            width: 300px;
+            display: flex;
+            gap: 40px;
+            justify-content: flex-end;
         }
         
         .issue-preview {
@@ -98,16 +104,21 @@
             color: #555;
         }
         .issue-list li.expired {
-            background-color: #c7c5c5 !important; /* 灰色背景 */
+            background-color: #eee !important; /* 灰色背景 */
         }
+        img {
+            width: 37px; /* 設定圖片寬度 */
+            height: 37px; /* 設定圖片高度 */
+        }
+
     </style>
 </head>
 <body>
     <header>
         <!-- 返回查看議題 -->
         <a href="{{ url_for('login.index') }}" ><i class="fas fa-arrow-left"></i> 返回</a>
+        <h1>歷史議題</h1>
     </header>
-    <h1>您曾互動過的議題</h1>
     <div class="filter-buttons">
         <button class="filter-button" data-filter="">全部</button>
         <button class="filter-button" data-filter="created">創建</button>
@@ -154,14 +165,14 @@
                     $list.empty(); // 清空列表
                     data.forEach(function(issue) {
                         var iconsHtml = issue.icons.map(function(icon) {
-                            if (icon === '<img src="/static/img/collect.jpg">') {
-                                return '<img src="/static/img/collect.jpg">';
-                            } else if (icon === '<img src="/static/img/message.jpg">') {
-                                return '<img src="/static/img/message.jpg">';
-                            } else if (icon === '<img src="/static/img/vote.jpg">') {
-                                return '<img src="/static/img/vote.jpg">';
-                            } else if (icon === '<img src="/static/img/own.jpg">') {
-                                return '<img src="/static/img/own.jpg">';
+                            if (icon === '<img src="https://img.icons8.com/?size=100&id=8ggStxqyboK5&format=png&color=000000">') {
+                                return '<img src="https://img.icons8.com/?size=100&id=8ggStxqyboK5&format=png&color=000000">';
+                            } else if (icon === '<img src="https://img.icons8.com/?size=100&id=WK5zjEkjX6HF&format=png&color=000000">') {
+                                return '<img src="https://img.icons8.com/?size=100&id=WK5zjEkjX6HF&format=png&color=000000">';
+                            } else if (icon === '<img src="https://img.icons8.com/?size=100&id=GiNJOdKO-eaC&format=png&color=000000">') {
+                                return '<img src="https://img.icons8.com/?size=100&id=GiNJOdKO-eaC&format=png&color=000000">';
+                            } else if (icon === '<img src="https://img.icons8.com/?size=100&id=9_NQcM4E-KeP&format=png&color=000000">') {
+                                return '<img src="https://img.icons8.com/?size=100&id=9_NQcM4E-KeP&format=png&color=000000">';
                             }
                             return icon;
                         }).join(' ');

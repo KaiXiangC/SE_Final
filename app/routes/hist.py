@@ -25,13 +25,13 @@ def history():
     for issue in all_issues:
         icons = []
         if issue.userID == user_id:
-            icons.append('<img src="/static/img/collect.jpg">')
+            icons.append('<img src="https://img.icons8.com/?size=100&id=8ggStxqyboK5&format=png&color=000000">')
         if issue in commented_issues:
-            icons.append('<img src="/static/img/message.jpg">')
+            icons.append('<img src="https://img.icons8.com/?size=100&id=WK5zjEkjX6HF&format=png&color=000000">')
         if issue in voted_issues:
-            icons.append('<img src="/static/img/vote.jpg">')
+            icons.append('<img src="https://img.icons8.com/?size=100&id=GiNJOdKO-eaC&format=png&color=000000">')
         if issue in favorited_issues:
-            icons.append('<img src="/static/img/own.jpg">')
+            icons.append('<img src="https://img.icons8.com/?size=100&id=9_NQcM4E-KeP&format=png&color=000000">')
 
         preview_length = 50
         preview = issue.description[:preview_length] + '...' if len(issue.description) > preview_length else issue.description
@@ -75,13 +75,13 @@ def history_filter():
     for issue in target_issues:
         icons = []
         if issue.userID == user_id:
-            icons.append('<img src="/static/img/collect.jpg">')
+            icons.append('<img src="https://img.icons8.com/?size=100&id=8ggStxqyboK5&format=png&color=000000">')
         if issue in commented_issues:
-            icons.append('<img src="/static/img/message.jpg">')
+            icons.append('<img src="https://img.icons8.com/?size=100&id=WK5zjEkjX6HF&format=png&color=000000">')
         if issue in voted_issues:
-            icons.append('<img src="/static/img/vote.jpg">')
+            icons.append('<img src="https://img.icons8.com/?size=100&id=GiNJOdKO-eaC&format=png&color=000000">')
         if issue in favorited_issues:
-            icons.append('<img src="/static/img/own.jpg">')
+            icons.append('<img src="https://img.icons8.com/?size=100&id=9_NQcM4E-KeP&format=png&color=000000">')
 
         preview_length = 50
         preview = issue.description[:preview_length] + '...' if len(issue.description) > preview_length else issue.description
