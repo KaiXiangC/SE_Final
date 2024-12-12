@@ -48,7 +48,7 @@ def index():
     admin_notifications = [n.to_dict() for n in admin_raw_notifications]
 
     # 取得議題、類別等...
-    issues = Issue.get_all_issues()
+    issues = Issue.query.filter_by(status=1).all()
     for issue in issues:
         issue.votes_count = len(Issue.get_votes(issue.issueID))
         issue.comments_count = len(Issue.get_comments(issue.issueID))
@@ -77,7 +77,7 @@ def search_issues():
 
     try:
         # 搜尋標題包含關鍵字的議題
-        issues = Issue.query.filter(Issue.title.like(f"%{keyword}%")).all()
+        issues = Issue.query.filter(Issue.title.like(f"%{keyword}%"),Issue.status == 1).all()
 
         # 如果沒找到議題
         if not issues:
@@ -122,7 +122,7 @@ def filter_issues_by_category():
         return jsonify({"status": "error", "message": "No category_id provided"}), 400
 
     # 使用 Category 取得該類別下的所有議題
-    issues = Issue.query.filter_by(categoryID=category_id).all()
+    issues = Issue.query.filter_by(categoryID=category_id, status=1).all()
     # 將議題轉成可序列化的資料(JSON)
     issues_data = [{
         "issueID": i.issueID,

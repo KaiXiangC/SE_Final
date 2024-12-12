@@ -24,6 +24,7 @@ def issue_detail(issueID):
         return redirect(url_for('login.index'))  # 導回首頁
     # 格式化剩餘時間
     deadline_str = None
+    days_left = None
     if issue.deadline:
         remaining = issue.deadline - datetime.now()
         days_left = remaining.days
@@ -39,7 +40,7 @@ def issue_detail(issueID):
     vote_count = Vote.query.filter_by(issueID=issueID).count()
     if vote_count >=5000 and days_left < 0 :
         vote_status = '已通過'
-    elif days_left < 0:
+    elif vote_count <5000 and days_left < 0:
         vote_status = '未通過'
     else:
         vote_status = '附議中'
