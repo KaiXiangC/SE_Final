@@ -97,6 +97,9 @@
             margin-top: 5px;
             color: #555;
         }
+        .issue-list li.expired {
+            background-color: #c7c5c5 !important; /* 灰色背景 */
+        }
     </style>
 </head>
 <body>
@@ -115,13 +118,15 @@
     <div class="content">
         <ul class="issue-list" id="issueList">
             {% for issue in issues %}
-            <li>
+            <li class="{% if issue.is_expired %}expired{% endif %}">
                 <a href="{{ url_for('issue.issue_detail', issueID=issue.issueID) }}">{{ issue.title }}</a>
                 <div class="issue-preview">{{ issue.preview }}</div>
                 <div class="issue-icons">{{ issue.icons|safe }}</div>
             </li>
             {% endfor %}
         </ul>
+        
+        
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

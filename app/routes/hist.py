@@ -5,6 +5,7 @@ from app.models.comment import Comment
 from app.models.favorite import Favorite
 from app.models.vote import Vote
 from app import db
+from datetime import datetime
 
 hist_bp = Blueprint('hist', __name__)
 
@@ -35,11 +36,15 @@ def history():
         preview_length = 50
         preview = issue.description[:preview_length] + '...' if len(issue.description) > preview_length else issue.description
 
+        # 判斷是否截止
+        is_expired = issue.deadline and issue.deadline < datetime.utcnow()
+        print(is_expired)
         issues_info.append({
             'issueID': issue.issueID,
             'title': issue.title,
             'preview': preview,
-            'icons': ' '.join(icons)
+            'icons': ' '.join(icons),
+            'is_expired': is_expired  # 加入截止狀態
         })
 
     return render_template('history.html', issues=issues_info)
