@@ -66,26 +66,22 @@
             gap: 16px;
             align-items: center;
         }
-        .categories {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-        .category-button {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        #category-menu {
+            display: none; /* 預設隱藏 */
+            position: fixed; /* 固定位置 */
+            top: 0;
+            left: 0;
+            width: 25%; /* 占據螢幕 1/3 寬度 */
+            height: 100%; /* 占據整個高度 */
+            background: #fff;
+            border-right: 1px solid #ddd;
             padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            text-align: center;
-            background-color: #f9f9f9;
-            transition: background-color 0.3s;
-            cursor: pointer;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            overflow-y: auto; /* 若內容超出則可滾動 */
+            z-index: 1000; /* 確保顯示在其他元素上方 */
         }
-        .category-button:hover {
-            background-color: #f0f0f0;
-        }
+
+
         /* 左側標題 */
         .title h1 {
             font-size: 20px;
@@ -130,8 +126,6 @@
             transform: scale(1.1); /* 懸停放大 */
         }
 
-
-
         .header h1 {
             font-size: 20px;
             font-weight: bold;
@@ -165,7 +159,7 @@
             align-items: center;
             margin: 20px auto;
             padding: 10px;
-            max-width: 800px;
+            width: 800px;
             border: 1px solid #ddd;
             border-radius: 50px;
             background-color: #fff;
@@ -253,11 +247,25 @@
 
     <!-- Header -->
     <header class="header">
+        <img id="menu-icon" src="static/img/menu.png" alt="Menu" style="cursor: pointer; width: 30px; height: 30px;">
+        <div id="category-menu" style="display: none; position: fixed; top: 0; left: 0; width: 33.33%; height: 100%; background: #fff; border-right: 1px solid #ddd; padding: 20px; box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); overflow-y: auto; z-index: 1000;">
+            <img id="close-menu-icon" src="static/img/menu.png" alt="Close Menu" style="cursor: pointer; width: 30px; height: 30px; margin-bottom: 20px;">
+            <!-- 動態插入分類名稱 -->
+        </div>
+        
+        
+        
         <div class="title">
             <h1>公共政策網路參與平臺</h1>
         </div>
+        <!-- 搜尋欄 -->
+        <div class="search-bar">
+            <input type="text" id="keyword" placeholder="請輸入關鍵字">
+            <button onclick="search()">搜尋</button>
+        </div>
         <div class="nav-container">
             <nav>
+                <a href="{{ url_for('issue.history') }}">歷史紀錄</a>
                 <a href="{{ url_for('issue.new_issue') }}">想提議</a>
                 <a href="{{ url_for('login.logout') }}">登出</a>
             </nav>
@@ -313,11 +321,6 @@
         </div>
         
     </div>
-    <!-- 搜尋欄 -->
-    <div class="search-bar">
-        <input type="text" id="keyword" placeholder="請輸入關鍵字">
-        <button onclick="search()">搜尋</button>
-    </div>
 
     <div class="content" id="results">
         <!-- 動態列表會顯示在這裡 -->
@@ -363,7 +366,53 @@
             search();  // 頁面載入時自動載入所有資料
         });
     </script>
+    <script>
+        document.getElementById('menu-icon').addEventListener('click', function () {
+        const menu = document.getElementById('category-menu');
+        menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
 
+        if (menu.style.display === 'block') {
+            fetch('/categories')
+                .then(response => response.json())
+                .then(data => {
+                    menu.innerHTML = ''; // 清空舊的菜單內容
+
+                    // 添加關閉的 icon
+                    const closeIcon = document.createElement('img');
+                    closeIcon.src = 'static/img/icon.png';
+                    closeIcon.alt = 'Close Menu';
+                    closeIcon.style.cursor = 'pointer';
+                    closeIcon.style.width = '30px';
+                    closeIcon.style.height = '30px';
+                    closeIcon.style.marginBottom = '20px';
+
+                    // 綁定關閉功能
+                    closeIcon.addEventListener('click', () => {
+                        menu.style.display = 'none';
+                    });
+                    menu.appendChild(closeIcon);
+
+                    // 動態生成分類名稱
+                    data.forEach(category => {
+                        const item = document.createElement('div');
+                        item.style.cursor = 'pointer';
+                        item.style.padding = '10px';
+                        item.style.borderBottom = '1px solid #ddd';
+                        item.textContent = category.name;
+
+                        // 點擊分類名稱後導向對應頁面
+                        item.addEventListener('click', function () {
+                            window.location.href = `/issue_list.html?categoryID=${category.categoryID}`;
+                        });
+                        menu.appendChild(item);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    });
+
+    </script>
+    
 
 </body>
 </html>
