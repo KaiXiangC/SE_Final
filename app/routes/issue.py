@@ -37,6 +37,13 @@ def issue_detail(issueID):
     comments = Comment.query.filter_by(issueID=issueID).order_by(Comment.commentTime.desc()).all()
 
     vote_count = Vote.query.filter_by(issueID=issueID).count()
+    if vote_count >=5000 and days_left < 0 :
+        vote_status = '已通過'
+    elif days_left < 0:
+        vote_status = '未通過'
+    else:
+        vote_status = '附議中'
+
     # 查找每條評論的 username
     comments_data = []
     for comment in comments:
@@ -61,6 +68,7 @@ def issue_detail(issueID):
             'image2': issue.attachment_2,
             'description': issue.description
         },
+        vote_status=vote_status,
         vote_count=vote_count,
         comments=comments_data
     )
