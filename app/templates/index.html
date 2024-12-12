@@ -82,7 +82,7 @@
             <h1 style="display: inline-block;">公共政策網路參與平台</h1>
             <div class="search-bar">
                 <input type="text" id="search-input" placeholder="請輸入關鍵字">
-                <button onclick="searchIssues()">搜尋</button>
+                <button id="search-button">搜尋</button>
             </div>
             <nav class="nav-links">
                 <a href="#" id="notification-link">通知</a>
@@ -166,47 +166,52 @@
                 });
         });
     });
-    function searchIssues() {
-    var keyword = document.getElementById("search-input").value;  // 獲取搜尋關鍵字
-
-    if (keyword.trim() === "") {
-        alert("請輸入搜尋關鍵字！");
+    document.getElementById('search-button').addEventListener('click', function () {
+    const keyword = document.getElementById('search-input').value.trim();
+    if (!keyword) {
+        alert('請輸入關鍵字！');
         return;
     }
 
+    // 發送 AJAX 請求到後端
     fetch(`/search_issues?keyword=${encodeURIComponent(keyword)}`)
         .then(response => response.json())
         .then(data => {
-            // 獲取結果容器
-            const policyList = document.getElementById("policy-list");
-            policyList.innerHTML = '';  // 清空之前的結果
+            // 獲取容器
+            const policyList = document.querySelector('.policy-list');
+            policyList.innerHTML = ''; // 清空舊的結果
 
-            // 如果沒有搜尋到結果
-            if (data.length === 0) {
-                policyList.innerHTML = '<p>沒有找到相關議題。</p>';
-                return;
+            if (data.status === "success") {
+                if (data.issues.length === 0) {
+                    policyList.innerHTML = '<p>沒有找到相關議題。</p>';
+                } else {
+                    // 使用回傳的議題資料更新頁面
+                    data.issues.forEach(issue => {
+                        policyList.innerHTML += `
+                            <div class="policy-card">
+                                <span class="policy-tag">${issue.category.name}</span>
+                                <h2>${issue.title}</h2>
+                                <p>${issue.description}</p>
+                                <div class="policy-stats">
+                                    <span>投票數：${issue.votes_count}</span>
+                                    <span>評論：${issue.comments_count}</span>
+                                    <span>收藏：${issue.favorites_count}</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+            } else {
+                alert(data.message || "發生錯誤，無法載入議題！");
             }
-
-            // 渲染每個搜尋結果
-            data.forEach(issue => {
-                const policyCard = document.createElement('div');
-                policyCard.classList.add('policy-card');
-
-                policyCard.innerHTML = `
-                    <span class="policy-tag">${issue.category}</span>
-                    <h2>${issue.title}</h2>
-                    <p>${issue.description}</p>
-                    <div class="policy-stats">
-                        <span>投票數：${issue.votes_count}</span>
-                        <span>評論：${issue.comments_count}</span>
-                        <span>收藏：${issue.favorites_count}</span>
-                    </div>
-                `;
-                policyList.appendChild(policyCard);
-            });
         })
-        .catch(error => console.error("搜尋錯誤:", error));
-}
+        .catch(error => {
+            console.error("Error fetching issues:", error);
+            alert("發生錯誤，請稍後再試！");
+                    });
+});
+
+
 </script>
 
 <script>

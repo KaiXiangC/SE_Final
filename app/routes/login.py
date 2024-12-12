@@ -67,36 +67,52 @@ def index():
 
 @login_bp.route('/search_issues')
 def search_issues():
-    keyword = request.args.get('keyword', '')  # 獲取搜尋關鍵字
-
+    # 從查詢參數中獲取關鍵字
+    keyword = request.args.get('keyword', '').strip()
     if not keyword:
-        return jsonify([])  # 如果沒有提供關鍵字，返回空的列表
+        return jsonify({
+            "status": "error",
+            "message": "請提供搜尋關鍵字！"
+        }), 400
 
-    # 使用 SQLAlchemy 查詢 title 包含關鍵字的所有 issue
-    issues = Issue.query.filter(Issue.title.like(f'%{keyword}%')).all()
+    try:
+        # 搜尋標題包含關鍵字的議題
+        issues = Issue.query.filter(Issue.title.like(f"%{keyword}%")).all()
 
-    if not issues:
-        return jsonify([])
+        # 如果沒找到議題
+        if not issues:
+            return jsonify({
+                "status": "success",
+                "issues": []
+            })
 
-    result = []
-    for issue in issues:
-        # 計算票數、評論數、收藏數
-        votes_count = len(issue.votes)
-        comments_count = len(issue.comments)
-        favorites_count = len(issue.favorites)
+        # 構建 JSON 響應
+        result = []
+        for issue in issues:
+            result.append({
+                "issueID": issue.issueID,
+                "category": {"name": issue.category.name},
+                "title": issue.title,
+                "description": issue.description,
+                "votes_count": len(issue.votes),
+                "comments_count": len(issue.comments),
+                "favorites_count": len(issue.favorites),
+                "publishTime": issue.publishTime.strftime('%Y-%m-%d') if issue.publishTime else None,
+                "deadline": issue.deadline.strftime('%Y-%m-%d') if issue.deadline else None,
+                "status": "已通過" if issue.status else "未通過"
+            })
 
-    # 將查詢結果轉換為字典形式並返回
-    result.append({
-        'issueID': issue.issueID,
-        'category': issue.category.name,
-        'title': issue.title,
-        'description': issue.description,
-        'votes_count': votes_count,
-        'comments_count': comments_count,
-        'favorites_count': favorites_count
-    })
+        return jsonify({
+            "status": "success",
+            "issues": result
+        })
 
-    return jsonify(result)
+    except Exception as e:
+        # 處理任何潛在的錯誤
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
 
 @login_bp.route('/filter_issues_by_category', methods=['GET'])
 @login_required
@@ -111,6 +127,7 @@ def filter_issues_by_category():
     issues_data = [{
         "issueID": i.issueID,
         "title": i.title,
+        "category": {"name": i.category.name},
         "description": i.description,
         "publishTime": i.publishTime.isoformat() if i.publishTime else None,
         "deadline": i.deadline.isoformat() if i.deadline else None,
