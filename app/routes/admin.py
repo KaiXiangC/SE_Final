@@ -1,10 +1,9 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import login_user, login_required, logout_user, current_user, LoginManager
 from app import db
-from app.models.user import User
-from app.models.issue import Issue
-from app.models.category import Category
+import os
+from app.models import User, Issue, Category
 import logging
 
 admin_bp = Blueprint('admin', __name__)
@@ -120,13 +119,25 @@ def approve(user_id):
 @admin_bp.route('/reject/<int:user_id>', methods=['GET'])
 @login_required
 def reject(user_id):
-    """退件會員"""
+    """退件會員並刪除資料和圖片"""
     user = User.query.get_or_404(user_id)
-    user.authenticationStatus = False
     
     try:
+        # 刪除圖片
+        if user.idPhoto:
+            id_photo_path = os.path.join(current_app.root_path, 'static/img', user.idPhoto)
+            if os.path.exists(id_photo_path):
+                os.remove(id_photo_path)
+        
+        if user.profileData:
+            profile_data_path = os.path.join(current_app.root_path, 'static/img', user.profileData)
+            if os.path.exists(profile_data_path):
+                os.remove(profile_data_path)
+        
+        # 刪除會員資料
+        db.session.delete(user)
         db.session.commit()
-        flash('會員已退件', 'success')
+        flash('會員已退件並刪除資料和圖片', 'success')
     except Exception as e:
         db.session.rollback()
         logging.error(f"會員退件失敗: {e}")

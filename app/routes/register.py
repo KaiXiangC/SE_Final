@@ -1,8 +1,7 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
 from werkzeug.security import generate_password_hash
 from app import db
-import app
-from app.models.user import User
+from app.models import User
 import logging
 import os
 from werkzeug.utils import secure_filename
@@ -32,8 +31,8 @@ def register():
                 profileData = request.files['id_back']
                 idPhoto_fname = secure_filename(idPhoto.filename)
                 profileData_fname = secure_filename(profileData.filename)
-                idPhoto.save(os.path.join(app.config["UPLOADED_PHOTOS_DEST"], idPhoto_fname))
-                profileData.save(os.path.join(app.config["UPLOADED_PHOTOS_DEST"], profileData_fname))
+                idPhoto.save(os.path.join(current_app.root_path, 'static/img', idPhoto_fname))
+                profileData.save(os.path.join(current_app.root_path, 'static/img', profileData_fname))
 
             
             new_user = User(
@@ -50,10 +49,11 @@ def register():
                 db.session.add(new_user)
                 db.session.commit()
                 flash('註冊成功', 'success')
-                return redirect(url_for('login'))
+                return redirect(url_for('login.login'))
             except Exception as e:
                 db.session.rollback()
                 logging.error(f"註冊失敗: {e}")
-                flash('註冊失敗', 'danger')
+                flash(f'註冊失敗: {e}', 'danger')
+                return render_template('register.html')
         
         return render_template('register.html')

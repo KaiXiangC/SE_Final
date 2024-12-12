@@ -143,8 +143,12 @@
                 {% for user in users %}
                     <tr>
                         <td>{{ user.userID }}</td>
-                        <td>{{ user.name }}</td>
-                        <td><button class="btn" onclick="window.location.href='/admin/member_auth/{{ user.userID }}'">審核</button></td>
+                        <td>{{ user.name }}</td> 
+                        {% if user.authenticationStatus == False %}
+                            <td><button class="btn" onclick="window.location.href='/member_auth/{{ user.userID }}'">審核</button></td>
+                        {% else %}
+                            <td>已審核</td>
+                        {% endif %}  
                     </tr>
                 {% endfor %}
             {% else %}

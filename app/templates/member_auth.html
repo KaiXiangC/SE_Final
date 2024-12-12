@@ -181,8 +181,8 @@
 
             <!-- 審核與退件按鈕 -->
             <div class="buttons">
-                <button class="btn btn-reject" onclick="location.href='/reject/{{ userID }}'">退件</button>
-                <button class="btn btn-approve" onclick="location.href='/approve/{{ userID }}'">審核</button>
+                <button class="btn btn-reject" onclick="location.href='/reject/{{ user.userID }}'">退件</button>
+                <button class="btn btn-approve" onclick="location.href='/approve/{{ user.userID }}'">審核</button>
             </div>
         </div>
     </div>
@@ -194,7 +194,7 @@
     <script>
         // 觸發關閉小視窗
         function closeModal() {
-            window.location.href = "/admin/member_manage"; // 返回會員管理頁面
+            window.location.href = "/member_manage"; // 返回會員管理頁面
         }
     </script>
 

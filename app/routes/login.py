@@ -14,14 +14,18 @@ def login():
             password = request.form['password']
             
             user = User.query.filter_by(email=email).first()
-            
+
             if user and check_password_hash(user.password, password):
-                login_user(user)
-                flash('登入成功', 'success')
-                if user.is_admin:
-                    return redirect(url_for('login.admin_dashboard'))
+                if user.authenticationStatus == False:
+                    flash('帳號未驗證', 'danger')
+                    return render_template('login.html', error='帳號未驗證')
                 else:
-                    return redirect(url_for('login.index', user_id=user.userID))
+                        login_user(user)
+                        flash('登入成功', 'success')
+                        if user.is_admin:
+                                return redirect(url_for('login.admin_dashboard'))
+                        else:
+                                return redirect(url_for('login.index', user_id=user.userID))
             else:
                 flash('帳號或密碼錯誤', 'danger')
                 return render_template('login.html', error='帳號或密碼錯誤')

@@ -111,60 +111,65 @@
         }
     </style>
 </head>
-<body>
-    <header></header>
-    <h1 >議題與討論監控</h1>
+<body class="bg-light">
+    <header>
+        <!-- 返回查看議題 -->
+        <a href="{{ url_for('login.admin_dashboard') }}" ><i class="fas fa-arrow-left"></i> 返回</a>
+    </header>
+    <div class="container">
+        <h1 >議題與討論監控</h1>
 
-    <!-- 顯示通知 -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        <div>
-            {% for category, message in messages %}
-            <div class="flash-message flash-{{ category }}">{{ message }}</div>
-            {% endfor %}
-        </div>
-    {% endif %}
-    {% endwith %}
-    
-    {% if issues %}
-    <table>
-        <thead>
-            <tr>
-                <th>編號</th>
-                <th>議題標題</th>
-                <th colspan="3">操作</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for issue in issues %}
-            <tr>
-                <td>{{ issue.issueID }}</td>
-                <td>{{ issue.title }}</td>
-                <td>
-                    <a href="{{ url_for('review_comment', issue_id=issue.issueID) }}">
-                        <button class="enabled">審核留言</button>
-                    </a>
-                </td>
-                <td>
-                    <a href="{{ url_for('review_issue', issue_id=issue.issueID) }}">
-                        <button class="enabled">審核議題</button>
-                    </a>
-                </td>
-                <td>
-                    <form action="{{ url_for('approve_issue', issue_id=issue.issueID) }}" method="POST" style="margin: 0;">
-                        <button type="submit" 
-                                class="{% if issue.review %}disabled{% else %}enabled-green{% endif %}" 
-                                {% if issue.review %}disabled{% endif %}>
-                            {% if issue.review %}已審核{% else %}審核{% endif %}
-                        </button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p class="no-data">目前沒有議題</p>
-    {% endif %}
+        <!-- 顯示通知 -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div>
+                {% for category, message in messages %}
+                <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
+        
+        {% if issues %}
+        <table>
+            <thead>
+                <tr>
+                    <th>編號</th>
+                    <th>議題標題</th>
+                    <th colspan="3">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for issue in issues %}
+                <tr>
+                    <td>{{ issue.issueID }}</td>
+                    <td>{{ issue.title }}</td>
+                    <td>
+                        <a href="{{ url_for('review_comment', issue_id=issue.issueID) }}">
+                            <button class="enabled">審核留言</button>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('review_issue', issue_id=issue.issueID) }}">
+                            <button class="enabled">審核議題</button>
+                        </a>
+                    </td>
+                    <td>
+                        <form action="{{ url_for('approve_issue', issue_id=issue.issueID) }}" method="POST" style="margin: 0;">
+                            <button type="submit" 
+                                    class="{% if issue.review %}disabled{% else %}enabled-green{% endif %}" 
+                                    {% if issue.review %}disabled{% endif %}>
+                                {% if issue.review %}已審核{% else %}審核{% endif %}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="no-data">目前沒有議題</p>
+        {% endif %}
+    </div>
 </body>
 </html>
