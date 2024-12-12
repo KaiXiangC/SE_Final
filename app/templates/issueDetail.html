@@ -80,6 +80,14 @@
             font-weight: bold;
         }
 
+        .deadline-time {
+            background-color: #f44336;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            font-weight: bold;
+        }
+
         #vote-count {
             font-size: 1.2rem;
             font-weight: bold;
@@ -94,6 +102,9 @@
             margin-top: 1rem;
             padding-top: 1rem;
             border-top: 1px solid #e0e0e0;
+        }
+        .text-black {
+            color: #3b3a3a;
         }
 
         .username .buttons {
@@ -137,6 +148,8 @@
             padding-bottom: 1rem;
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
+            justify-content: center;             /* 水平置中圖片 */
+            align-items: center;
         }
 
         .images-container::-webkit-scrollbar {
@@ -155,6 +168,15 @@
 
         .images-container::-webkit-scrollbar-thumb:hover {
             background: #2980b9;
+        }
+
+        .status-image {
+            max-width: 100%;
+            height: auto;    /* 保持圖片的縱橫比 */
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+
         }
 
         .issue-image {
@@ -280,18 +302,37 @@
     </header>
 
     <div class="content">
+
         <div class="issue-header">
             <h1>{{ issue.title }}</h1>
             <div class="issue-meta">
-                <span class="remaining-time">截止日期：{{ issue.deadline }}</span>
+                {% if vote_status == '附議中' %}
+                    <span class="remaining-time">截止日期：{{ issue.deadline }}</span>
+                {% else %}
+                    <span class="deadline-time">截止日期：{{ issue.deadline }}</span>
+                {% endif %}
                 <span id="vote-count">投票數：{{ vote_count }}</span>
+                <span>
+                    <h3 class="text-black">目前進度</h3>
+                    <div class="images-container">
+            {% if vote_status == '附議中' %}
+                <img src="{{ url_for('static', filename='img/seconded.png') }}" alt="圖片1" class="status-image">
+            {% elif vote_status == '未通過' %}
+                <img src="{{ url_for('static', filename='img/fail.png') }}" alt="圖片2" class="status-image">
+            {% elif vote_status == '已通過' %}
+                <img src="{{ url_for('static', filename='img/pass.png') }}" alt="圖片3" class="status-image">
+            {% endif %}
+        </div>
+                </span>
                 <span class="username">
                     提議者：{{ issue.username }}
                     <span class="buttons">
+                        {% if vote_status == '附議中' %}
                         {% if has_voted %}
                         <a href="#" class="button vote-button" data-issue-id="{{ issue.issueID }}" onclick="toggleVote(this)">取消投票</a>
                         {% else %}
                         <a href="#" class="button vote-button" data-issue-id="{{ issue.issueID }}" onclick="toggleVote(this)">我要投票！</a>
+                        {% endif %}
                         {% endif %}
                         {% if has_favorited %}
                         <a href="#" class="button favorite-button" data-issue-id="{{ issue.issueID }}" onclick="toggleFavorite(this)">取消收藏</a>
