@@ -2,7 +2,7 @@ import os
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import current_user, login_required
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from werkzeug.utils import secure_filename
 
@@ -37,6 +37,13 @@ def issue_detail(issueID):
     comments = Comment.query.filter_by(issueID=issueID).order_by(Comment.commentTime.desc()).all()
 
     vote_count = Vote.query.filter_by(issueID=issueID).count()
+    if vote_count >=5000 and days_left < 0 :
+        vote_status = '已通過'
+    elif days_left < 0:
+        vote_status = '未通過'
+    else:
+        vote_status = '附議中'
+
     # 查找每條評論的 username
     comments_data = []
     for comment in comments:
@@ -61,6 +68,7 @@ def issue_detail(issueID):
             'image2': issue.attachment_2,
             'description': issue.description
         },
+        vote_status=vote_status,
         vote_count=vote_count,
         comments=comments_data
     )
@@ -357,7 +365,8 @@ def finalize_issue():
                 attachment_1=attachment_1,
                 attachment_2=attachment_2,
                 publishTime=datetime.now(),
-                status=1  # 假設為草稿狀態
+                deadline=datetime.now() + timedelta(days=90),
+                status=1
             )
 
             db.session.add(new_issue)

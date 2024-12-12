@@ -5,6 +5,7 @@ from app import db
 from app.models.user import User
 from app.models.notification import Notification
 from app.models.issue import Issue
+from app.models.category import Category
 
 login_bp = Blueprint('login', __name__)
 
@@ -38,14 +39,44 @@ def login():
 @login_required
 def index():
     user_id = current_user.userID  # 假設 current_user 有 userID 屬性
-    
-    # 取得通知及所有 Issue
+
+    # 使用者本身的通知
     notifications = Notification.get_notifications_by_user(user_id)
+    # 所有議題
     issues = Issue.get_all_issues()
-    print(issues)
+    # 取得所有類別
+    categories = Category.get_all_categories()
+    # 取得管理員的通知
+    admin_notifications = Notification.get_admin_notifications()
+
     return render_template('index.html',
                            notifications=notifications,
-                           issues=issues)
+                           issues=issues,
+                           categories=categories,
+                           admin_notifications=admin_notifications)
+
+
+@login_bp.route('/filter_issues_by_category', methods=['GET'])
+@login_required
+def filter_issues_by_category():
+    category_id = request.args.get('category_id', type=int)
+    if category_id is None:
+        return jsonify({"status": "error", "message": "No category_id provided"}), 400
+
+    # 使用 Category 取得該類別下的所有議題
+    issues = Category.get_issues_by_category_id(category_id)
+    # 將議題轉成可序列化的資料(JSON)
+    issues_data = [{
+        "issueID": i.issueID,
+        "title": i.title,
+        "description": i.description,
+        "publishTime": i.publishTime.isoformat() if i.publishTime else None,
+        "deadline": i.deadline.isoformat() if i.deadline else None,
+        "is_review": i.is_review,
+        "status": i.status
+    } for i in issues]
+
+    return jsonify({"status": "success", "issues": issues_data})
 
 @login_bp.route('/logout')
 @login_required

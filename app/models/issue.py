@@ -27,3 +27,8 @@ class Issue(db.Model):
     def get_posted_issues_by_user(cls, user_id):
         from app.models import Issue, Comment, Favorite, Vote
         return cls.query.filter_by(userID=user_id).all()
+    
+
+    @classmethod
+    def get_issues_by_category_id(cls, category_id):
+        return cls.query.filter_by(categoryID=category_id).all()

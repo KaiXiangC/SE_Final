@@ -52,3 +52,12 @@ class Notification(db.Model):
     @classmethod
     def get_notifications_by_user(cls, user_id):
         return cls.query.filter_by(userID=user_id).all()
+    
+    @classmethod
+    def get_admin_notifications(cls):
+        from app.models.user import User
+        """獲取唯一 is_admin 為 True 的用戶的所有通知。"""
+        admin_user = User.query.filter_by(is_admin=True).first()
+        if not admin_user:
+            return []  # 如果沒有管理員，用空列表返回
+        return cls.query.filter_by(userID=admin_user.userID).all()
