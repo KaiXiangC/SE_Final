@@ -208,7 +208,11 @@
             {% for issue in issues %}
             <div class="policy-card">
                 <span class="policy-tag">{{ issue.category.name }}</span>
-                <h2>{{ issue.title }}</h2>
+                <h2>
+                    <a href="{{ url_for('issue.issue_detail', issueID=issue.issueID) }}" class="issue-link">
+                        {{ issue.title }}
+                    </a>
+                </h2>
                 <p>{{ issue.description }}</p>
                 <div class="policy-stats">
                     <span>投票數：{{ issue.votes_count }}</span>
