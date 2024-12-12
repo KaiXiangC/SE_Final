@@ -38,10 +38,12 @@
             margin-top: 20px;
         }
         .sidebar {
-            width: 200px;
+            width: 250px; /* Increase the initial width */
             border-right: 1px solid #e0e0e0;
             padding-right: 20px;
+            transition: width 0.3s ease; /* Add smooth transition for width changes */
         }
+
         .sidebar a {
             display: block;
             margin-bottom: 10px;
@@ -49,6 +51,9 @@
             text-decoration: none;
             padding: 5px 0;
             border-bottom: 1px solid #f0f0f0;
+            white-space: nowrap; /* Prevent text wrapping */
+            overflow: hidden; /* Hide overflowing text */
+            text-overflow: ellipsis; /* Add ellipsis for overflowing text */
         }
         .sidebar a:last-child {
             border-bottom: none;
@@ -135,6 +140,7 @@
         .notification-content {
             color: #666;
         }
+        
         .header-content {
             display: flex;
             align-items: center;
@@ -145,10 +151,6 @@
             margin-right: 20px;
         }
         
-        .nav-links {
-            display: flex;
-            align-items: center;
-        }
         
         .nav-links a {
             margin-left: 15px;
