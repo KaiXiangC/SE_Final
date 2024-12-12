@@ -64,7 +64,7 @@ class Notification(db.Model):
     
     def to_dict(self):
         return {
-            "id": self.title,
+            "title": self.title,
             "content": self.content,
             # 加上其他你需要的屬性
         }
