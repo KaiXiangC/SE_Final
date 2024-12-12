@@ -6,7 +6,7 @@ from datetime import datetime
 
 from werkzeug.utils import secure_filename
 
-from app.models import Vote, Category, Comment, Issue, User, Favorite
+from app.models import Vote, Category, Comment, Issue, User, Favorite, Notification
 from flask import jsonify
 from .. import db
 
@@ -21,7 +21,7 @@ def issue_detail(issueID):
     issue = Issue.query.get_or_404(issueID)
     if issue.status == 0:
         flash('該議題尚未公開，無法檢視。', 'warning')
-        return redirect(url_for('index'))  # 導回首頁
+        return redirect(url_for('login.index'))  # 導回首頁
     # 格式化剩餘時間
     deadline_str = None
     if issue.deadline:
@@ -31,7 +31,8 @@ def issue_detail(issueID):
     # 查詢是否已經投票
     existing_vote = Vote.query.filter_by(userID=current_user.userID, issueID=issueID).first()
     has_voted = True if existing_vote else False
-
+    existing_favorited = Favorite.query.filter_by(userID=current_user.userID, issueID=issueID).first()
+    has_favorited = True if existing_favorited else False
     # 查詢相關評論
     comments = Comment.query.filter_by(issueID=issueID).order_by(Comment.commentTime.desc()).all()
 
@@ -50,6 +51,7 @@ def issue_detail(issueID):
         'issueDetail.html',
         issueID=issueID,
         has_voted=has_voted,
+        has_favorited=has_favorited,
         issue={
             'title': issue.title,
             'status': issue.status,
@@ -82,6 +84,38 @@ def add_comment(issueID):
     )
 
     db.session.add(new_comment)
+
+    favorites = Favorite.query.filter_by(issueID=issueID).all()
+
+    # 查找議題創建者
+    issue = Issue.query.get(issueID)
+    if not issue:
+        return jsonify({'status': 'error', 'message': '議題不存在'})
+
+    notified_users = set()  # 用於避免重複通知
+
+    # 通知收藏該議題的用戶
+    for favorite in favorites:
+        if favorite.userID not in notified_users:
+            notification = Notification(
+                userID=favorite.userID,
+                createTime=datetime.utcnow(),
+                title='新的留言',
+                content=f"議題 {issue.title} 有新留言：{content[:50]}..."
+            )
+            db.session.add(notification)
+            notified_users.add(favorite.userID)
+
+    # 通知議題創建者
+    if issue.userID not in notified_users:
+        notification = Notification(
+            userID=issue.userID,
+            createTime=datetime.utcnow(),
+            title='新的留言',
+            content=f"你的議題 {issue.title} 有新留言：{content[:50]}..."
+        )
+        db.session.add(notification)
+
     db.session.commit()
 
     # 返回 JSON 回應
@@ -223,7 +257,7 @@ def new_issue(issueID=None):
             if issue.userID != current_user.userID or issue.status != 0:
                 flash('這個議題無法編輯', 'warning')
                 print("aaa")
-                return redirect(url_for('index'))  # 如果不是該用戶的暫存議題，則跳轉
+                return redirect(url_for('login.index'))  # 如果不是該用戶的暫存議題，則跳轉
             return render_template('add_issue.html', categories=categories, issue=issue)
         else:
             return render_template('add_issue.html', categories=categories)
@@ -333,7 +367,7 @@ def finalize_issue():
 
 
 
-        return redirect(url_for('index'))  # 取消或其他操作
+        return redirect(url_for('login.index'))  # 取消或其他操作
 
     categories = Category.query.all()
     return render_template(
