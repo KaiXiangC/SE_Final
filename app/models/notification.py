@@ -48,3 +48,7 @@ class Notification(db.Model):
             db.session.commit()
             return True
         return False
+    
+    @classmethod
+    def get_notifications_by_user(cls, user_id):
+        return cls.query.filter_by(userID=user_id).all()

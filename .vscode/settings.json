@@ -13,8 +13,8 @@
             "port": 29883,
             "driver": "MySQL",
             "name": "junction.proxy.rlwy.net",
-            "database": "railway",
-            "username": "root"
+            "username": "root",
+            "database": "railway"
         }
     ]
 }

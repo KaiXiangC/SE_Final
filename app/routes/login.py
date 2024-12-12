@@ -2,8 +2,14 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import login_user, login_required, logout_user, current_user, LoginManager
 from app import db
+<<<<<<< Updated upstream
 from app.models import User, Notification
 import os
+=======
+from app.models.user import User
+from app.models.notification import Notification
+from app.models.issue import Issue
+>>>>>>> Stashed changes
 
 login_bp = Blueprint('login', __name__)
 
@@ -36,6 +42,7 @@ def login():
 @login_bp.route('/index')
 @login_required
 def index():
+<<<<<<< Updated upstream
         """首頁"""
         notifications = Notification.query.all()
         return render_template('index.html', notifications=notifications)
@@ -46,6 +53,17 @@ def api_ad():
     img_folder = os.path.join('app', 'static', 'img')
     images = [f for f in os.listdir(img_folder) if 'ad' in f and f.endswith(('.png', '.jpg', '.jpeg', '.gif'))]
     return jsonify(images)
+=======
+    user_id = current_user.userID  # 假設 current_user 有 userID 屬性
+    
+    # 取得通知及所有 Issue
+    notifications = Notification.get_notifications_by_user(user_id)
+    issues = Issue.get_all_issues()
+    print(issues)
+    return render_template('index.html',
+                           notifications=notifications,
+                           issues=issues)
+>>>>>>> Stashed changes
 
 @login_bp.route('/logout')
 @login_required

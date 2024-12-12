@@ -323,7 +323,19 @@
     </div>
 
     <div class="content" id="results">
-        <!-- 動態列表會顯示在這裡 -->
+        <h1>通知列表：</h1>
+        <ul>
+        {% for notification in notifications %}
+            <li>{{ notification.title }} - {{ notification.content }}</li>
+        {% endfor %}
+        </ul>
+    
+        <h1>Issue 列表：</h1>
+        <ul>
+        {% for issue in issues %}
+            <li>{{ issue.title }}: {{ issue.description }}</li>
+        {% endfor %}
+        </ul>
     </div>
 
     <script>
