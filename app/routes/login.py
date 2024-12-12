@@ -127,6 +127,7 @@ def filter_issues_by_category():
     issues_data = [{
         "issueID": i.issueID,
         "title": i.title,
+        "category": {"name": i.category.name},
         "description": i.description,
         "publishTime": i.publishTime.isoformat() if i.publishTime else None,
         "deadline": i.deadline.isoformat() if i.deadline else None,
