@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>公共政策網路參與平臺</title>
+    <title>公共政策網路參與平台</title>
     <style>
-        /* 通用樣式 */
         body {
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
+            background-color: #fff6e5;
         }
+<<<<<<< Updated upstream
 
         /* Header 樣式 */
     
@@ -40,11 +40,16 @@
             overflow-y: auto; /* 支援滾動 */
             padding: 20px;
             z-index: 999;
+=======
+        header {
+            background-color: #ffcc00;
+            padding: 10px;
+>>>>>>> Stashed changes
         }
-    
         .container {
             max-width: 1200px;
             margin: 0 auto;
+<<<<<<< Updated upstream
             padding: 20px;
         }
         .tabs {
@@ -162,13 +167,63 @@
 
         .content {
             padding: 20px;
+=======
+            padding: 0 15px;
+>>>>>>> Stashed changes
         }
         .search-bar {
+            display: inline-block;
+            margin-left: 20px;
+        }
+        .nav-links {
+            float: right;
+        }
+        .nav-links a {
+            margin-left: 15px;
+            text-decoration: none;
+            color: black;
+        }
+        .main-content {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 20px auto;
+            margin-top: 20px;
+        }
+        .sidebar {
+            width: 200px;
+        }
+        .sidebar a {
+            display: block;
+            margin-bottom: 10px;
+            color: purple;
+            text-decoration: none;
+        }
+        .policy-list {
+            flex-grow: 1;
+        }
+        .policy-card {
+            background-color: #ffcc00;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .policy-tag {
+            background-color: #2d5a27;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .policy-stats {
+            margin-top: 10px;
+        }
+        .policy-stats span {
+            margin-right: 15px;
+        }
+        footer {
+            background-color: #f0f0f0;
+            text-align: center;
             padding: 10px;
+<<<<<<< Updated upstream
             width: 700px;
             border: 1px solid #ddd;
             border-radius: 50px;
@@ -365,14 +420,29 @@
                     </main>
                 </div>
                 <a href="{{ url_for('issue.history') }}">歷史紀錄</a>
+=======
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1 style="display: inline-block;">公共政策網路參與平台</h1>
+            <div class="search-bar">
+                <input type="text" placeholder="請輸入關鍵字">
+                <button>搜尋</button>
+            </div>
+            <nav class="nav-links">
+                <a href="#" id="notification-link">通知</a>
+>>>>>>> Stashed changes
                 <a href="{{ url_for('issue.new_issue') }}">想提議</a>
+                <a href="{{ url_for('hist.history') }}">歷史紀錄</a>
                 <a href="{{ url_for('login.logout') }}">登出</a>
             </nav>
-            <a href="{{ url_for('member.member', user_id=current_user.userID) }}" class="profile-link">
-                <img src="https://img.icons8.com/?size=100&id=SSa3O7HCPrBv&format=png&color=000000" class="profile-img">
-            </a>
         </div>
     </header>
+<<<<<<< Updated upstream
     <aside id="category-menu" style="width: 15%; height: calc(100vh - 60px); position: fixed; top: 60px; left: 0; background: #f9f9f9; border-right: 1px solid #ddd; padding: 20px; overflow-y: auto;">
         <h2>類別</h2>
         <div id="category-list">
@@ -533,3 +603,119 @@
     </main>
 </body>
 </html>
+=======
+
+    <div id="notification-container" style="display: none; background: #fff6e5; border: 1px solid #ffcc00; padding: 15px; position: absolute; top: 60px; right: 20px; z-index: 1000;">
+        <h3>您的通知</h3>
+        <ul id="notification-list"></ul>
+    </div>
+    
+    <div class="container main-content">
+        <aside class="sidebar">
+            <nav>
+                {% for category in categories %}
+                <a href="#" class="category-link" data-category-id="{{ category.id }}">{{ category.name }}</a>
+                {% endfor %}
+            </nav>
+        </aside>
+
+        <main class="policy-list">
+            {% for issue in issues %}
+            <div class="policy-card">
+                <span class="policy-tag">{{ issue.category }}</span>
+                <h2>{{ issue.title }}</h2>
+                <p>{{ issue.description }}</p>
+                <div class="policy-stats">
+                    <span>投票數：{{ issue.votes_count }}</span>
+                    <span>評論：{{ issue.comments_count }}</span>
+                    <span>收藏：{{ issue.favorites_count }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </main>
+        </div>
+
+    <footer>
+        <p>文字跑馬燈：{{ admin_notifications[0].content if admin_notifications else '暫無公告' }}</p>
+    </footer>
+</body>
+</html>
+
+<script>
+    document.querySelectorAll('.category-link').forEach(link => {
+        link.addEventListener('click', function (event) {
+            event.preventDefault(); // 阻止默認的超連結行為
+            const categoryId = this.getAttribute('data-category-id');
+            
+            // 發送 AJAX 請求到後端
+            fetch(`/filter_issues_by_category?category_id=${categoryId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        // 使用回傳的議題資料更新頁面
+                        const policyList = document.querySelector('.policy-list');
+                        policyList.innerHTML = ''; // 清空舊的議題
+                        data.issues.forEach(issue => {
+                            policyList.innerHTML += `
+                                <div class="policy-card">
+                                    <span class="policy-tag">類別ID: ${issue.issueID}</span>
+                                    <h2>${issue.title}</h2>
+                                    <p>${issue.description}</p>
+                                    <div class="policy-stats">
+                                        <span>發佈時間：${issue.publishTime || '無'}</span>
+                                        <span>截止時間：${issue.deadline || '無'}</span>
+                                        <span>狀態：${issue.status}</span>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        alert(data.message || "發生錯誤，無法載入議題！");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching issues:", error);
+                    alert("發生錯誤，請稍後再試！");
+                });
+        });
+    });
+</script>
+
+<script>
+    // 模擬後端傳遞的 notifications，實際應該由後端渲染到頁面中的腳本
+    const notifications = {{ notifications | tojson }};
+
+    document.getElementById('notification-link').addEventListener('click', function (event) {
+        event.preventDefault(); // 阻止預設行為
+        const container = document.getElementById('notification-container');
+        const list = document.getElementById('notification-list');
+
+        // 切換顯示或隱藏通知區域
+        if (container.style.display === 'none') {
+            // 清空舊的通知內容
+            list.innerHTML = '';
+
+            // 動態填充通知內容
+            notifications.forEach(notification => {
+                const listItem = document.createElement('li');
+                listItem.textContent = notification.content;
+                list.appendChild(listItem);
+            });
+
+            // 顯示通知區域
+            container.style.display = 'block';
+        } else {
+            // 隱藏通知區域
+            container.style.display = 'none';
+        }
+    });
+
+    // 點擊其他地方時關閉通知
+    document.addEventListener('click', function (event) {
+        const container = document.getElementById('notification-container');
+        if (!container.contains(event.target) && event.target.id !== 'notification-link') {
+            container.style.display = 'none';
+        }
+    });
+</script>
+>>>>>>> Stashed changes

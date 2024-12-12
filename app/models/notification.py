@@ -61,3 +61,10 @@ class Notification(db.Model):
         if not admin_user:
             return []  # 如果沒有管理員，用空列表返回
         return cls.query.filter_by(userID=admin_user.userID).all()
+    
+    def to_dict(self):
+        return {
+            "id": self.title,
+            "content": self.content,
+            # 加上其他你需要的屬性
+        }

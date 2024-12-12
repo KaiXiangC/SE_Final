@@ -34,26 +34,35 @@ def login():
                 return render_template('login.html', error='帳號或密碼錯誤')
         
         return render_template('login.html')
-
 @login_bp.route('/index')
 @login_required
 def index():
-    user_id = current_user.userID  # 假設 current_user 有 userID 屬性
+    user_id = current_user.userID
 
     # 使用者本身的通知
-    notifications = Notification.get_notifications_by_user(user_id)
-    # 所有議題
-    issues = Issue.get_all_issues()
-    # 取得所有類別
-    categories = Category.get_all_categories()
-    # 取得管理員的通知
-    admin_notifications = Notification.get_admin_notifications()
+    raw_notifications = Notification.get_notifications_by_user(user_id)
+    notifications = [n.to_dict() for n in raw_notifications]
 
-    return render_template('index.html',
-                           notifications=notifications,
-                           issues=issues,
-                           categories=categories,
-                           admin_notifications=admin_notifications)
+    # 取得管理員的通知
+    admin_raw_notifications = Notification.get_admin_notifications()
+    admin_notifications = [n.to_dict() for n in admin_raw_notifications]
+
+    # 取得議題、類別等...
+    issues = Issue.get_all_issues()
+    for issue in issues:
+        issue.votes_count = len(Issue.get_votes(issue.issueID))
+        issue.comments_count = len(Issue.get_comments(issue.issueID))
+        issue.favorites_count = len(Issue.get_favorites(issue.issueID))
+
+    categories = Category.get_all_categories()
+
+    return render_template(
+        'index.html',
+        notifications=notifications,
+        issues=issues,
+        categories=categories,
+        admin_notifications=admin_notifications
+    )
 
 
 @login_bp.route('/filter_issues_by_category', methods=['GET'])
