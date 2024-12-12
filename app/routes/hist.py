@@ -24,13 +24,13 @@ def history():
     for issue in all_issues:
         icons = []
         if issue.userID == user_id:
-            icons.append('<span style="font-size: 24px;">✍️</span>')
+            icons.append('<img src="/static/img/collect.jpg">')
         if issue in commented_issues:
-            icons.append('<span style="font-size: 24px;">💬</span>')
+            icons.append('<img src="/static/img/message.jpg">')
         if issue in voted_issues:
-            icons.append('<span style="font-size: 24px;">🗳️</span>')
+            icons.append('<img src="/static/img/vote.jpg">')
         if issue in favorited_issues:
-            icons.append('<span style="color: yellow;">★</span>')
+            icons.append('<img src="/static/img/own.jpg">')
 
         preview_length = 50
         preview = issue.description[:preview_length] + '...' if len(issue.description) > preview_length else issue.description
@@ -70,13 +70,13 @@ def history_filter():
     for issue in target_issues:
         icons = []
         if issue.userID == user_id:
-            icons.append('✍️')
+            icons.append('<img src="/static/img/collect.jpg">')
         if issue in commented_issues:
-            icons.append('💬')
+            icons.append('<img src="/static/img/message.jpg">')
         if issue in voted_issues:
-            icons.append('🗳️')
+            icons.append('<img src="/static/img/vote.jpg">')
         if issue in favorited_issues:
-            icons.append('★')
+            icons.append('<img src="/static/img/own.jpg">')
 
         preview_length = 50
         preview = issue.description[:preview_length] + '...' if len(issue.description) > preview_length else issue.description

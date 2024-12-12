@@ -149,14 +149,14 @@
                     $list.empty(); // 清空列表
                     data.forEach(function(issue) {
                         var iconsHtml = issue.icons.map(function(icon) {
-                            if (icon === '★') {
-                                return '<span style="color: red;">★</span>';
-                            } else if (icon === '💬') {
-                                return '<span style="font-size: 24px;">💬</span>';
-                            } else if (icon === '🗳️') {
-                                return '<span style="font-size: 24px;">🗳️</span>';
-                            } else if (icon === '✍️') {
-                                return '<span style="font-size: 24px;">✍️</span>';
+                            if (icon === '<img src="/static/img/collect.jpg">') {
+                                return '<img src="/static/img/collect.jpg">';
+                            } else if (icon === '<img src="/static/img/message.jpg">') {
+                                return '<img src="/static/img/message.jpg">';
+                            } else if (icon === '<img src="/static/img/vote.jpg">') {
+                                return '<img src="/static/img/vote.jpg">';
+                            } else if (icon === '<img src="/static/img/own.jpg">') {
+                                return '<img src="/static/img/own.jpg">';
                             }
                             return icon;
                         }).join(' ');
