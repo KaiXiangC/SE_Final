@@ -132,6 +132,9 @@ def propose_category_manage():
 def add_category():
     """新增類別"""
     category_name = request.form['category_name']
+    if Category.query.filter_by(name=category_name).first():
+            flash('該議題類別已存在!!', 'p')
+            return redirect(url_for('admin.propose_category_manage'))
     new_category = Category(name=category_name)
     try:
         db.session.add(new_category)

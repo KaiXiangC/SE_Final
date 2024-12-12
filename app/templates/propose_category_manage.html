@@ -145,6 +145,7 @@
             margin-top: 20px;
             margin-left: 30%;
         }
+        p{color: red;}
 
     </style>
 </head>
@@ -163,6 +164,17 @@
                 <button type="submit" class="btn btn-edit">新增類別</button>
             </form>
         </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flashes">
+                    {% for category, message in messages %}
+                        {% if category == 'p' %}
+                            <p class="{{ category }}">{{ message }}</p>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
 
         <table>
             <tbody>
