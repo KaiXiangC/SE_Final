@@ -130,8 +130,6 @@
             transform: scale(1.1); /* 懸停放大 */
         }
 
-
-
         .header h1 {
             font-size: 20px;
             font-weight: bold;
@@ -165,7 +163,7 @@
             align-items: center;
             margin: 20px auto;
             padding: 10px;
-            max-width: 800px;
+            width: 800px;
             border: 1px solid #ddd;
             border-radius: 50px;
             background-color: #fff;
@@ -256,8 +254,14 @@
         <div class="title">
             <h1>公共政策網路參與平臺</h1>
         </div>
+        <!-- 搜尋欄 -->
+        <div class="search-bar">
+            <input type="text" id="keyword" placeholder="請輸入關鍵字">
+            <button onclick="search()">搜尋</button>
+        </div>
         <div class="nav-container">
             <nav>
+                <a href="{{ url_for('issue.history') }}">歷史紀錄</a>
                 <a href="{{ url_for('issue.new_issue') }}">想提議</a>
                 <a href="{{ url_for('login.logout') }}">登出</a>
             </nav>
@@ -312,11 +316,6 @@
         {% endfor %}
         </div>
         
-    </div>
-    <!-- 搜尋欄 -->
-    <div class="search-bar">
-        <input type="text" id="keyword" placeholder="請輸入關鍵字">
-        <button onclick="search()">搜尋</button>
     </div>
 
     <div class="content" id="results">
