@@ -16,7 +16,7 @@ def member(user_id):
         
         user = User.query.get_or_404(user_id)
         
-        return render_template('member.html', user=user)
+        return render_template('usrProfile.html', user=user)
 
 @member_bp.route('/member/<int:user_id>/change_password', methods=['POST'])
 @login_required

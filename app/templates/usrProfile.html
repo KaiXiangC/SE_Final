@@ -110,7 +110,7 @@
 <body>
     <header>
         <!-- 返回查看議題 -->
-        <a href="{{ url_for('index') }}" ><i class="fas fa-arrow-left"></i> 返回</a>
+        <a href="{{ url_for('login.index') }}" ><i class="fas fa-arrow-left"></i> 返回</a>
     </header>
     <h1>用戶資料</h1>
 
@@ -123,8 +123,8 @@
     </div>
 
     <div class="button-container">
-        <a href="{{ url_for('editPWD') }}" class="button change-pwd">變更密碼</a>
-        <a href="{{ url_for('memberedit') }}" class="button edit-profile">修改用戶資料</a>
+        <a href="{{ url_for('member.editpwd', user_id=current_user.userID) }}" class="button change-pwd">變更密碼</a>
+        <a href="{{ url_for('member.memberedit', user_id=current_user.userID) }}" class="button edit-profile">修改用戶資料</a>
     </div>
 </body>
 </html>
