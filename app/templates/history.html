@@ -8,21 +8,24 @@
             margin: 0;
             font-family: Arial, sans-serif;
         }
+        
         h1 {
             margin: 0;
-            margin-bottom: 30px;
             color: white;
+            text-align: center; /* 使h1內容置中 */
         }
+        
         header {
             background-color: #367039;
             color: white;
             padding: 15px 20px;
             display: flex;
-            justify-content: flex-start;
-            gap: 100px;
+            justify-content: space-between; /* 使a靠左，h1置中 */
             align-items: center;
+            position: relative; /* 使用relative以便讓h1置中 */
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        
         header a {
             text-decoration: none;
             color: white;
@@ -33,13 +36,21 @@
             background-color: transparent;
             transition: all 0.3s ease;
         }
+        
         header a:hover {
             background-color: white;
             color: #2c5282;
         }
+        
+        header h1 {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%); /* 使h1置中 */
+        }
         .filter-buttons {
             margin-bottom: 20px;
             text-align: center;
+            margin-top: 20px;
         }
         .filter-button {
             display: inline-block;
@@ -51,10 +62,12 @@
             border: none;
             cursor: pointer;
             border-radius: 4px;
+            font-size: large;
         }
         .filter-button.active {
             background-color: #feedaa; /* 深色表示已選取 */
             color: black;
+            font-size: large;
         }
         .filter-button:hover{
             background-color: #FFF3D4;
