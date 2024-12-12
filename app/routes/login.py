@@ -65,6 +65,39 @@ def index():
     )
 
 
+@login_bp.route('/search_issues')
+def search_issues():
+    keyword = request.args.get('keyword', '')  # 獲取搜尋關鍵字
+
+    if not keyword:
+        return jsonify([])  # 如果沒有提供關鍵字，返回空的列表
+
+    # 使用 SQLAlchemy 查詢 title 包含關鍵字的所有 issue
+    issues = Issue.query.filter(Issue.title.like(f'%{keyword}%')).all()
+
+    if not issues:
+        return jsonify([])
+
+    result = []
+    for issue in issues:
+        # 計算票數、評論數、收藏數
+        votes_count = len(issue.votes)
+        comments_count = len(issue.comments)
+        favorites_count = len(issue.favorites)
+
+    # 將查詢結果轉換為字典形式並返回
+    result.append({
+        'issueID': issue.issueID,
+        'category': issue.category.name,
+        'title': issue.title,
+        'description': issue.description,
+        'votes_count': votes_count,
+        'comments_count': comments_count,
+        'favorites_count': favorites_count
+    })
+
+    return jsonify(result)
+
 @login_bp.route('/filter_issues_by_category', methods=['GET'])
 @login_required
 def filter_issues_by_category():
@@ -73,7 +106,7 @@ def filter_issues_by_category():
         return jsonify({"status": "error", "message": "No category_id provided"}), 400
 
     # 使用 Category 取得該類別下的所有議題
-    issues = Category.get_issues_by_category_id(category_id)
+    issues = Issue.query.filter_by(categoryID=category_id).all()
     # 將議題轉成可序列化的資料(JSON)
     issues_data = [{
         "issueID": i.issueID,
