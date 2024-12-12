@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import login_user, login_required, logout_user, current_user, LoginManager
 from app import db
-from app.models.user import User
+from app.models import User, Notification
+import os
 
 login_bp = Blueprint('login', __name__)
 
@@ -36,7 +37,15 @@ def login():
 @login_required
 def index():
         """首頁"""
-        return render_template('index.html')
+        notifications = Notification.query.all()
+        return render_template('index.html', notifications=notifications)
+
+@login_bp.route('/api/ad')
+@login_required
+def api_ad():
+    img_folder = os.path.join('app', 'static', 'img')
+    images = [f for f in os.listdir(img_folder) if 'ad' in f and f.endswith(('.png', '.jpg', '.jpeg', '.gif'))]
+    return jsonify(images)
 
 @login_bp.route('/logout')
 @login_required

@@ -197,7 +197,7 @@
             background-color: #ffd700;
         }
         .announcement-container {
-            width: 300px;
+            width: 600px;
             height: 50px;
             overflow: hidden;
             border: 1px solid #ddd;
@@ -229,7 +229,12 @@
             white-space: nowrap;
             animation: slide2 25s linear infinite; /* 總時間=5秒x5則 */
         }
-
+        .notification-title {
+            font-weight: bold;
+        }
+        .notification-time {
+            color: gray;
+        }
         @keyframes slide2 {
             0% { transform: translateY(0); }
             20% { transform: translateY(0); }
@@ -297,11 +302,16 @@
     
     <div class="announcement-container">
         <div class="announcement-title">公告:</div>
+        
         <div class="announcement-content">
-            {% for notification in notifications %}
-            <div>{{ notification.content }}</div>
-            {% endfor %}
+        {% for notification in notifications %}
+            <div>
+                <span class="notification-title">{{ notification.title }}</span>
+                <span class="notification-time">{{ notification.createTime }}</span>
+            </div>
+        {% endfor %}
         </div>
+        
     </div>
     <!-- 搜尋欄 -->
     <div class="search-bar">
