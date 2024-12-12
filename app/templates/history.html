@@ -51,9 +51,21 @@
             margin-bottom: 20px;
             text-align: center;
             margin-top: 20px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
         }
-        .filter-button {
+        .filter-div button {
             display: inline-block;
+            /*color: #333;*/
+            text-decoration: none;
+            border: none;
+            font-size: large;
+        }
+        .filter-div {
+            display: flex;
+            width: 4%;
+            flex-direction: row;
             margin-right: 10px;
             padding: 5px 10px;
             background-color: #eee;
@@ -62,17 +74,29 @@
             border: none;
             cursor: pointer;
             border-radius: 4px;
-            font-size: large;
+            justify-content: center;
         }
-        .filter-button.active {
+        .filter-div.active {
             background-color: #feedaa; /* 深色表示已選取 */
             color: black;
-            font-size: large;
         }
-        .filter-button:hover{
+        .filter-div:hover{
             background-color: #FFF3D4;
             color: black;
         }
+        .filter-div:hover .filter-button {
+            background-color: #FFF3D4;
+            color: black;
+            cursor: pointer;
+        }
+        .filter-div.active .filter-button {
+            background-color: #feedaa;
+            color: black;
+        }
+
+        .filter-div img{
+            width: 28px; /* 設定圖片寬度 */
+            height: 28px; /* 設定圖片高度 */}
         .content{
             width:70%;
             background-color: #feedaa;
@@ -123,6 +147,7 @@
             width: 37px; /* 設定圖片寬度 */
             height: 37px; /* 設定圖片高度 */
         }
+        hr{width:30%;background-color: #eee;margin-bottom: 15px;}
 
     </style>
 </head>
@@ -133,12 +158,14 @@
         <h1>歷史議題</h1>
     </header>
     <div class="filter-buttons">
-        <button class="filter-button" data-filter="">全部</button>
-        <button class="filter-button" data-filter="created">創建</button>
-        <button class="filter-button" data-filter="commented">留言</button>
-        <button class="filter-button" data-filter="favorited">收藏</button>
-        <button class="filter-button" data-filter="voted">投票</button>
+        <div class="filter-div"><button class="filter-button" data-filter="">全部</button></div>
+        <div class="filter-div"><button class="filter-button" data-filter="created">創建</button><img src="https://img.icons8.com/?size=100&id=9_NQcM4E-KeP&format=png&color=000000"></div>
+        <div class="filter-div"><button class="filter-button" data-filter="commented">留言</button><img src="https://img.icons8.com/?size=100&id=WK5zjEkjX6HF&format=png&color=000000"></div>
+        <div class="filter-div"><button class="filter-button" data-filter="voted">投票</button><img src="https://img.icons8.com/?size=100&id=GiNJOdKO-eaC&format=png&color=000000"></div>
+        <div class="filter-div"><button class="filter-button" data-filter="favorited">收藏</button><img src="https://img.icons8.com/?size=100&id=8ggStxqyboK5&format=png&color=000000"></div>
+        
     </div>
+    <hr/>
     <div class="content">
         <ul class="issue-list" id="issueList">
             {% for issue in issues %}
@@ -178,14 +205,14 @@
                     $list.empty(); // 清空列表
                     data.forEach(function(issue) {
                         var iconsHtml = issue.icons.map(function(icon) {
-                            if (icon === '<img src="https://img.icons8.com/?size=100&id=8ggStxqyboK5&format=png&color=000000">') {
-                                return '<img src="https://img.icons8.com/?size=100&id=8ggStxqyboK5&format=png&color=000000">';
+                            if (icon === '<img src="https://img.icons8.com/?size=100&id=9_NQcM4E-KeP&format=png&color=000000">') {
+                                return '<img src="https://img.icons8.com/?size=100&id=9_NQcM4E-KeP&format=png&color=000000">';
                             } else if (icon === '<img src="https://img.icons8.com/?size=100&id=WK5zjEkjX6HF&format=png&color=000000">') {
                                 return '<img src="https://img.icons8.com/?size=100&id=WK5zjEkjX6HF&format=png&color=000000">';
                             } else if (icon === '<img src="https://img.icons8.com/?size=100&id=GiNJOdKO-eaC&format=png&color=000000">') {
                                 return '<img src="https://img.icons8.com/?size=100&id=GiNJOdKO-eaC&format=png&color=000000">';
-                            } else if (icon === '<img src="https://img.icons8.com/?size=100&id=9_NQcM4E-KeP&format=png&color=000000">') {
-                                return '<img src="https://img.icons8.com/?size=100&id=9_NQcM4E-KeP&format=png&color=000000">';
+                            } else if (icon === '<img src="https://img.icons8.com/?size=100&id=8ggStxqyboK5&format=png&color=000000">') {
+                                return '<img src="https://img.icons8.com/?size=100&id=8ggStxqyboK5&format=png&color=000000">';
                             }
                             return icon;
                         }).join(' ');
