@@ -120,24 +120,26 @@
         <div class="modal-header">
             編輯議題 (#{{ issue.issueID }})
         </div>
-        <form action="{{ url_for('admin.update_issue', issue_id=issue.issueID) }}" method="POST">
+        <form action="{{ url_for('admin.approve_issue', issue_id=issue.issueID) }}" method="POST">
             <label for="title">議題標題</label>
-            <textarea id="title" name="title" required>{{ issue.title }}</textarea>
+            <input type="text" id="title" name="title" placeholder="{{ issue.title }}" disabled>
 
             <label for="description">內容描述</label>
-            <textarea id="description" name="description" required>{{ issue.description }}</textarea>
+            <input type="text" id="description" name="description" placeholder="{{ issue.description }}" disabled>
 
             <label for="category">變更類別</label>
-            <select id="category" name="category" required>
-                {% for category in categories %}
-                <option value="{{ category.name }}" {% if category.categoryID == issue.categoryID %}selected{% endif %}>
-                    {{ category.name }}
-                </option>
-                {% endfor %}
+            {% for category in categories %}
+            {% if category.categoryID == issue.categoryID %}
+            <input type="text" id="category" name="category" placeholder="{{ category.name }}" disabled>
+            {% endif %}
+            {% endfor %}
             </select>
             <div class="buttons">
-                <button type="submit" class="save">確認修改</button>           
+                <button type="submit" class="save">審核議題</button>           
             </div>
+        </form>
+        <form action="{{ url_for('admin.delete_issue', issue_id=issue.issueID) }}" method="POST">
+            <button type="submit" class="delete">刪除議題</button>
         </form>
     </div>
 </body>

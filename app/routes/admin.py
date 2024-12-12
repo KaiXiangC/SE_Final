@@ -3,7 +3,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import login_user, login_required, logout_user, current_user, LoginManager
 from app import db
 import os
-from app.models import User, Issue, Category
+from app.models import User, Issue, Category, Comment
 import logging
 
 admin_bp = Blueprint('admin', __name__)
@@ -15,11 +15,111 @@ def member_manage():
         users = User.query.filter_by(is_admin=False).all()
         return render_template('member_manage.html', users=users)
 
-@admin_bp.route('/propose_manage')
+@admin_bp.route('/propose_manage', methods=['GET'])
 @login_required
 def propose_manage():
-        """議題管理"""
-        return render_template('propose_manage.html')
+    """議題監控管理"""
+    issues = Issue.query.filter_by(status=1).all()
+    return render_template('propose_manage.html', issues=issues)
+
+@admin_bp.route('/review_comment/<int:issue_id>', methods=['GET'])
+@login_required
+def review_comment(issue_id):
+    """審核留言"""
+    issue = Issue.query.get_or_404(issue_id)
+    # 在這裡添加審核留言的邏輯
+    return render_template('review_comment.html', issue=issue)
+
+@admin_bp.route('/delete_comment/<int:comment_id>', methods=['POST'])
+@login_required
+def delete_comment(comment_id):
+    """刪除留言"""
+    comment = Comment.query.get_or_404(comment_id)
+    issue_id = comment.issue_id
+    try:
+        db.session.delete(comment)
+        db.session.commit()
+        flash('留言已刪除', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('留言刪除失敗', 'danger')
+    return redirect(url_for('admin.review_comment', issue_id=issue_id))
+
+@admin_bp.route('/review_issue/<int:issue_id>', methods=['GET'])
+@login_required
+def review_issue(issue_id):
+    """審核議題"""
+    issue = Issue.query.get_or_404(issue_id)
+    categories=Category.query.all()
+    # 在這裡添加審核議題的邏輯
+    return render_template('review_issue.html', issue=issue, categories=categories)
+
+@admin_bp.route('/approve_issue/<int:issue_id>', methods=['POST'])
+@login_required
+def approve_issue(issue_id):
+    """批准議題"""
+    issue = Issue.query.get_or_404(issue_id)
+    if issue.is_review:
+        flash('該議題已經審核過', 'danger')
+    else:
+        issue.is_review = True
+        try:
+            db.session.commit()
+            flash('議題已審核通過', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash('議題審核失敗', 'danger')
+    return redirect(url_for('admin.propose_manage'))
+
+@admin_bp.route('/do_issue/<int:issue_id>', methods=['GET'])
+@login_required
+def do_issue(issue_id):
+    """編輯議題"""
+    issue = Issue.query.get_or_404(issue_id)
+    categories=Category.query.all()
+    # 在這裡添加審核議題的邏輯
+    return render_template('issue.html', issue=issue, categories=categories)
+
+@admin_bp.route('/update_issue/<int:issue_id>', methods=['POST'])
+@login_required
+def update_issue(issue_id):
+    """更新議題"""
+    issue = Issue.query.get_or_404(issue_id)
+    title = request.form.get('title')
+    description = request.form.get('description')
+    category_name = request.form.get('category')
+    
+    if title:
+        issue.title = title
+    if description:
+        issue.description = description
+    if category_name:
+        category = Category.query.filter_by(name=category_name).first()
+        if category:
+            issue.categoryID = category.categoryID
+    
+    try:
+        db.session.commit()
+        flash('議題已更新', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('議題更新失敗', 'danger')
+    
+    return redirect(url_for('admin.propose_manage'))
+
+@admin_bp.route('/delete_issue/<int:issue_id>', methods=['POST'])
+@login_required
+def delete_issue(issue_id):
+    """刪除議題"""
+    issue = Issue.query.get_or_404(issue_id)
+    try:
+        db.session.delete(issue)
+        db.session.commit()
+        flash('議題已刪除', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('議題刪除失敗', 'danger')
+    return redirect(url_for('admin.propose_manage'))
 
 @admin_bp.route('/propose_category_manage')
 @login_required
