@@ -102,7 +102,7 @@
 <body>
     <header>
         <!-- 返回查看議題 -->
-        <a><i class="fas fa-arrow-left"></i> 返回</a>
+        <a href="{{ url_for('login.index') }}" ><i class="fas fa-arrow-left"></i> 返回</a>
     </header>
     <h1>您曾互動過的議題</h1>
     <div class="filter-buttons">
@@ -150,7 +150,7 @@
                     data.forEach(function(issue) {
                         var iconsHtml = issue.icons.map(function(icon) {
                             if (icon === '★') {
-                                return '<span style="color: yellow;">★</span>';
+                                return '<span style="color: red;">★</span>';
                             } else if (icon === '💬') {
                                 return '<span style="font-size: 24px;">💬</span>';
                             } else if (icon === '🗳️') {
