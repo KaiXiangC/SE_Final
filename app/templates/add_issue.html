@@ -66,10 +66,15 @@
             overflow: hidden; /* 隱藏滾動條 */
             box-sizing: border-box; /* 包含內邊距與邊框 */
         }
-
-        textarea {
+        textarea[type="text"] {
             min-height: 50px; /* 設定最小高度 */
             max-height: 300px; /* 限制最大高度 */
+            overflow-y: auto; /* 如果內容過多，則出現滾動條 */
+        }
+        textarea[type="description"] {
+            min-height: 50px; /* 設定最小高度 */
+            max-height: 300px; /* 限制最大高度 */
+            height: 500px;
             overflow-y: auto; /* 如果內容過多，則出現滾動條 */
         }
 
@@ -90,11 +95,11 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-        button[type="addsubmit"] {
+        button[type="submit"] {
             background-color: #4CAF50;
             color: white;
         }
-        button[type="addsubmit"]:hover {
+        button[type="submit"]:hover {
             background-color: #a3d0fa;
         }
         button[type="savesubmit"] {
@@ -128,7 +133,7 @@
         <a href="{{ url_for('login.index') }}" ><i class="fas fa-arrow-left"></i> 返回</a>
     </header>
     <h1>{{ '編輯議題' if issue else '新增議題' }}</h1>
-    <form action="{{ url_for('issue.new_issue', issueID=issue.issueID if issue else None) }}" method="POST" enctype="multipart/form-data">
+    <form id="issue-form" action="{{ url_for('issue.new_issue', issueID=issue.issueID if issue else None) }}" method="POST" enctype="multipart/form-data">
         <!-- 進度條 -->
         <div>
             <label>目前進度：輸入提案內容</label>
@@ -143,7 +148,7 @@
         <!-- 內容描述 -->
         <div>
             <label for="description">內容描述：</label>
-            <textarea id="description" name="description" required>{{ issue.description if issue else '' }}</textarea>
+            <textarea type="description" id="description" name="description" required>{{ issue.description if issue else '' }}</textarea>
         </div>
 
         <!-- 選擇類別 -->
@@ -166,9 +171,38 @@
         </div>
 
         <!-- 操作按鈕 -->
-        <button type="addsubmit" name="action_1" value="add">新增議題</button>
+        <button type="submit" name="action_1" value="add">新增議題</button>
         <button type="savesubmit" name="action_1" value="save">暫存議題</button>
         <button type="button" onclick="location.href='/index'">取消</button>
     </form>
+    <script>
+        document.getElementById('issue-form').addEventListener('submit', function (event) {
+            // 獲取標題和描述的值
+            const title = document.getElementById('title').value.trim();
+            const description = document.getElementById('description').value.trim();
+
+            // 判斷標題是否為空或僅包含空格
+            if (title === '') {
+                alert('議題標題不能為空或只包含空格！');
+                event.preventDefault(); // 阻止提交
+                return;
+            }
+
+            // 判斷描述是否為空或僅包含空格
+            if (description === '') {
+                alert('內容描述不能為空或只包含空格！');
+                event.preventDefault(); // 阻止提交
+                return;
+            }
+
+            // 根據按鈕值區分操作（可選）
+            const action = event.submitter.value; // 獲取觸發提交的按鈕值
+            if (action === 'add') {
+                console.log('新增議題');
+            } else if (action === 'save') {
+                console.log('暫存議題');
+            }
+        });
+    </script>
 </body>
 </html>
