@@ -381,22 +381,7 @@
             </form>
         </div>
     </div>
-    <script>
-        document.getElementById('comment-form').addEventListener('submit', function (event) {
-            // 獲取留言輸入框的值
-            const comment = document.getElementById('comment-input').value.trim();
     
-            // 判斷留言是否為空或僅包含空格
-            if (comment === '') {
-                alert('留言不能為空或只包含空格！');
-                event.preventDefault(); // 阻止提交
-                return;
-            }
-    
-            // 如果驗證通過，允許提交
-            console.log('留言提交成功:', comment);
-        });
-    </script>
     <script>
         function toggleVote(element) {
             const url = '{{ url_for("issue.vote", issueID=issueID) }}';
@@ -438,26 +423,33 @@
         }
 
         $(document).ready(function() {
-            $('#comment-form').on('submit', function(event) {
-                event.preventDefault();
+        $('#comment-form').on('submit', function(event) {
+            event.preventDefault(); // 阻止默认提交行为
 
-                var commentContent = $('input[name="comment"]').val();
+            // 获取留言输入框的值并进行验证
+            var commentContent = $('input[name="comment"]').val().trim();
 
-                $.ajax({
-                    url: "{{ url_for('issue.add_comment', issueID=issueID) }}",
-                    type: "POST",
-                    data: { 'comment': commentContent },
-                    success: function(response) {
-                        if (response.status === 'success') {
-                            alert(response.message);
-                            location.reload();
-                        } else {
-                            alert(response.message);
-                        }
-                    },
-                    error: function() {
-                        alert("發生錯誤，請稍後再試。");
+            if (commentContent === '') {
+                alert('留言不能為空或只包含空格！');
+                return; // 终止提交
+            }
+
+            // 发送 AJAX 请求提交留言
+            $.ajax({
+                url: "{{ url_for('issue.add_comment', issueID=issueID) }}",
+                type: "POST",
+                data: { 'comment': commentContent },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        alert(response.message);
+                        location.reload(); // 刷新页面以显示新留言
+                    } else {
+                        alert(response.message);
                     }
+                },
+                error: function() {
+                    alert("發生錯誤，請稍後再試。");
+                }
                 });
             });
         });
