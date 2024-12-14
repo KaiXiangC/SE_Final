@@ -140,31 +140,40 @@
     <script>
         // 監聽表單提交事件
         document.getElementById('registerForm').addEventListener('submit', function(event) {
-            // 防止表單直接提交
+            // 阻止表單直接提交
             event.preventDefault();
 
-            // 取得表單中的資料
-            const formData = new FormData(event.target);
-            const formValues = {};
+            // 檢查所有需要驗證的輸入框
+            const inputs = ['name', 'email', 'password', 'confirm_password'];
+            let hasError = false;
 
-            formData.forEach((value, key) => {
-                formValues[key] = value;
-            });
-            // 使用 console.log 看表單資料
-            console.log("表單資料: ", formValues);
+            for (let inputId of inputs) {
+                const inputElement = document.getElementById(inputId);
+                const value = inputElement.value.trim(); // 去掉首尾空格
 
-            // 驗證密碼確認是否一致
-            const password = formValues['password'];
-            const confirmPassword = formValues['confirm_password'];
+                if (value === '') {
+                    alert(`${inputElement.previousElementSibling.textContent} 不能只包含空格或為空！`);
+                    inputElement.focus();
+                    hasError = true;
+                    break; // 出現錯誤後停止檢查
+                }
+            }
+
+            if (hasError) return;
+
+            // 確認密碼是否一致
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
 
             if (password !== confirmPassword) {
                 alert("密碼與確認密碼不一致！");
                 return;
             }
 
-            // 如果驗證通過，再手動提交表單
+            // 如果所有驗證都通過，手動提交表單
             event.target.submit();
         });
     </script>
+    
 </body>
 </html>
