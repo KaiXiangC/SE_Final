@@ -159,11 +159,12 @@
         <h1>議題類別管理</h1>
         
         <div class="add-category">
-            <form action="{{ url_for('admin.add_category') }}" method="POST">
-                <input type="text" name="category_name" placeholder="輸入新類別名稱" required>
+            <form id="add-category-form" action="{{ url_for('admin.add_category') }}" method="POST">
+                <input type="text" id="category-name" name="category_name" placeholder="輸入新類別名稱" required>
                 <button type="submit" class="btn btn-edit">新增類別</button>
             </form>
         </div>
+        
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 <div class="flashes">
@@ -226,15 +227,38 @@
                 </div>
             </div>
             <div class="modal-buttons">
-                <form action="{{ url_for('admin.edit_category') }}" method="POST">
+                <form id="edit-category-form" action="{{ url_for('admin.edit_category') }}" method="POST">
                     <input type="hidden" id="categoryIdToEdit" name="category_id">
                     <input type="text" id="newCategoryName" name="newCategoryName" style="width: 80%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" required>
                     <button type="submit" class="btn btn-edit btn-confirm">確認變更</button>
-                </form>
+                </form>                
             </div>
         </div>
     </div>
-
+    <script>
+        // 新增類別的验证逻辑
+        document.getElementById('add-category-form').addEventListener('submit', function(event) {
+            const categoryNameInput = document.getElementById('category-name');
+            const categoryName = categoryNameInput.value;
+    
+            if (/\s/.test(categoryName)) {
+                alert('類別名稱不能包含空格！');
+                event.preventDefault();
+            }
+        });
+    
+        // 修改類別的验证逻辑
+        document.getElementById('edit-category-form').addEventListener('submit', function(event) {
+            const newCategoryNameInput = document.getElementById('newCategoryName');
+            const newCategoryName = newCategoryNameInput.value;
+    
+            if (/\s/.test(newCategoryName)) {
+                alert('新的類別名稱不能包含空格！');
+                event.preventDefault();
+            }
+        });
+    </script>
+    
     <script>
         let currentCategoryId = null;
         let currentCategoryName = null;
