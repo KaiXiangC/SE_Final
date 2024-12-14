@@ -376,12 +376,27 @@
             </div>
 
             <form id="comment-form" class="comment-form">
-                <input type="text" name="comment" placeholder="輸入留言..." required class="comment-input">
+                <input type="text" id="comment-input" name="comment" placeholder="輸入留言..." required class="comment-input">
                 <button type="submit" class="submit-button">送出</button>
             </form>
         </div>
     </div>
-
+    <script>
+        document.getElementById('comment-form').addEventListener('submit', function (event) {
+            // 獲取留言輸入框的值
+            const comment = document.getElementById('comment-input').value.trim();
+    
+            // 判斷留言是否為空或僅包含空格
+            if (comment === '') {
+                alert('留言不能為空或只包含空格！');
+                event.preventDefault(); // 阻止提交
+                return;
+            }
+    
+            // 如果驗證通過，允許提交
+            console.log('留言提交成功:', comment);
+        });
+    </script>
     <script>
         function toggleVote(element) {
             const url = '{{ url_for("issue.vote", issueID=issueID) }}';
@@ -447,6 +462,7 @@
             });
         });
     </script>
+    
 </body>
 </html>
 
