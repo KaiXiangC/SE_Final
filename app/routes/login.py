@@ -56,12 +56,19 @@ def index():
 
     categories = Category.get_all_categories()
 
+
+    user = {
+        "userID": current_user.userID,
+        "name": current_user.name,
+        "email": current_user.email,
+    }
     return render_template(
         'index.html',
         notifications=notifications,
         issues=issues,
         categories=categories,
-        admin_notifications=admin_notifications
+        admin_notifications=admin_notifications,
+        user=user  # 添加用户数据
     )
 
 
@@ -132,7 +139,11 @@ def filter_issues_by_category():
         "description": i.description,
         "votes_count": len(i.votes),
         "comments_count": len(i.comments),
+<<<<<<< Updated upstream
         "favorites_count": len(i.favorites),
+=======
+        "favorites_count": len(i.favorites),    
+>>>>>>> Stashed changes
         "publishTime": i.publishTime.isoformat() if i.publishTime else None,
         "deadline": i.deadline.isoformat() if i.deadline else None,
         "is_review": i.is_review,
@@ -154,3 +165,57 @@ def logout():
 def admin_dashboard():
         """管理員儀表板"""
         return render_template('member_homepage.html')
+
+
+@login_bp.route('/login/<int:user_id>/change_password', methods=['POST'])
+@login_required
+def change_password(user_id):
+    """修改密碼"""
+    if current_user.userID != user_id:
+        return jsonify({'status': 'error', 'message': '您無權修改此使用者的密碼'}), 403
+
+    user = User.query.get_or_404(user_id)
+    old_password = request.form['old-password']
+    new_password = request.form['new-password']
+    confirm_password = request.form['confirm-password']
+
+    # 檢查舊密碼是否正確
+    if not check_password_hash(user.password, old_password):
+        return jsonify({'status': 'error', 'message': '舊密碼不正確'}), 400
+
+    if new_password != confirm_password:
+        return jsonify({'status': 'error', 'message': '新密碼與確認密碼不一致'}), 400
+
+    user.password = generate_password_hash(new_password)
+
+    try:
+        db.session.commit()
+        return jsonify({'status': 'success', 'message': '密碼已更新'})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'status': 'error', 'message': '密碼更新失敗'}), 500
+
+
+@login_bp.route('/login/<int:user_id>/update_profile', methods=['POST'])
+@login_required
+def update_profile(user_id):
+    """更新使用者資料"""
+    if current_user.userID != user_id:
+        return jsonify({'status': 'error', 'message': '您無權修改此使用者的資料'}), 403
+
+    user = User.query.get_or_404(user_id)
+    user.name = request.form['name']
+    new_email = request.form['email']
+
+    # 檢查電子郵件是否已經存在
+    if User.query.filter_by(email=new_email).first():
+        return jsonify({'status': 'error', 'message': '該電子郵件已經被使用'}), 400
+
+    user.email = new_email
+
+    try:
+        db.session.commit()
+        return jsonify({'status': 'success', 'message': '資料已更新'})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'status': 'error', 'message': '資料更新失敗'}), 500

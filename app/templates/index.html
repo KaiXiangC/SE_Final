@@ -1,202 +1,15 @@
-
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap JS 和 Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
     <title>公共政策網路參與平台</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #fff6e5;
-        }
-        header {
-            background-color: #ffcc00;
-            padding: 10px;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-        .search-bar {
-            display: flex;
-            align-items: center;
-            background-color: white;
-            border-radius: 20px;
-            padding: 5px 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        #search-input {
-            border: none;
-            outline: none;
-            background: transparent;
-            margin-right: 10px;
-            width: 200px;
-        }
-
-        #search-button {
-            background-color: #ffcc00;
-            color: black;
-            border: none;
-            padding: 5px 15px;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        #search-button:hover {
-            background-color: #e6b800;
-        }
-        .nav-links a {
-            margin-left: 15px;
-            text-decoration: none;
-            color: black;
-        }
-        .main-content {
-            display: flex;
-            margin-top: 20px;
-        }
-        .sidebar {
-        width: 250px; /* Set a fixed width */
-        min-width: 250px; /* Ensure the width doesn't shrink */
-        max-width: 250px; /* Ensure the width doesn't grow */
-        border-right: 1px solid #e0e0e0;
-        padding-right: 20px;
-        transition: none; /* Remove the transition to prevent any width animation */
-        }
-        .sidebar a {
-            display: block;
-            margin-bottom: 10px;
-            color: purple;
-            text-decoration: none;
-            padding: 8px 0;
-            border-bottom: 1px solid #f0f0f0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-size: 16px; /* 增大字體大小 */
-            transition: background-color 0.3s;
-        }
-
-        .sidebar a:hover {
-            background-color: #f0f0f0;
-        }
-
-        .sidebar a:last-child {
-            border-bottom: none;
-        }
-        .policy-list {
-            flex-grow: 1;
-            padding-left: 20px;
-        }
-        .policy-card {
-            background-color: #ffcc00;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-        .policy-tag {
-            background-color: #2d5a27;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-        .policy-stats {
-            margin-top: 10px;
-        }
-        .policy-stats span {
-            margin-right: 15px;
-        }
-        footer {
-            background-color: #f0f0f0;
-            text-align: center;
-            padding: 10px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
-        }
-        .marquee {
-            overflow: hidden;
-            white-space: nowrap;
-            display: block;
-            position: relative;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .marquee span {
-            display: inline-block;
-            padding-left: 100%;
-            animation: marquee 10s linear infinite;
-        }
-        @keyframes marquee {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
-        #notification-container {
-            position: absolute;
-            top: 100%; /* 將通知容器置於按鈕正下方 */
-            right: 0;
-            z-index: 1000;
-            background-color: #fff6e5;
-            border: 1px solid #ffcc00;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            width: 300px;
-            max-height: 400px;
-            overflow-y: auto;
-            display: none;
-        }
-
-        .nav-links {
-            position: relative; /* 為了讓絕對定位的子元素能夠相對於它定位 */
-        }
-        #notification-list {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-        #notification-list li {
-            border-bottom: 1px solid #e0e0e0;
-            padding: 10px 0;
-        }
-        #notification-list li:last-child {
-            border-bottom: none;
-        }
-        .notification-title {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        .notification-content {
-            color: #666;
-        }
-        
-        .header-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .platform-title {
-            margin-right: 20px;
-        }
-        
-        
-        .profile-link {
-            margin-left: 15px;
-        }
-        
-        .profile-img {
-            width: 32px;
-            height: 32px;
-            vertical-align: middle;
-        }
-    </style>
 </head>
 <body>
     <header>
@@ -212,12 +25,13 @@
                     <div id="notification-container">
                         <h3>您的通知</h3>
                         <ul id="notification-list"></ul>
-                    </div>                    <a href="{{ url_for('issue.new_issue') }}">想提議</a>
+                    </div>
+                    <a href="{{ url_for('issue.new_issue') }}">想提議</a>
                     <a href="{{ url_for('hist.history') }}">歷史紀錄</a>
                     <a href="{{ url_for('login.logout') }}">登出</a>
-                    <a href="{{ url_for('member.member', user_id=current_user.userID) }}" class="profile-link">
+                    <a href="#" class="profile-link" data-bs-toggle="modal" data-bs-target="#editProfileModal">
                         <img src="https://img.icons8.com/?size=100&id=SSa3O7HCPrBv&format=png&color=000000" class="profile-img" alt="Profile">
-                    </a>
+                    </a>                    
                 </nav>
             </div>
         </div>
@@ -257,45 +71,160 @@
             <span id="marquee-text">{{ admin_notifications[0].content if admin_notifications else '暫無公告' }}</span>
         </div>
     </footer>
+
+    <!-- 使用者資料頁面 -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProfileModalLabel">修改個人資料</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Tab Navigation -->
+                    <ul class="nav nav-tabs" id="editProfileTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="true">
+                                修改個人資料
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="password-tab" data-bs-toggle="tab" data-bs-target="#password" type="button" role="tab" aria-controls="password" aria-selected="false">
+                                修改密碼
+                            </button>
+                        </li>
+                    </ul>
     
-    <script>
-
-        const notifications = {{ notifications | tojson }};
-        console.log(notifications); // 確保輸出的 JSON 結構正確
-
-        document.getElementById('notification-link').addEventListener('click', function (event) {
-            event.preventDefault();
-            const container = document.getElementById('notification-container');
-            const list = document.getElementById('notification-list');
-
-            if (container.style.display === 'none') {
-                list.innerHTML = '';
-
-                if (notifications.length === 0) {
-                    list.innerHTML = '<li>沒有通知</li>';
-                } else {
-                    notifications.forEach(notification => {
-                        const listItem = document.createElement('li');
-                        listItem.innerHTML = `
-                            <div class="notification-title">${notification.title}</div>
-                            <div class="notification-content">${notification.content}</div>
-                        `;
-                        list.appendChild(listItem);
-                    });
-                }
-
-                container.style.display = 'block';
-            } else {
-                container.style.display = 'none';
-            }
-        });
-
-        // Existing click event listener for closing notifications remains unchanged
-    </script>
+                    <!-- Tab Content -->
+                    <div class="tab-content mt-3" id="editProfileTabContent">
+                        <!-- 修改個人資料 -->
+                        <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                            <form id="updateProfileForm">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">名稱</label>
+                                    <input type="text" class="form-control" id="name" name="name" value="{{ user.name }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">電子郵件</label>
+                                    <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">更新資料</button>
+                            </form>
+                        </div>
+    
+                        <!-- 修改密碼 -->
+                        <div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
+                            <form id="changePasswordForm">
+                                <div class="mb-3">
+                                    <label for="old-password" class="form-label">舊密碼</label>
+                                    <input type="password" class="form-control" id="old-password" name="old-password" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="new-password" class="form-label">新密碼</label>
+                                    <input type="password" class="form-control" id="new-password" name="new-password" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="confirm-password" class="form-label">確認新密碼</label>
+                                    <input type="password" class="form-control" id="confirm-password" name="confirm-password" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">更新密碼</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 </body>
 </html>
 
+<script>
+document.getElementById('updateProfileForm').addEventListener('submit', function (event) {
+    event.preventDefault();
 
+    const formData = new FormData(this);
+    const userId = {{ current_user.userID }}; // 用戶 ID
+
+    fetch(`/login/${userId}/update_profile`, {
+        method: 'POST',
+        body: formData,
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('資料更新成功！');
+                location.reload(); // 更新頁面
+            } else {
+                alert(data.message || '資料更新失敗！');
+            }
+        })
+        .catch(error => {
+            console.error('Error updating profile:', error);
+            alert('發生錯誤，請稍後再試！');
+        });
+});
+document.getElementById('changePasswordForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const formData = new FormData(this);
+    const userId = {{ current_user.userID }}; // 用戶 ID
+
+    fetch(`/login/${userId}/change_password`, {
+        method: 'POST',
+        body: formData,
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('密碼更新成功！');
+                document.getElementById('changePasswordForm').reset(); // 重置表單
+            } else {
+                alert(data.message || '密碼更新失敗！');
+            }
+        })
+        .catch(error => {
+            console.error('Error changing password:', error);
+            alert('發生錯誤，請稍後再試！');
+        });
+});
+
+</script>
+
+<script>
+
+    const notifications = {{ notifications | tojson }};
+    console.log(notifications); // 確保輸出的 JSON 結構正確
+
+    document.getElementById('notification-link').addEventListener('click', function (event) {
+        event.preventDefault();
+        const container = document.getElementById('notification-container');
+        const list = document.getElementById('notification-list');
+
+        if (container.style.display === 'none') {
+            list.innerHTML = '';
+
+            if (notifications.length === 0) {
+                list.innerHTML = '<li>沒有通知</li>';
+            } else {
+                notifications.forEach(notification => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        <div class="notification-title">${notification.title}</div>
+                        <div class="notification-content">${notification.content}</div>
+                    `;
+                    list.appendChild(listItem);
+                });
+            }
+
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
+    });
+
+    // Existing click event listener for closing notifications remains unchanged
+</script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const sidebar = document.querySelector('.sidebar');
@@ -315,7 +244,11 @@
                 fetch(`/filter_issues_by_category?category_id=${categoryId}`)
                     .then(response => response.json())
                     .then(data => {
+                        const policyList = document.querySelector('.policy-list');
+                        policyList.innerHTML = ''; // 清空舊內容
+
                         if (data.status === "success") {
+<<<<<<< Updated upstream
                             const policyList = document.querySelector('.policy-list');
                             policyList.innerHTML = '';
                             data.issues.forEach(issue => {
@@ -329,9 +262,34 @@
                                             <span>評論：${issue.comments_count}</span>
                                             <span>收藏：${issue.favorites_count}</span>
                                         </div>
+=======
+                            if (data.issues.length === 0) {
+                                // 如果沒有議題，顯示提示文字
+                                policyList.innerHTML = `
+                                    <div class="no-issues">
+                                        該類別目前沒有議題
+>>>>>>> Stashed changes
                                     </div>
                                 `;
-                            });
+                            } else {
+                                // 有議題時，生成議題列表
+                                data.issues.forEach(issue => {
+                                    policyList.innerHTML += `
+                                        <div class="policy-card">
+                                            <span class="policy-tag">${issue.category.name}</span>
+                                            <h2>
+                                                <a href="/issue/${issue.issueID}" class="issue-link">${issue.title}</a>
+                                            </h2>
+                                            <p>${issue.description}</p>
+                                            <div class="policy-stats">
+                                                <span>投票數：${issue.votes_count}</span>
+                                                <span>評論：${issue.comments_count}</span>
+                                                <span>收藏：${issue.favorites_count}</span>
+                                            </div>
+                                        </div>
+                                    `;
+                                });
+                            }
                         } else {
                             alert(data.message || "發生錯誤，無法載入議題！");
                         }
@@ -343,6 +301,8 @@
             });
         });
     });
+</script>
+<script>
     document.getElementById('search-button').addEventListener('click', function () {
     const keyword = document.getElementById('search-input').value.trim();
     if (!keyword) {
@@ -354,20 +314,26 @@
     fetch(`/search_issues?keyword=${encodeURIComponent(keyword)}`)
         .then(response => response.json())
         .then(data => {
-            // 獲取容器
             const policyList = document.querySelector('.policy-list');
             policyList.innerHTML = ''; // 清空舊的結果
 
             if (data.status === "success") {
                 if (data.issues.length === 0) {
-                    policyList.innerHTML = '<p>沒有找到相關議題。</p>';
+                    // 如果搜尋結果為空，顯示提示文字
+                    policyList.innerHTML = `
+                        <div class="no-issues">
+                            目前沒有相關議題
+                        </div>
+                    `;
                 } else {
-                    // 使用回傳的議題資料更新頁面
+                    // 有議題時，生成議題列表
                     data.issues.forEach(issue => {
                         policyList.innerHTML += `
                             <div class="policy-card">
                                 <span class="policy-tag">${issue.category.name}</span>
-                                <h2>${issue.title}</h2>
+                                <h2>
+                                    <a href="/issue/${issue.issueID}" class="issue-link">${issue.title}</a>
+                                </h2>
                                 <p>${issue.description}</p>
                                 <div class="policy-stats">
                                     <span>投票數：${issue.votes_count}</span>
@@ -386,9 +352,7 @@
             console.error("Error fetching issues:", error);
             alert("發生錯誤，請稍後再試！");
         });
-});
-
-
+    });
 </script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
