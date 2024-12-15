@@ -292,19 +292,31 @@ def new_issue(issueID=None):
             return redirect(url_for('issue.issue_detail', issueID=new_issue.issueID))
     elif action_1 == 'add':
 
-        session['issue_data'] = {
-            'title': title,
-            'description': description,
-            'selected_category': int(category_id),
+        if issueID:
 
-            'attachment_1': attachment_filename_1,
-            'attachment_2': attachment_filename_2,
-            'proposer_name': current_user.name
-        }
-        return redirect(url_for('issue.finalize_issue'))
+            session['issue_id'] = issueID  # 保存暫存的議題 ID
+            session['issue_data'] = {
+                'title': title,
+                'description': description,
+                'selected_category': int(category_id),
+                'attachment_1': attachment_filename_1,
+                'attachment_2': attachment_filename_2,
+                'proposer_name': current_user.name
+            }
+            return redirect(url_for('issue.finalize_issue'))
+        else:
+            # 新建情況，直接存入 session
+            session['issue_data'] = {
+                'title': title,
+                'description': description,
+                'selected_category': int(category_id),
+                'attachment_1': attachment_filename_1,
+                'attachment_2': attachment_filename_2,
+                'proposer_name': current_user.name
+            }
+            return redirect(url_for('issue.finalize_issue'))
 
-    return redirect(url_for('issue.process_issue'))
-
+    return redirect(url_for('issue.new_issue'))
 
 @issue_bp.route('/finalize_issue', methods=['GET', 'POST'])
 def finalize_issue():
@@ -322,22 +334,38 @@ def finalize_issue():
         # 儲存最終資料到資料庫
         if action == 'add':
             # 儲存議題
-            new_issue = Issue(
-                title=title,
-                description=description,
-                categoryID=category_id,
-                userID=current_user.userID,
-                attachment_1=attachment_1,
-                attachment_2=attachment_2,
-                publishTime=datetime.now(),
-                deadline=datetime.now() + timedelta(days=90),
-                status=1
-            )
-
-            db.session.add(new_issue)
-            db.session.commit()
-            flash('議題成功新增!', 'success')
-            return redirect(url_for('issue.issue_detail', issueID=new_issue.issueID))
+            issue_id = session.get('issue_id')
+            if issue_id:
+                # 更新原來的暫存議題
+                issue = Issue.query.get_or_404(issue_id)
+                issue.title = title
+                issue.description = description
+                issue.categoryID = category_id
+                issue.attachment_1 = attachment_1
+                issue.attachment_2 = attachment_2
+                issue.publishTime = datetime.now()
+                issue.deadline = datetime.now() + timedelta(days=90)
+                issue.status = 1  # 設為公開狀態
+                db.session.commit()
+                flash('暫存議題已成功更新並發布！', 'success')
+                return redirect(url_for('issue.issue_detail', issueID=issue.issueID))
+            else:
+                # 創建新議題
+                new_issue = Issue(
+                    title=title,
+                    description=description,
+                    categoryID=category_id,
+                    userID=current_user.userID,
+                    attachment_1=attachment_1,
+                    attachment_2=attachment_2,
+                    publishTime=datetime.now(),
+                    deadline=datetime.now() + timedelta(days=90),
+                    status=1  # 設為公開狀態
+                )
+                db.session.add(new_issue)
+                db.session.commit()
+                flash('議題成功新增!', 'success')
+                return redirect(url_for('issue.issue_detail', issueID=new_issue.issueID))
 
         return redirect(url_for('login.index'))  # 取消或其他操作
     issue_data = session.get('issue_data')
