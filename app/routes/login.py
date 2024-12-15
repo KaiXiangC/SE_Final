@@ -47,8 +47,8 @@ def index():
     admin_raw_notifications = Notification.get_admin_notifications()
     admin_notifications = [n.to_dict() for n in admin_raw_notifications]
 
-    # 取得議題、類別等...
-    issues = Issue.query.filter_by(status=1).all()
+    issues = Issue.query.filter_by(status=True, is_review=True).all()
+
     for issue in issues:
         issue.votes_count = len(Issue.get_votes(issue.issueID))
         issue.comments_count = len(Issue.get_comments(issue.issueID))
