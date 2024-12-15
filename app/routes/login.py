@@ -144,7 +144,7 @@ def filter_issues_by_category():
         return jsonify({"status": "error", "message": "No category_id provided"}), 400
 
     # 使用 Category 取得該類別下的所有議題
-    issues = Issue.query.filter_by(categoryID=category_id, status=1).all()
+    issues = Issue.query.filter_by(categoryID=category_id, status=True, is_review=True).all()
 
     # 將議題轉成可序列化的資料(JSON)
     issues_data = [{
