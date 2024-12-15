@@ -70,7 +70,7 @@ header {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 30px; /* 設置文字大小 */
+    font-size: 2em; /* 設置文字大小 */
     font-weight: bold; /* 設置文字加粗 */
     text-align: center; /* 設置文字居中 */
     transition: background-color 0.3s;
