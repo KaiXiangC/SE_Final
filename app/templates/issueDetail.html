@@ -6,8 +6,8 @@
     <title>議題詳情</title>
     <style>
         :root {
-            --primary-color: #4CAF50;
-            --secondary-color: #2ecc71;
+            --primary-color: #2e7d32;
+            --secondary-color: #4CAF50;
             --background-color: #f4f4f4;
             --text-color: #333;
             --border-radius: 8px;
@@ -129,15 +129,15 @@
         }
 
         .vote-button:hover {
-            background-color: #f39c12;
+            background-color: #333;
         }
 
         .favorite-button {
-            background-color: #f44336;
+            background-color: #FF4444;
         }
 
         .favorite-button:hover {
-            background-color: #f39c12;
+            background-color: #333;
         }
 
         .images-container {
@@ -272,7 +272,7 @@
         }
 
         .submit-button:hover {
-            background-color: #2980b9;
+            background-color: #333;
         }
 
         @media (max-width: 600px) {
@@ -298,7 +298,7 @@
 </head>
 <body>
     <header>
-        <a href="{{ url_for('login.index') }}">返回首頁</a>
+        <a href="{{ url_for('login.index') }}">返回</a>
     </header>
 
     <div class="content">
