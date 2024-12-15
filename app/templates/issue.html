@@ -14,6 +14,21 @@
             height: 100vh;
             margin: 0;
         }
+        a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+            padding: 8px 15px;
+            border: 1px solid white;
+            border-radius: 4px;
+            background-color: transparent;
+            transition: all 0.3s ease;
+            width: 5%;
+        }
+        a:hover {
+            background-color: white;
+            color: #2c5282;
+        }
 
         .modal {
             background-color: #fff4cc;
@@ -127,7 +142,7 @@
             <label for="description">內容描述</label>
             <textarea id="description" name="description" placeholder="{{ issue.description }}" disabled>{{ issue.description }}</textarea>
 
-            <label for="category">變更類別</label>
+            <label for="category">類別</label>
             {% for category in categories %}
             {% if category.categoryID == issue.categoryID %}
             <input type="text" id="category" name="category" placeholder="{{ category.name }}" disabled>
