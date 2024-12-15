@@ -13,6 +13,7 @@ login_bp = Blueprint('login', __name__)
 def login():
         """登入"""
         if request.method == 'POST':
+            
             email = request.form['email']
             password = request.form['password']
             

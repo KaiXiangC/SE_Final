@@ -9,13 +9,17 @@ noti_bp = Blueprint('notification', __name__)
 def view_notifications():
     # 支援標題搜尋
     search_title = request.args.get('q', '').strip()
-    notifications = Notification.get_notifications_by_title(search_title)
+    # 根據目前登入的使用者 (current_user) 和搜尋標題過濾公告
+    notifications = Notification.query.filter(
+        Notification.userID == current_user.userID,  # 限制公告屬於當前使用者
+        Notification.title.ilike(f"%{search_title}%")  # 支援標題模糊搜尋 (大小寫不敏感)
+    ).order_by(Notification.createTime.desc()).all()  # 按建立時間排序
 
-    # 顯示主頁面
+    # 顯示公告主頁面
     return render_template('notifications.html', 
                            notifications=notifications, 
                            search_title=search_title)
-
+    
 
 @noti_bp.route('/create', methods=['POST'])
 @login_required
