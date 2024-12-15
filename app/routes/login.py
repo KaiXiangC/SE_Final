@@ -139,11 +139,7 @@ def filter_issues_by_category():
         "description": i.description,
         "votes_count": len(i.votes),
         "comments_count": len(i.comments),
-<<<<<<< Updated upstream
-        "favorites_count": len(i.favorites),
-=======
         "favorites_count": len(i.favorites),    
->>>>>>> Stashed changes
         "publishTime": i.publishTime.isoformat() if i.publishTime else None,
         "deadline": i.deadline.isoformat() if i.deadline else None,
         "is_review": i.is_review,
