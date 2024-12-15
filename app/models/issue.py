@@ -46,9 +46,18 @@ class Issue(db.Model):
         return Favorite.query.filter_by(issueID=issue_id).all()
     
     @classmethod
-    def get_all_issues(cls):
-        return cls.query.all()
-    
+    def get_all_issues(cls, exclude_uncategorized=True):
+        from app.models.category import Category
+
+        """
+        Get all issues, optionally excluding issues in the 'Uncategorized' category.
+        """
+        query = cls.query
+        if exclude_uncategorized:
+            uncategorized_category_id = Category.get_uncategorized_category_id()
+            if uncategorized_category_id:
+                query = query.filter(cls.categoryID != uncategorized_category_id)
+        return query.all()
     @classmethod
     def get_posted_issues_by_user(cls, user_id):
         from app.models import Issue, Comment, Favorite, Vote

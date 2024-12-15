@@ -47,7 +47,13 @@ def index():
     admin_raw_notifications = Notification.get_admin_notifications()
     admin_notifications = [n.to_dict() for n in admin_raw_notifications]
 
-    issues = Issue.query.filter_by(status=True, is_review=True).all()
+    uncategorized_category_id = Category.get_uncategorized_category_id()
+
+    issues_query = Issue.query.filter_by(status=True, is_review=True)
+    if uncategorized_category_id:
+        issues_query = issues_query.filter(Issue.categoryID != uncategorized_category_id)
+    
+    issues = issues_query.all()
 
     for issue in issues:
         issue.votes_count = len(Issue.get_votes(issue.issueID))
@@ -179,18 +185,22 @@ def change_password(user_id):
     if not check_password_hash(user.password, old_password):
         return jsonify({'status': 'error', 'message': '舊密碼不正確'}), 400
 
+    # 1. 檢查新密碼是否與舊密碼相同
+    if old_password == new_password:
+        return jsonify({'status': 'error', 'message': '新密碼不能與舊密碼相同'}), 400
+
+    # 檢查新密碼與確認密碼是否一致
     if new_password != confirm_password:
         return jsonify({'status': 'error', 'message': '新密碼與確認密碼不一致'}), 400
 
+    # 更新密碼
     user.password = generate_password_hash(new_password)
-
     try:
         db.session.commit()
         return jsonify({'status': 'success', 'message': '密碼已更新'})
-    except Exception as e:
+    except Exception:
         db.session.rollback()
         return jsonify({'status': 'error', 'message': '密碼更新失敗'}), 500
-
 
 @login_bp.route('/login/<int:user_id>/update_profile', methods=['POST'])
 @login_required
