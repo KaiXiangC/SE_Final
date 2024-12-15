@@ -10,16 +10,16 @@ from app.models import Vote, Category, Comment, Issue, User, Favorite, Notificat
 from flask import jsonify
 from .. import db
 
-
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 issue_bp = Blueprint('issue', __name__)
 UPLOAD_FOLDER = os.path.join('app', 'static', 'img')
+
 
 @issue_bp.route('/<int:issueID>')
 def issue_detail(issueID):
     # 查詢議題
     issue = Issue.query.get_or_404(issueID)
-    if issue.status == 0:
+    if issue.status == 0 or issue.is_review == 0:
         flash('該議題尚未公開，無法檢視。', 'warning')
         return redirect(url_for('login.index'))  # 導回首頁
     # 格式化剩餘時間
@@ -38,9 +38,9 @@ def issue_detail(issueID):
     comments = Comment.query.filter_by(issueID=issueID).order_by(Comment.commentTime.desc()).all()
 
     vote_count = Vote.query.filter_by(issueID=issueID).count()
-    if vote_count >=5000 and days_left < 0 :
+    if vote_count >= 5000 and days_left < 0:
         vote_status = '已通過'
-    elif vote_count <5000 and days_left < 0:
+    elif vote_count < 5000 and days_left < 0:
         vote_status = '未通過'
     else:
         vote_status = '附議中'
@@ -131,28 +131,6 @@ def add_comment(issueID):
     return jsonify({'status': 'success', 'message': '評論已提交！'})
 
 
-# @issue_bp.route('/<int:issueID>/vote', methods=['POST'])
-# @login_required
-# def vote(issueID):
-#     # 確認用戶是否已經投票
-#     existing_vote = Vote.query.filter_by(userID=current_user.userID, issueID=issueID).first()
-#     if existing_vote:
-#         return jsonify({'status': 'error', 'message': '你已經投過票了！'})
-#
-#
-#     # 創建新的投票記錄
-#     new_vote = Vote(
-#         userID=current_user.userID,
-#         issueID=issueID,
-#         voteOption='1',
-#         voteTime=datetime.now()
-#     )
-#
-#     db.session.add(new_vote)
-#     db.session.commit()
-#
-#     return jsonify({'status': 'success', 'message': '投票成功！'})
-
 @issue_bp.route('/vote/<int:issueID>', methods=['POST'])
 @login_required
 def vote(issueID):
@@ -194,6 +172,7 @@ def vote(issueID):
             'status': 'error',
             'message': str(e)
         }), 500
+
 
 @issue_bp.route('/favorite/<int:issueID>', methods=['POST'])
 @login_required
@@ -237,19 +216,6 @@ def favorite(issueID):
             'message': str(e)
         }), 500
 
-# @issue_bp.route('/<int:issueID>/cancel_vote', methods=['POST'])
-# @login_required
-# def cancel_vote(issueID):
-#     # 查詢用戶是否已經投票
-#     existing_vote = Vote.query.filter_by(userID=current_user.userID, issueID=issueID).first()
-#     if not existing_vote:
-#         return jsonify({'status': 'error', 'message': '你還沒有投票！'})
-#
-#     # 刪除投票
-#     db.session.delete(existing_vote)
-#     db.session.commit()
-#
-#     return jsonify({'status': 'success', 'message': '投票已取消！'})
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -340,13 +306,8 @@ def new_issue(issueID=None):
     return redirect(url_for('issue.process_issue'))
 
 
-
-
-
-
 @issue_bp.route('/finalize_issue', methods=['GET', 'POST'])
 def finalize_issue():
-
     if request.method == 'POST':
         action = request.form.get('action')
         title = request.form.get('title')  # 從表單中獲取
@@ -378,8 +339,6 @@ def finalize_issue():
             flash('議題成功新增!', 'success')
             return redirect(url_for('issue.issue_detail', issueID=new_issue.issueID))
 
-
-
         return redirect(url_for('login.index'))  # 取消或其他操作
     issue_data = session.get('issue_data')
     if not issue_data:
@@ -396,72 +355,3 @@ def finalize_issue():
         selected_category=issue_data['selected_category'],
         proposer_name=issue_data['proposer_name']
     )
-
-# @issue_bp.route('/issue/<int:issueID>/comment', methods=['POST'])
-# @login_required
-# def add_comment(issueID):
-#     # 獲取表單內容
-#     content = request.form.get('comment')
-#     if not content:
-#         flash("評論內容不能為空", "warning")
-#         return redirect(url_for('issue.issue_detail', issueID=issueID))
-#
-#     # 創建新評論
-#     new_comment = Comment(
-#         userID=current_user.userID,  # 使用 current_user 的 ID
-#         issueID=issueID,
-#         content=content,
-#         commentTime=datetime.now(),
-#         is_review=False  # 默認為未審核
-#     )
-#
-#     db.session.add(new_comment)
-#     db.session.commit()
-#     flash("評論已提交！", "success")
-#
-#     return redirect(url_for('issue.issue_detail', issueID=issueID))
-# @issue_bp.route('/issue/<int:issueID>/vote', methods=['POST'])
-# @login_required
-# def vote(issueID):
-#     # 確認用戶是否已經投票
-#     existing_vote = Vote.query.filter_by(userID=current_user.userID, issueID=issueID).first()
-#     if existing_vote:
-#         flash("你已經投過票了！", "warning")
-#         return redirect(url_for('issue.issue_detail', issueID=issueID))
-#
-#     # 獲取用戶的選擇
-#     # vote_option = request.form.get('vote_option')
-#     # if not vote_option:
-#     #     flash("請選擇一個投票選項！", "warning")
-#     #     return redirect(url_for('issue.issue_detail', issueID=issueID))
-#
-#     # 創建新的投票記錄
-#     new_vote = Vote(
-#         userID=current_user.userID,
-#         issueID=issueID,
-#         voteOption='vote_option',
-#         voteTime=datetime.now()
-#     )
-#
-#     db.session.add(new_vote)
-#     db.session.commit()
-#
-#     flash("投票成功！", "success")
-#     return redirect(url_for('issue.issue_detail', issueID=issueID))
-#
-#
-# @issue_bp.route('/issue/<int:issueID>/cancel_vote', methods=['POST'])
-# @login_required
-# def cancel_vote(issueID):
-#     # 查找用戶的投票記錄
-#     existing_vote = Vote.query.filter_by(userID=current_user.userID, issueID=issueID).first()
-#     if not existing_vote:
-#         flash("你還沒有投票！", "warning")
-#         return redirect(url_for('issue.issue_detail', issueID=issueID))
-#
-#     # 刪除用戶的投票記錄
-#     db.session.delete(existing_vote)
-#     db.session.commit()
-#
-#     flash("投票已取消！", "success")
-#     return redirect(url_for('issue.issue_detail', issueID=issueID))
