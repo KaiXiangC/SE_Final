@@ -125,7 +125,7 @@ def delete_issue(issue_id):
 @login_required
 def propose_category_manage():
         """議題類別管理"""
-        categories = Category.query.filter(Category.name != " ").all()
+        categories = Category.query.filter(Category.name != "無類別").all()
         return render_template('propose_category_manage.html', categories=categories)
 
 @admin_bp.route('/add_category', methods=['POST'])
