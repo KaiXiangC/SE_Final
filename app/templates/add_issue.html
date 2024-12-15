@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -142,13 +142,13 @@
         <!-- 議題標題 -->
         <div>
             <label for="title">議題標題：</label>
-            <textarea type="text" id="title" name="title" required>{{ issue.title if issue else '' }}</textarea>
+            <textarea type="text" id="title" name="title" >{{ issue.title if issue else '' }}</textarea>
         </div>
 
         <!-- 內容描述 -->
         <div>
             <label for="description">內容描述：</label>
-            <textarea type="description" id="description" name="description" required>{{ issue.description if issue else '' }}</textarea>
+            <textarea type="description" id="description" name="description" >{{ issue.description if issue else '' }}</textarea>
         </div>
 
         <!-- 選擇類別 -->
@@ -181,6 +181,12 @@
             const title = document.getElementById('title').value.trim();
             const description = document.getElementById('description').value.trim();
 
+            // 判斷標題是否為空或僅包含空格
+            if (title === '') {
+                alert('議題標題不能為空或只包含空格！');
+                event.preventDefault(); // 阻止提交
+                return;
+            }
 
             // 判斷描述是否為空或僅包含空格
             if (description === '') {
@@ -193,27 +199,7 @@
             const action = event.submitter.value; // 獲取觸發提交的按鈕值
             if (action === 'add') {
                 console.log('新增議題');
-            } else if (action === 'save') {
-                console.log('暫存議題');
-            }
-
-            // 判斷標題是否為空或僅包含空格
-            if (title === ''&& action === 'add') {
-                alert('議題標題不能為空或只包含空格！');
-                event.preventDefault(); // 阻止提交
-                return;
-            }
-
-
-            // 判斷描述是否為空或僅包含空格
-            if (description === '' && action === 'add') {
-                alert('內容描述不能為空或只包含空格！');
-                event.preventDefault(); // 阻止提交
-                return;
-            }
-
-            // 根據按鈕值區分操作（可選）
-
+            } 
         });
     </script>
 </body>
