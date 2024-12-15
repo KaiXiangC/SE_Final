@@ -228,9 +228,8 @@
 
                                                 // 根據 is_expired 設置類別
                         var liClass = issue.is_expired ? 'expired' : '';
-
                         var url;
-                        if (issue.status === 0) {
+                        if (issue.status === false) {
                             // 暫存狀態: 前往 process_issue 路由
                             url = '/issue/process_issue/' + issue.issueID;
                         } else {
