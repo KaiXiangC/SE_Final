@@ -226,12 +226,12 @@ def allowed_file(filename):
 @login_required
 def new_issue(issueID=None):
     if request.method == 'GET':
+        print("request!")
         categories = Category.query.filter(Category.name != "無類別").all() # 查詢所有類別
         if issueID:
             issue = Issue.query.get_or_404(issueID)
             if issue.userID != current_user.userID or issue.status != 0:
                 flash('這個議題無法編輯', 'warning')
-                print("aaa")
                 return redirect(url_for('login.index'))  # 如果不是該用戶的暫存議題，則跳轉
             return render_template('add_issue.html', categories=categories, issue=issue)
         else:

@@ -6,7 +6,6 @@ from app.models.favorite import Favorite
 from app.models.vote import Vote
 from app import db
 from datetime import datetime
-
 hist_bp = Blueprint('hist', __name__)
 
 @hist_bp.route('/history', methods=['GET'])
@@ -24,16 +23,21 @@ def history():
     issues_info = []
     for issue in all_issues:
         icons = []
+        # 根據issue的status及是否為本人userID判定icon
         if issue.userID == user_id:
-            icons.append('<img src="https://img.icons8.com/?size=100&id=9_NQcM4E-KeP&format=png&color=000000">')#創建
-        if issue.userID == user_id:
-            icons.append('<img src="https://img.icons8.com/?size=100&id=42862&format=png&color=000000">')#暫存
+            if issue.status == 1:
+                # 創建icon
+                icons.append('<img src="https://img.icons8.com/?size=100&id=9_NQcM4E-KeP&format=png&color=000000">')
+            elif issue.status == 0:
+                # 暫存icon
+                icons.append('<img src="https://img.icons8.com/?size=100&id=42862&format=png&color=000000">')
+
         if issue in commented_issues:
-            icons.append('<img src="https://img.icons8.com/?size=100&id=WK5zjEkjX6HF&format=png&color=000000">')#留言
+            icons.append('<img src="https://img.icons8.com/?size=100&id=WK5zjEkjX6HF&format=png&color=000000">')
         if issue in voted_issues:
             icons.append('<img src="https://img.icons8.com/?size=100&id=GiNJOdKO-eaC&format=png&color=000000">')
         if issue in favorited_issues:
-            icons.append('<img src="https://img.icons8.com/?size=100&id=8ggStxqyboK5&format=png&color=000000">')#星星
+            icons.append('<img src="https://img.icons8.com/?size=100&id=8ggStxqyboK5&format=png&color=000000">')
 
         preview_length = 50
         preview = issue.description[:preview_length] + '...' if len(issue.description) > preview_length else issue.description
@@ -44,10 +48,12 @@ def history():
             'title': issue.title,
             'preview': preview,
             'icons': ' '.join(icons),
-            'is_expired': is_expired  # 加入截止狀態
+            'is_expired': is_expired,
+            'status': issue.status
         })
 
     return render_template('history.html', issues=issues_info)
+
 
 @hist_bp.route('/history/filter', methods=['GET'])
 def history_filter():
@@ -59,8 +65,13 @@ def history_filter():
     favorited_issues = Favorite.get_favorited_issues_by_user(user_id)
     voted_issues = Vote.get_voted_issues_by_user(user_id)
 
-    if filter_type == 'created':
-        target_issues = posted_issues
+    # 新增tmp及created篩選條件
+    if filter_type == 'tmp':
+        # 選擇issue.status為0且userID等於user_id的議題
+        target_issues = [issue for issue in posted_issues if issue.status == 0 and issue.userID == user_id]
+    elif filter_type == 'created':
+        # 選擇issue.status為1且userID等於user_id的議題
+        target_issues = [issue for issue in posted_issues if issue.status == 1 and issue.userID == user_id]
     elif filter_type == 'commented':
         target_issues = commented_issues
     elif filter_type == 'favorited':
@@ -74,10 +85,15 @@ def history_filter():
     issues_data = []
     for issue in target_issues:
         icons = []
+        # 根據issue的status及是否為本人userID判定icon
         if issue.userID == user_id:
-            icons.append('<img src="https://img.icons8.com/?size=100&id=9_NQcM4E-KeP&format=png&color=000000">')
-        if issue.userID == user_id:
-            icons.append('<img src="https://img.icons8.com/?size=100&id=42862&format=png&color=000000">')
+            if issue.status == 1:
+                # 創建icon
+                icons.append('<img src="https://img.icons8.com/?size=100&id=42862&format=png&color=000000">')
+            elif issue.status == 0:
+                # 暫存icon
+                icons.append('<img src="https://img.icons8.com/?size=100&id=9_NQcM4E-KeP&format=png&color=000000">')
+
         if issue in commented_issues:
             icons.append('<img src="https://img.icons8.com/?size=100&id=WK5zjEkjX6HF&format=png&color=000000">')
         if issue in voted_issues:
@@ -95,7 +111,8 @@ def history_filter():
             'title': issue.title,
             'preview': preview,
             'icons': icons,
-            'is_expired': is_expired  # 新增這一行
+            'is_expired': is_expired,
+            'status': issue.status
         })
 
     return jsonify(issues_data)

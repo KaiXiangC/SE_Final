@@ -171,11 +171,17 @@
         <ul class="issue-list" id="issueList">
             {% for issue in issues %}
             <li class="{% if issue.is_expired %}expired{% endif %}">
-                <a href="{{ url_for('issue.issue_detail', issueID=issue.issueID) }}">{{ issue.title }}</a>
+                {% if issue.status == 0 %}
+                    <!-- 若為暫存狀態時，導向 process_issue 路由 -->
+                    <a href="{{ url_for('issue.new_issue', issueID=issue.issueID) }}">{{ issue.title }}</a>
+                {% else %}
+                    <!-- 若為創建完成狀態時，導向 issue_detail 路由 -->
+                    <a href="{{ url_for('issue.issue_detail', issueID=issue.issueID) }}">{{ issue.title }}</a>
+                {% endif %}
                 <div class="issue-preview">{{ issue.preview }}</div>
                 <div class="issue-icons">{{ issue.icons|safe }}</div>
             </li>
-            {% endfor %}
+            {% endfor %}            
         </ul>
         
         
@@ -223,11 +229,20 @@
                                                 // 根據 is_expired 設置類別
                         var liClass = issue.is_expired ? 'expired' : '';
 
+                        var url;
+                        if (issue.status === 0) {
+                            // 暫存狀態: 前往 process_issue 路由
+                            url = '/issue/process_issue/' + issue.issueID;
+                        } else {
+                            // 已創建狀態: 前往 issue_detail 路由
+                            url = '/issue/' + issue.issueID;
+                        }
+
                         var li = '<li class="' + liClass + '">' +
-                                    '<a href="/issue/' + issue.issueID + '">' + issue.title + '</a>' +
+                                    '<a href="' + url + '">' + issue.title + '</a>' +
                                     '<div class="issue-preview">' + issue.preview + '</div>' +
                                     '<div class="issue-icons">' + iconsHtml + '</div>' +
-                                 '</li>';
+                                '</li>';
                         $list.append(li);
                     });
                 },
