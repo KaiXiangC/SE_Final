@@ -226,7 +226,7 @@ def allowed_file(filename):
 @login_required
 def new_issue(issueID=None):
     if request.method == 'GET':
-        categories = Category.query.all()  # 查詢所有類別
+        categories = Category.query.filter(Category.name != "無類別").all() # 查詢所有類別
         if issueID:
             issue = Issue.query.get_or_404(issueID)
             if issue.userID != current_user.userID or issue.status != 0:
@@ -344,7 +344,7 @@ def finalize_issue():
     if not issue_data:
         flash('無法找到議題資料，請重新提交。', 'warning')
         return redirect(url_for('issue.new_issue'))
-    categories = Category.query.all()
+    categories = Category.query.filter(Category.name != "無類別").all()
     return render_template(
         'finish_issue.html',
         title=issue_data['title'],
