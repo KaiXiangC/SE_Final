@@ -248,27 +248,11 @@ document.getElementById('changePasswordForm').addEventListener('submit', functio
                         policyList.innerHTML = ''; // 清空舊內容
 
                         if (data.status === "success") {
-<<<<<<< Updated upstream
-                            const policyList = document.querySelector('.policy-list');
-                            policyList.innerHTML = '';
-                            data.issues.forEach(issue => {
-                                policyList.innerHTML += `
-                                    <div class="policy-card">
-                                        <span class="policy-tag">${issue.category.name}</span>
-                                        <h2>${issue.title}</h2>
-                                        <p>${issue.description}</p>
-                                        <div class="policy-stats">
-                                            <span>投票數：${issue.votes_count}</span>
-                                            <span>評論：${issue.comments_count}</span>
-                                            <span>收藏：${issue.favorites_count}</span>
-                                        </div>
-=======
                             if (data.issues.length === 0) {
                                 // 如果沒有議題，顯示提示文字
                                 policyList.innerHTML = `
                                     <div class="no-issues">
                                         該類別目前沒有議題
->>>>>>> Stashed changes
                                     </div>
                                 `;
                             } else {
