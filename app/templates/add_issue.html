@@ -125,6 +125,7 @@
         .progress span {
             font-weight: bold;
         }
+
     </style>
 </head>
 <body>
@@ -164,10 +165,20 @@
         </div>
 
         <!-- 附加圖片 -->
-        <div>
-            <label for="attachment">附加照片：</label>
-            <input type="file" id="attachment" name="attachment" accept="image/*">
-            <input type="file" id="attachment_2" name="attachment_2" accept="image/*">
+        <label for="attachment" style="text-align: left; display: block;">附加照片：</label>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <!-- 左側的檔案上傳 -->
+
+            <div style="flex: 1; text-align: center; margin-right: 10px;">
+                <input type="file" id="attachment" name="attachment" accept="image/*">
+                <div id="attachment-preview" style="margin-top: 10px; margin-bottom: 10px;"></div> <!-- 預覽區域 -->
+            </div>
+
+            <!-- 右側的檔案上傳 -->
+            <div style="flex: 1; text-align: center; margin-left: 10px;">
+                <input type="file" id="attachment_2" name="attachment_2" accept="image/*">
+                <div id="attachment_2-preview" style="margin-top: 10px; margin-bottom: 10px;"></div> <!-- 預覽區域 -->
+            </div>
         </div>
 
         <!-- 操作按鈕 -->
@@ -176,30 +187,67 @@
         <button type="button" onclick="location.href='/index'">取消</button>
     </form>
     <script>
+        function setupFilePreview(inputId, previewContainerId) {
+            const inputElement = document.getElementById(inputId);
+            const previewContainer = document.getElementById(previewContainerId);
+
+            inputElement.addEventListener('change', function (event) {
+                const file = event.target.files[0];
+                if (file) {
+                    // 清除之前的預覽
+                    previewContainer.innerHTML = '';
+
+                    // 創建圖片預覽
+                    const preview = document.createElement('img');
+                    preview.src = URL.createObjectURL(file);
+                    preview.style.maxWidth = '200px';
+                    preview.style.marginTop = '10px';
+                    previewContainer.appendChild(preview);
+
+                    // 釋放 URL 資源
+                    preview.onload = () => URL.revokeObjectURL(preview.src);
+                } else {
+                    // 如果沒有選擇文件，清空預覽
+                    previewContainer.innerHTML = '';
+                }
+            });
+        }
+
+        // 當頁面加載完成後執行
+        document.addEventListener('DOMContentLoaded', function () {
+            setupFilePreview('attachment', 'attachment-preview');
+            setupFilePreview('attachment_2', 'attachment_2-preview');
+        });
         document.getElementById('issue-form').addEventListener('submit', function (event) {
             // 獲取標題和描述的值
             const title = document.getElementById('title').value.trim();
             const description = document.getElementById('description').value.trim();
 
+
+            const action = event.submitter.value; // 獲取觸發提交的按鈕值
+            if (action === 'add') {
+                console.log('新增議題');
+            } else if (action === 'save') {
+                console.log('暫存議題');
+            }
+
             // 判斷標題是否為空或僅包含空格
-            if (title === '') {
+            if (title === ''&& action === 'add') {
                 alert('議題標題不能為空或只包含空格！');
                 event.preventDefault(); // 阻止提交
                 return;
             }
 
+
             // 判斷描述是否為空或僅包含空格
-            if (description === '') {
+            if (description === '' && action === 'add') {
                 alert('內容描述不能為空或只包含空格！');
                 event.preventDefault(); // 阻止提交
                 return;
             }
-            
+
+
             // 根據按鈕值區分操作（可選）
-            const action = event.submitter.value; // 獲取觸發提交的按鈕值
-            if (action === 'add') {
-                console.log('新增議題');
-            } 
         });
     </script>
 </body>
