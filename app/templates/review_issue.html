@@ -16,18 +16,18 @@
         }
         a {
             text-decoration: none;
-            color: white;
             font-size: 16px;
             padding: 8px 15px;
-            border: 1px solid white;
+            border: 1px solid #4A4A4A;
             border-radius: 4px;
-            background-color: transparent;
             transition: all 0.3s ease;
             width: 5%;
+            background-color: #4A4A4A;
+            color: white;
         }
         a:hover {
-            background-color: white;
-            color: #2c5282;
+            background-color: transparent;
+            color: #4A4A4A;
         }
 
         .modal {
@@ -91,7 +91,7 @@
 
         .buttons {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
         }
 
         button {
@@ -104,8 +104,11 @@
         }
 
         .save {
-            background-color: #4CAF50;
+            background-color: #2e7d32;
             color: white;
+        }
+        .save:hover {
+            background-color: #4CAF50;
         }
 
         .delete {
@@ -150,7 +153,7 @@
                 </option>
                 {% endfor %}
             </select>
-            <div class="buttons">
+            <div class="buttons confirmB">
                 <button type="submit" class="save">確認修改</button>           
             </div>
         </form>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>編輯議題</title>
+    <title>審核議題</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,18 +16,18 @@
         }
         a {
             text-decoration: none;
-            color: white;
             font-size: 16px;
             padding: 8px 15px;
-            border: 1px solid white;
+            border: 1px solid #4A4A4A;
             border-radius: 4px;
-            background-color: transparent;
             transition: all 0.3s ease;
             width: 5%;
+            background-color: #4A4A4A;
+            color: white;
         }
         a:hover {
-            background-color: white;
-            color: #2c5282;
+            background-color: transparent;
+            color: #4A4A4A;
         }
 
         .modal {
@@ -71,6 +71,11 @@
             margin-bottom: 5px;
             display: block;
         }
+        input{
+            padding: 10px;
+            border-radius: 10px;
+            background-color: #eee;
+        }
 
         textarea, select {
             border: none;
@@ -81,19 +86,20 @@
             resize: none;
             overflow: hidden; /* 隱藏滾動條 */
             box-sizing: border-box; /* 包含內邊距與邊框 */
+            background-color: #eee;
         }
 
         textarea {
             min-height: 50px; /* 設定最小高度 */
             max-height: 300px; /* 限制最大高度 */
             overflow-y: auto; /* 如果內容過多，則出現滾動條 */
+            background-color: #eee;
         }
 
         .buttons {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
         }
-
         button {
             margin-top: 20px;
             padding: 12px 25px;
@@ -104,13 +110,18 @@
         }
 
         .save {
-            background-color: #4CAF50;
+            background-color: #2e7d32;
             color: white;
         }
-
+        .save:hover{
+            background-color: #4CAF50;
+        }
         .delete {
-            background-color: #f44336;
+            background-color: #FF4444;
             color: white;
+        }
+        .delete:hover{
+            background-color: #f44336;
         }
     </style>
     <script>
@@ -153,7 +164,7 @@
                 <button type="submit" class="save">審核議題</button>           
             </div>
         </form>
-        <form action="{{ url_for('admin.delete_issue', issue_id=issue.issueID) }}" method="POST">
+        <form class="buttons" action="{{ url_for('admin.delete_issue', issue_id=issue.issueID) }}" method="POST">
             <button type="submit" class="delete">刪除議題</button>
         </form>
     </div>
