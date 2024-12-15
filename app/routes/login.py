@@ -123,12 +123,16 @@ def filter_issues_by_category():
 
     # 使用 Category 取得該類別下的所有議題
     issues = Issue.query.filter_by(categoryID=category_id, status=1).all()
+
     # 將議題轉成可序列化的資料(JSON)
     issues_data = [{
         "issueID": i.issueID,
         "title": i.title,
         "category": {"name": i.category.name},
         "description": i.description,
+        "votes_count": len(i.votes),
+        "comments_count": len(i.comments),
+        "favorites_count": len(i.favorites),
         "publishTime": i.publishTime.isoformat() if i.publishTime else None,
         "deadline": i.deadline.isoformat() if i.deadline else None,
         "is_review": i.is_review,
