@@ -89,9 +89,18 @@ def search_issues():
         }), 400
 
     try:
-        # 搜尋標題包含關鍵字的議題
-        issues = Issue.query.filter(Issue.title.like(f"%{keyword}%"),Issue.status == 1).all()
+        # 取得「無類別」的 categoryID
+        uncategorized_category_id = Category.get_uncategorized_category_id()
 
+        # 搜尋標題包含關鍵字且排除「無類別」的議題
+        query = Issue.query.filter(
+            Issue.title.like(f"%{keyword}%"),
+            Issue.status == 1
+        )
+        if uncategorized_category_id:
+            query = query.filter(Issue.categoryID != uncategorized_category_id)
+
+        issues = query.all()
         # 如果沒找到議題
         if not issues:
             return jsonify({
