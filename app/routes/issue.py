@@ -1,6 +1,6 @@
 import os
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from flask_login import current_user, login_required
 from datetime import datetime, timedelta
 
@@ -279,9 +279,9 @@ def new_issue(issueID=None):
     attachment = request.files.get('attachment')
     attachment_2 = request.files.get('attachment_2')
 
-    if not title or not description or not category_id:
-        flash('所有必填欄位都必須填寫！', 'warning')
-        return redirect(url_for('issue.process_issue', issueID=issueID))
+    # if not title or not description or not category_id:
+    #     flash('所有必填欄位都必須填寫！', 'warning')
+    #     return redirect(url_for('issue.process_issue', issueID=issueID))
 
     def save_attachment(attachment):
         if attachment and allowed_file(attachment.filename):
@@ -324,18 +324,21 @@ def new_issue(issueID=None):
             db.session.commit()
             flash('議題已暫存', 'info')
             return redirect(url_for('issue.issue_detail', issueID=new_issue.issueID))
+    elif action_1 == 'add':
 
-    categories = Category.query.all()  # 假設有 Category 模型
-    return render_template(
-        'finish_issue.html',
-        title=title,
-        description=description,
-        attachment_1=attachment_filename_1,
-        attachment_2=attachment_filename_2,
-        categories=categories,
-        selected_category=int(category_id),
-        proposer_name=current_user.name
-    )
+        session['issue_data'] = {
+            'title': title,
+            'description': description,
+            'selected_category': int(category_id),
+
+            'attachment_1': attachment_filename_1,
+            'attachment_2': attachment_filename_2,
+            'proposer_name': current_user.name
+        }
+        return redirect(url_for('issue.finalize_issue'))
+
+    return redirect(url_for('issue.process_issue'))
+
 
 
 
@@ -378,16 +381,20 @@ def finalize_issue():
 
 
         return redirect(url_for('login.index'))  # 取消或其他操作
-
+    issue_data = session.get('issue_data')
+    if not issue_data:
+        flash('無法找到議題資料，請重新提交。', 'warning')
+        return redirect(url_for('issue.new_issue'))
     categories = Category.query.all()
     return render_template(
         'finish_issue.html',
-        title=request.args.get('title'),  # 可以從 URL 參數中獲取
-        description=request.args.get('description'),  # 可以從 URL 參數中獲取
-        attachment_1=request.args.get('attachment_1'),
-        attachment_2=request.args.get('attachment_2'),
+        title=issue_data['title'],
+        description=issue_data['description'],
+        attachment_1=issue_data['attachment_1'],
+        attachment_2=issue_data['attachment_2'],
         categories=categories,
-        selected_category=request.args.get('category_id')
+        selected_category=issue_data['selected_category'],
+        proposer_name=issue_data['proposer_name']
     )
 
 # @issue_bp.route('/issue/<int:issueID>/comment', methods=['POST'])
