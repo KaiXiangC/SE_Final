@@ -426,8 +426,13 @@
                     </td>
                 `;
                 tbody.prepend(tr);
-                createModal.style.display = 'none';
                 bindRowEvents(tr);
+                // 新增公告成功後，隱藏 createModal
+                const createModal = document.querySelector('#createModal');
+                if (createModal) {
+                    createModal.style.display = 'none';  // 將 modal 隱藏
+                }
+                alert('新增成功!');
             } else {
                 alert(data.message);
             }
@@ -475,15 +480,20 @@
             const data = await res.json();
             if(data.status === 'success') {
                 const row = document.getElementById(`row-${notifID}`);
-                if(row){
-                    row.querySelector('td:nth-child(1)').innerText = data.title;
-                    row.querySelector('td:nth-child(2)').innerText = data.content;
-                    // 更新 data attribute
-                    const editBtn = row.querySelector('.editBtn');
-                    editBtn.dataset.title = data.title;
-                    editBtn.dataset.content = data.content;
-                }
-                editModal.style.display = 'none';
+            if(row){
+                // 更新表格內的標題和內容
+                row.querySelector('.noti_title').innerText = data.title;
+                row.querySelector('.noti_content').innerText = data.content;
+
+                // 更新 data attribute 以便重新使用修改後的資料
+                const editBtn = row.querySelector('.editBtn');
+                editBtn.dataset.title = data.title;
+                editBtn.dataset.content = data.content;
+                
+                // 修改公告成功後，隱藏 editModal
+                editModal.style.display = 'none';  // 隱藏編輯視窗
+                alert('修改成功!');
+            }
             } else {
                 alert(data.message);
             }
