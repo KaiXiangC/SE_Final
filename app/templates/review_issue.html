@@ -127,7 +127,7 @@
             <label for="description">內容描述</label>
             <textarea id="description" name="description" required>{{ issue.description }}</textarea>
 
-            <label for="category">變更類別</label>
+            <label for="category">類別</label>
             <select id="category" name="category" required>
                 {% for category in categories %}
                 <option value="{{ category.name }}" {% if category.categoryID == issue.categoryID %}selected{% endif %}>
