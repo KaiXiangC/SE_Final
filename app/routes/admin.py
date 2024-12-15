@@ -3,7 +3,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import login_user, login_required, logout_user, current_user, LoginManager
 from app import db
 import os
-from app.models import User, Issue, Category, Comment
+from app.models import User, Issue, Category, Comment, Favorite, Vote
 import logging
 
 admin_bp = Blueprint('admin', __name__)
@@ -125,7 +125,7 @@ def delete_issue(issue_id):
 @login_required
 def propose_category_manage():
         """議題類別管理"""
-        categories = Category.query.all()
+        categories = Category.query.filter(Category.name != " ").all()
         return render_template('propose_category_manage.html', categories=categories)
 
 @admin_bp.route('/add_category', methods=['POST'])
@@ -139,10 +139,10 @@ def add_category():
     try:
         db.session.add(new_category)
         db.session.commit()
-        flash('類別新增成功', 'success')
+        flash('類別新增成功', 'p')
     except Exception as e:
         db.session.rollback()
-        flash('類別新增失敗', 'danger')
+        flash('類別新增失敗', 'p')
     return redirect(url_for('admin.propose_category_manage'))
 
 @admin_bp.route('/delete_category',  methods=['POST', 'GET'])
@@ -150,17 +150,20 @@ def delete_category():
     """刪除類別"""
     category_id = request.form['category_id']
     category = Category.query.filter_by(categoryID=category_id).first()
-    logging.error(f"category_id: {category_id}")
+    issues = Issue.query.filter_by(categoryID=category_id).all()
     if category:
         try:
+            for issue in issues:
+                issue.categoryID = 18
+                db.session.commit()
             db.session.delete(category)
             db.session.commit()
-            flash('類別刪除成功', 'success')
+            flash('類別已刪除', 'p')
         except Exception as e:
             db.session.rollback()
-            flash('類別刪除失敗', 'danger')
+            flash('類別刪除失敗', 'p')
     else:
-        flash('類別不存在', 'danger')
+        flash('類別不存在', 'p')
     return redirect(url_for('admin.propose_category_manage'))
 
 @admin_bp.route('/edit_category', methods=['POST'])
@@ -173,12 +176,12 @@ def edit_category():
         try:
             category.name = new_category_name
             db.session.commit()
-            flash('類別修改成功', 'success')
+            flash('類別修改成功', 'p')
         except Exception as e:
             db.session.rollback()
-            flash('類別修改失敗', 'danger')
+            flash('類別修改失敗', 'p')
     else:
-        flash('類別不存在', 'danger')
+        flash('類別不存在', 'p')
     return redirect(url_for('admin.propose_category_manage'))
 
 @admin_bp.route('/member_auth/<int:user_id>', methods=['GET'])
